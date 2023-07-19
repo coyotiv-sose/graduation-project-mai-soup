@@ -1,3 +1,4 @@
-const UserTests = require('./user.test')
+const UserTests = require('./models/user.test')
 
-UserTests.run()
+const userTests = new UserTests()
+userTests.run()
