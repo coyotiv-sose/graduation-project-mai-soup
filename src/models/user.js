@@ -1,8 +1,11 @@
 module.exports = class User {
   #username
+  subscribedBookshelves = []
 
-  constructor({ username }) {
+  constructor({ username, email }) {
     this.username = username
+    this.email = email
+    this.dateCreated = new Date()
   }
 
   set username(newUsername) {
@@ -17,7 +20,9 @@ module.exports = class User {
       throw new Error('username must be 3-24 characters in length')
     }
     if (!newUsername.match(/^[a-zA-Z0-9_-]+$/)) {
-      throw new Error('username must only contain alphanumeric, dashes, and underscores')
+      throw new Error(
+        'username must only contain alphanumeric, dashes, and underscores'
+      )
     }
     // TODO: check for case-insensitive uniqueness
 
