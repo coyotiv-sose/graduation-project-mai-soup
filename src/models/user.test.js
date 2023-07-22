@@ -1,5 +1,4 @@
 const User = require('./user')
-const Bookshelf = require('./bookshelf')
 const Test = require('../test.test')
 
 module.exports = class UserTests extends Test {
