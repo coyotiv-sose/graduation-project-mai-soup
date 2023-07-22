@@ -3,10 +3,14 @@ const User = require('./user')
 module.exports = class Bookshelf {
   #name
   #owner
+  #latitude
+  #longitude
 
-  constructor({ name, owner }) {
+  constructor({ name, owner, latitude, longitude }) {
     this.name = name
     this.owner = owner
+    this.#latitude = latitude
+    this.#longitude = longitude
   }
 
   set owner(newOwner) {
@@ -43,5 +47,9 @@ module.exports = class Bookshelf {
 
   get info() {
     return `${this.#owner.username}'s bookshelf ${this.#name}`
+  }
+
+  get location() {
+    return [this.#longitude, this.#latitude]
   }
 }
