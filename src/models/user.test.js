@@ -1,13 +1,13 @@
 const User = require('./user')
+const Test = require('../test.test')
 
-module.exports = class UserTests {
+module.exports = class UserTests extends Test {
+  validUsername = 'validUsername'
+
   run() {
-    console.log(`running user tests...\n`)
-
     this.canSetValidUsername()
     this.canSetInvalidUsername()
-
-    console.log(`\nuser tests passed!`)
+    this.canSetEmail()
   }
 
   canSetValidUsername() {
@@ -23,10 +23,10 @@ module.exports = class UserTests {
     validUsernames.forEach(username => {
       const user = new User({ username })
       if (user.username !== username) {
-        throw new Error('username was not set correctly')
+        super.fail(`failed to set valid username ${username}`)
       }
     })
-    console.log(`tried setting ${validUsernames.length} valid usernames`)
+    super.pass(`set ${validUsernames.length} valid usernames`)
   }
 
   canSetInvalidUsername() {
@@ -39,12 +39,21 @@ module.exports = class UserTests {
     invalidUsernames.forEach(username => {
       try {
         const user = new User({ username })
-        throw new Error(`username was set to an invalid value: ${username}`)
+        super.fail(`set invalid username ${username}`)
       } catch (err) {
         // caught the error, so the test passed
       }
     })
 
-    console.log(`tried setting ${invalidUsernames.length} invalid usernames`)
+    super.pass(`tried setting ${invalidUsernames.length} invalid usernames`)
+  }
+
+  canSetEmail() {
+    const email = 'email@example.com'
+    const user = new User({ username: this.validUsername, email })
+    if (user.email !== email) {
+      super.fail(`failed to set email ${email}`)
+    }
+    super.pass('set email')
   }
 }

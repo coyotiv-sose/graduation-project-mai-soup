@@ -32,4 +32,18 @@ module.exports = class User {
   get username() {
     return this.#username
   }
+
+  subscribeToShelf(shelf) {
+    this.subscribedBookshelves.push(shelf)
+    shelf.addSubscriber(this)
+  }
+
+  unsubscribeFromShelf(shelf) {
+    const shelfIndex = this.subscribedBookshelves.indexOf(shelf)
+    if (shelfIndex === -1) {
+      throw new Error('user is not subscribed to this bookshelf')
+    }
+    this.subscribedBookshelves.splice(shelfIndex, 1)
+    shelf.removeSubscriber(this)
+  }
 }

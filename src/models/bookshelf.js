@@ -1,10 +1,9 @@
-const User = require('./user')
-
 module.exports = class Bookshelf {
   #name
   #owner
   #latitude
   #longitude
+  #subscribers = []
 
   constructor({ name, owner, latitude, longitude }) {
     this.name = name
@@ -17,12 +16,12 @@ module.exports = class Bookshelf {
     if (!newOwner) {
       throw new Error('bookshelf must have an owner')
     }
-    if (!(newOwner instanceof User)) {
-      throw new Error('bookshelf owner must be a User')
-    }
 
     // TODO: check that owner isn't suspended
 
+    // unsubscribe old owner, if exists
+    if (this.#owner) this.#owner.unsubscribeFromShelf(this)
+    // subscribe new owner
     this.#owner = newOwner
     this.#owner.subscribeToShelf(this)
   }
@@ -51,5 +50,22 @@ module.exports = class Bookshelf {
 
   get location() {
     return [this.#longitude, this.#latitude]
+  }
+
+  addSubscriber(user) {
+    if (this.#subscribers.includes(user)) {
+      throw new Error('user is already subscribed to this bookshelf')
+    }
+
+    this.#subscribers.push(user)
+  }
+
+  removeSubscriber(user) {
+    const index = this.#subscribers.indexOf(user)
+    if (index === -1) {
+      throw new Error('user is not subscribed to this bookshelf')
+    }
+
+    this.#subscribers.splice(index, 1)
   }
 }
