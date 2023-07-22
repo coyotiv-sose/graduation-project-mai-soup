@@ -60,6 +60,10 @@ module.exports = class Bookshelf {
     this.#subscribers.push(user)
   }
 
+  get subscribers() {
+    return this.#subscribers
+  }
+
   removeSubscriber(user) {
     const index = this.#subscribers.indexOf(user)
     if (index === -1) {

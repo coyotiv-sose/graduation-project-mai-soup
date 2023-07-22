@@ -1,3 +1,5 @@
+const Bookshelf = require('./bookshelf')
+
 module.exports = class User {
   #username
   subscribedBookshelves = []
@@ -31,6 +33,15 @@ module.exports = class User {
 
   get username() {
     return this.#username
+  }
+
+  createShelf({ name, latitude, longitude }) {
+    return new Bookshelf({
+      name,
+      owner: this,
+      latitude,
+      longitude,
+    })
   }
 
   subscribeToShelf(shelf) {

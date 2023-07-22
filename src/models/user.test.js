@@ -1,13 +1,15 @@
 const User = require('./user')
+const Bookshelf = require('./bookshelf')
 const Test = require('../test.test')
 
 module.exports = class UserTests extends Test {
-  validUsername = 'validUsername'
+  validUsernames = ['validUsername', 'valid-username', 'valid_username']
 
   run() {
     this.canSetValidUsername()
     this.canSetInvalidUsername()
     this.canSetEmail()
+    this.canSubscribeToShelf()
   }
 
   canSetValidUsername() {
@@ -50,10 +52,37 @@ module.exports = class UserTests extends Test {
 
   canSetEmail() {
     const email = 'email@example.com'
-    const user = new User({ username: this.validUsername, email })
+    const user = new User({ username: this.validUsernames[0], email })
     if (user.email !== email) {
       super.fail(`failed to set email ${email}`)
     }
     super.pass('set email')
+  }
+
+  canSubscribeToShelf() {
+    const user = new User({ username: this.validUsernames[0] })
+    const user2 = new User({ username: this.validUsernames[1] })
+    const owner = new User({ username: this.validUsernames[2] })
+    const shelf = owner.createShelf({
+      name: 'shelf',
+      latitude: 0,
+      longitude: 0,
+    })
+
+    user.subscribeToShelf(shelf)
+    user2.subscribeToShelf(shelf)
+    if (
+      !user.subscribedBookshelves.includes(shelf) ||
+      !user2.subscribedBookshelves.includes(shelf)
+    ) {
+      super.fail('failed to subscribe to shelf')
+    }
+    if (
+      !shelf.subscribers.includes(user) ||
+      !shelf.subscribers.includes(user2)
+    ) {
+      super.fail('failed to add user to shelf subscribers')
+    }
+    super.pass('subscribed to shelf')
   }
 }
