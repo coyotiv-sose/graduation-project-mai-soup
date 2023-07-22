@@ -19,11 +19,17 @@ module.exports = class Bookshelf {
 
     // TODO: check that owner isn't suspended
 
-    // unsubscribe old owner, if exists
-    if (this.#owner) this.#owner.unsubscribeFromShelf(this)
     // subscribe new owner
     this.#owner = newOwner
     this.#owner.subscribeToShelf(this)
+  }
+
+  get owner() {
+    return this.#owner
+  }
+
+  get name() {
+    return this.#name
   }
 
   set name(newName) {

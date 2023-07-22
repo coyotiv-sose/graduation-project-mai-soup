@@ -3,7 +3,7 @@ const Bookshelf = require('./bookshelf')
 const Test = require('../test.test')
 
 module.exports = class UserTests extends Test {
-  validUsernames = ['validUsername', 'valid-username', 'valid_username']
+  static validUsernames = ['validUsername', 'valid-username', 'valid_username']
 
   run() {
     this.canSetValidUsername()
@@ -52,7 +52,7 @@ module.exports = class UserTests extends Test {
 
   canSetEmail() {
     const email = 'email@example.com'
-    const user = new User({ username: this.validUsernames[0], email })
+    const user = new User({ username: UserTests.validUsernames[0], email })
     if (user.email !== email) {
       super.fail(`failed to set email ${email}`)
     }
@@ -60,9 +60,9 @@ module.exports = class UserTests extends Test {
   }
 
   canSubscribeToShelf() {
-    const user = new User({ username: this.validUsernames[0] })
-    const user2 = new User({ username: this.validUsernames[1] })
-    const owner = new User({ username: this.validUsernames[2] })
+    const user = new User({ username: UserTests.validUsernames[0] })
+    const user2 = new User({ username: UserTests.validUsernames[1] })
+    const owner = new User({ username: UserTests.validUsernames[2] })
     const shelf = owner.createShelf({
       name: 'shelf',
       latitude: 0,

@@ -2,12 +2,11 @@ const chalk = require('chalk')
 
 // superclass for all tests
 module.exports = class Test {
-  pass(testName) {
-    console.log(chalk.green(`✓ ${testName}`))
+  pass(msg) {
+    console.log(chalk.green(`✓ ${msg}`))
   }
 
-  fail(testName, err) {
-    console.log(chalk.red(`✕ ${testName}`))
-    console.log(chalk.red(err))
+  fail(msg) {
+    console.log(chalk.red(`✕ ${msg}`))
   }
 }
