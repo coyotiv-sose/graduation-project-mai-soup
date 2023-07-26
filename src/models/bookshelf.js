@@ -87,8 +87,10 @@ module.exports = class Bookshelf {
       throw new Error('book must be an instance of Book')
     }
 
+    if (!this.#books.includes(book)) {
+      book.addToShelf(this)
+    }
     this.#books.push(book)
-    book.addToShelf(this)
   }
 
   get books() {
@@ -100,8 +102,10 @@ module.exports = class Bookshelf {
     if (index === -1) {
       throw new Error('book is not in this bookshelf')
     }
-
+    const copies = this.#books.filter(b => b.isbn === book.isbn)
+    if (copies.length == 1) {
+      book.removeFromShelf(this)
+    }
     this.#books.splice(index, 1)
-    book.removeFromShelf(this)
   }
 }

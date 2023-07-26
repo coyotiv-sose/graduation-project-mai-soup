@@ -9,6 +9,8 @@ module.exports = class BookTests extends Test {
     this.canCreateInvalidBook()
     this.storesShelves()
     this.removesShelves()
+    this.addSeveralCopies()
+    this.removeSeveralCopies()
   }
 
   canCreateValidBook() {
@@ -78,7 +80,7 @@ module.exports = class BookTests extends Test {
       {
         // no author
         title: 'valid title',
-        isbn: '1234567890123',
+        isbn: '1234567890124',
         imageUrl: 'https://example.com/image.jpg',
       },
       {
@@ -194,5 +196,77 @@ module.exports = class BookTests extends Test {
     }
 
     if (!failed) super.pass('removed shelves')
+  }
+
+  addSeveralCopies() {
+    let failed = false
+    const book = new Book({
+      title: 'valid title',
+      author: 'valid author',
+      isbn: '1234567890123',
+    })
+
+    const owner = new User({
+      username: 'validusername',
+      email: 'email@example.com',
+    })
+
+    const shelf1 = new Bookshelf({
+      name: 'shelf1',
+      owner,
+      latitude: 0,
+      longitude: 0,
+    })
+
+    shelf1.addBook(book)
+    shelf1.addBook(book)
+    shelf1.addBook(book)
+
+    if (book.shelves.length !== 1) {
+      super.fail('multiple copies added multiple shelves')
+      failed = true
+    }
+
+    if (!failed)
+      super.pass(
+        'keeps track of shelf with multiple copies correctly when adding'
+      )
+  }
+
+  removeSeveralCopies() {
+    let failed = false
+    const book = new Book({
+      title: 'valid title',
+      author: 'valid author',
+      isbn: '1234567890123',
+    })
+
+    const owner = new User({
+      username: 'validusername',
+      email: 'email@example.com',
+    })
+
+    const shelf1 = new Bookshelf({
+      name: 'shelf1',
+      owner,
+      latitude: 0,
+      longitude: 0,
+    })
+
+    shelf1.addBook(book)
+    shelf1.addBook(book)
+    shelf1.addBook(book)
+
+    shelf1.removeBook(book)
+
+    if (book.shelves.length !== 1) {
+      super.fail('removing one copy removed all copies')
+      failed = true
+    }
+
+    if (!failed)
+      super.pass(
+        'keeps track of shelf with multiple copies correctly when removing'
+      )
   }
 }
