@@ -36,12 +36,14 @@ module.exports = class User {
   }
 
   createShelf({ name, latitude, longitude }) {
-    return new Bookshelf({
+    const newShelf = new Bookshelf({
       name,
       owner: this,
       latitude,
       longitude,
     })
+
+    return newShelf
   }
 
   subscribeToShelf(shelf) {

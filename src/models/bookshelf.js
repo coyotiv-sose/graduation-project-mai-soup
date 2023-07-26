@@ -1,9 +1,12 @@
+const Book = require('./book')
+
 module.exports = class Bookshelf {
   #name
   #owner
   #latitude
   #longitude
   #subscribers = []
+  #books = []
 
   constructor({ name, owner, latitude, longitude }) {
     this.name = name
@@ -77,5 +80,28 @@ module.exports = class Bookshelf {
     }
 
     this.#subscribers.splice(index, 1)
+  }
+
+  addBook(book) {
+    if (!(book instanceof Book)) {
+      throw new Error('book must be an instance of Book')
+    }
+
+    this.#books.push(book)
+    book.addToShelf(this)
+  }
+
+  get books() {
+    return this.#books
+  }
+
+  removeBook(book) {
+    const index = this.#books.indexOf(book)
+    if (index === -1) {
+      throw new Error('book is not in this bookshelf')
+    }
+
+    this.#books.splice(index, 1)
+    book.removeFromShelf(this)
   }
 }
