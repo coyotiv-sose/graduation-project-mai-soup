@@ -8,6 +8,7 @@ module.exports = class BookTests extends Test {
     this.canCreateValidBook()
     this.canCreateInvalidBook()
     this.storesShelves()
+    this.removesShelves()
   }
 
   canCreateValidBook() {
@@ -141,5 +142,57 @@ module.exports = class BookTests extends Test {
     }
 
     if (!failed) super.pass('stored shelves')
+  }
+
+  removesShelves() {
+    let failed = false
+    const book = new Book({
+      title: 'valid title',
+      author: 'valid author',
+      isbn: '1234567890123',
+    })
+
+    const owner = new User({
+      username: 'validusername',
+      email: 'email@example.com',
+    })
+    const shelf1 = new Bookshelf({
+      name: 'shelf1',
+      owner,
+      latitude: 0,
+      longitude: 0,
+    })
+    const shelf2 = new Bookshelf({
+      name: 'shelf2',
+      owner,
+      latitude: 0,
+      longitude: 0,
+    })
+
+    shelf1.addBook(book)
+    shelf2.addBook(book)
+
+    shelf1.removeBook(book)
+    if (book.shelves.length !== 1 || book.shelves.includes(shelf1)) {
+      super.fail('failed to remove first shelf from book')
+      failed = true
+    }
+
+    shelf1.addBook(book)
+    shelf2.removeBook(book)
+    if (book.shelves.length !== 1 || book.shelves.includes(shelf2)) {
+      super.fail('failed to remove second shelf from book')
+      failed = true
+    }
+
+    shelf2.addBook(book)
+    shelf1.removeBook(book)
+    shelf2.removeBook(book)
+    if (book.shelves.length !== 0) {
+      super.fail('failed to remove all shelves from book')
+      failed = true
+    }
+
+    if (!failed) super.pass('removed shelves')
   }
 }
