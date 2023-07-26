@@ -1,10 +1,13 @@
 const Test = require('../test.test')
 const Book = require('./book')
+const Bookshelf = require('./bookshelf')
+const User = require('./user')
 
 module.exports = class BookTests extends Test {
   run() {
     this.canCreateValidBook()
     this.canCreateInvalidBook()
+    this.storesShelves()
   }
 
   canCreateValidBook() {
@@ -54,6 +57,10 @@ module.exports = class BookTests extends Test {
           failed = true
         }
       }
+      if (newBook.shelves.length !== 0) {
+        super.fail('initial bookshelves not empty')
+        failed = true
+      }
     })
     if (!failed) super.pass(`created ${validBooks.length} valid books`)
   }
@@ -94,5 +101,45 @@ module.exports = class BookTests extends Test {
 
     if (!failed)
       super.pass(`attempted to create ${invalidBooks.length} invalid books`)
+  }
+
+  storesShelves() {
+    let failed = false
+    const book = new Book({
+      title: 'valid title',
+      author: 'valid author',
+      isbn: '1234567890123',
+    })
+
+    const owner = new User({
+      username: 'validusername',
+      email: 'email@example.com',
+    })
+    const shelf1 = new Bookshelf({
+      name: 'shelf1',
+      owner,
+      latitude: 0,
+      longitude: 0,
+    })
+    const shelf2 = new Bookshelf({
+      name: 'shelf2',
+      owner,
+      latitude: 0,
+      longitude: 0,
+    })
+
+    shelf1.addBook(book)
+    if (book.shelves.length !== 1 || !book.shelves.includes(shelf1)) {
+      super.fail('failed to add one shelf to book')
+      failed = true
+    }
+
+    shelf2.addBook(book)
+    if (book.shelves.length !== 2 || !book.shelves.includes(shelf2)) {
+      super.fail('failed to add additional shelf to book')
+      failed = true
+    }
+
+    if (!failed) super.pass('stored shelves')
   }
 }
