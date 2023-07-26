@@ -36,6 +36,7 @@ module.exports = class Bookshelf {
   }
 
   set name(newName) {
+    // TODO: only owner can change name
     // name requirements:
     // string 5-40 chars in length
     // alphanumeric, spaces, dashes, underscores
