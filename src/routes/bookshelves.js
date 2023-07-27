@@ -11,6 +11,7 @@ router.get('/:id', (req, res) => {
   const { id } = req.params
 
   const shelf = Bookshelf.list.filter(s => s.name === id)[0]
+  // only send username to avoid circular reference
   const owner = shelf.owner.username
   const subscribers = shelf.subscribers.map(s => s.username)
   if (!shelf) {
