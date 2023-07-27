@@ -92,7 +92,7 @@ module.exports = class BookshelfTests extends Test {
       username: UserTests.validUsernames[1],
       email: 'email@email.com',
     })
-    bookshelf.owner = newOwner
+    bookshelf.setOwner(newOwner)
     if (bookshelf.owner !== newOwner) {
       super.fail('failed to change owner')
       failed = true

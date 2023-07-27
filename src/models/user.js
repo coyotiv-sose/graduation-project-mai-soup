@@ -1,16 +1,16 @@
 const Bookshelf = require('./bookshelf')
 
 module.exports = class User {
-  #username
+  username
   subscribedBookshelves = []
 
   constructor({ username, email }) {
-    this.username = username
+    this.setUsername(username)
     this.email = email
     this.dateCreated = new Date()
   }
 
-  set username(newUsername) {
+  setUsername(newUsername) {
     // username requirements:
     // - string 3-24 chars in length
     // - only alphanumeric, dashes, underscores
@@ -28,11 +28,7 @@ module.exports = class User {
     }
     // TODO: check for case-insensitive uniqueness
 
-    this.#username = newUsername
-  }
-
-  get username() {
-    return this.#username
+    this.username = newUsername
   }
 
   createShelf({ name, latitude, longitude }) {

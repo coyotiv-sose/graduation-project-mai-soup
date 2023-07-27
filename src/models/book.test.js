@@ -60,7 +60,7 @@ module.exports = class BookTests extends Test {
           failed = true
         }
       }
-      if (newBook.shelves.length !== 0) {
+      if (newBook.shelvesFoundOn.length !== 0) {
         super.fail('initial bookshelves not empty')
         failed = true
       }
@@ -132,13 +132,19 @@ module.exports = class BookTests extends Test {
     })
 
     shelf1.addBook(book)
-    if (book.shelves.length !== 1 || !book.shelves.includes(shelf1)) {
+    if (
+      book.shelvesFoundOn.length !== 1 ||
+      !book.shelvesFoundOn.includes(shelf1)
+    ) {
       super.fail('failed to add one shelf to book')
       failed = true
     }
 
     shelf2.addBook(book)
-    if (book.shelves.length !== 2 || !book.shelves.includes(shelf2)) {
+    if (
+      book.shelvesFoundOn.length !== 2 ||
+      !book.shelvesFoundOn.includes(shelf2)
+    ) {
       super.fail('failed to add additional shelf to book')
       failed = true
     }
@@ -175,14 +181,20 @@ module.exports = class BookTests extends Test {
     shelf2.addBook(book)
 
     shelf1.removeBook(book)
-    if (book.shelves.length !== 1 || book.shelves.includes(shelf1)) {
+    if (
+      book.shelvesFoundOn.length !== 1 ||
+      book.shelvesFoundOn.includes(shelf1)
+    ) {
       super.fail('failed to remove first shelf from book')
       failed = true
     }
 
     shelf1.addBook(book)
     shelf2.removeBook(book)
-    if (book.shelves.length !== 1 || book.shelves.includes(shelf2)) {
+    if (
+      book.shelvesFoundOn.length !== 1 ||
+      book.shelvesFoundOn.includes(shelf2)
+    ) {
       super.fail('failed to remove second shelf from book')
       failed = true
     }
@@ -190,7 +202,7 @@ module.exports = class BookTests extends Test {
     shelf2.addBook(book)
     shelf1.removeBook(book)
     shelf2.removeBook(book)
-    if (book.shelves.length !== 0) {
+    if (book.shelvesFoundOn.length !== 0) {
       super.fail('failed to remove all shelves from book')
       failed = true
     }
@@ -222,7 +234,7 @@ module.exports = class BookTests extends Test {
     shelf1.addBook(book)
     shelf1.addBook(book)
 
-    if (book.shelves.length !== 1) {
+    if (book.shelvesFoundOn.length !== 1) {
       super.fail('multiple copies added multiple shelves')
       failed = true
     }
@@ -259,7 +271,7 @@ module.exports = class BookTests extends Test {
 
     shelf1.removeBook(book)
 
-    if (book.shelves.length !== 1) {
+    if (book.shelvesFoundOn.length !== 1) {
       super.fail('removing one copy removed all copies')
       failed = true
     }

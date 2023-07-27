@@ -1,21 +1,21 @@
 const Book = require('./book')
 
 module.exports = class Bookshelf {
-  #name
-  #owner
-  #latitude
-  #longitude
-  #subscribers = []
-  #books = []
+  name
+  owner
+  latitude
+  longitude
+  subscribers = []
+  books = []
 
   constructor({ name, owner, latitude, longitude }) {
-    this.name = name
-    this.owner = owner
-    this.#latitude = latitude
-    this.#longitude = longitude
+    this.setName(name)
+    this.setOwner(owner)
+    this.latitude = latitude
+    this.longitude = longitude
   }
 
-  set owner(newOwner) {
+  setOwner(newOwner) {
     if (!newOwner) {
       throw new Error('bookshelf must have an owner')
     }
@@ -23,19 +23,10 @@ module.exports = class Bookshelf {
     // TODO: check that owner isn't suspended
 
     // subscribe new owner
-    this.#owner = newOwner
-    this.#owner.subscribeToShelf(this)
+    this.owner = newOwner
+    this.owner.subscribeToShelf(this)
   }
-
-  get owner() {
-    return this.#owner
-  }
-
-  get name() {
-    return this.#name
-  }
-
-  set name(newName) {
+  setName(newName) {
     // TODO: only owner can change name
     // name requirements:
     // string 5-40 chars in length
@@ -51,36 +42,28 @@ module.exports = class Bookshelf {
         'name must only contain alphanumeric, spaces, dashes, and underscores'
       )
     }
-    this.#name = newName
-  }
-
-  get info() {
-    return `${this.#owner.username}'s bookshelf ${this.#name}`
+    this.name = newName
   }
 
   get location() {
-    return [this.#longitude, this.#latitude]
+    return [this.longitude, this.latitude]
   }
 
   addSubscriber(user) {
-    if (this.#subscribers.includes(user)) {
+    if (this.subscribers.includes(user)) {
       throw new Error('user is already subscribed to this bookshelf')
     }
 
-    this.#subscribers.push(user)
-  }
-
-  get subscribers() {
-    return this.#subscribers
+    this.subscribers.push(user)
   }
 
   removeSubscriber(user) {
-    const index = this.#subscribers.indexOf(user)
+    const index = this.subscribers.indexOf(user)
     if (index === -1) {
       throw new Error('user is not subscribed to this bookshelf')
     }
 
-    this.#subscribers.splice(index, 1)
+    this.subscribers.splice(index, 1)
   }
 
   addBook(book) {
@@ -88,25 +71,21 @@ module.exports = class Bookshelf {
       throw new Error('book must be an instance of Book')
     }
 
-    if (!this.#books.includes(book)) {
+    if (!this.books.includes(book)) {
       book.addToShelf(this)
     }
-    this.#books.push(book)
-  }
-
-  get books() {
-    return this.#books
+    this.books.push(book)
   }
 
   removeBook(book) {
-    const index = this.#books.indexOf(book)
+    const index = this.books.indexOf(book)
     if (index === -1) {
       throw new Error('book is not in this bookshelf')
     }
-    const copies = this.#books.filter(b => b.isbn === book.isbn)
+    const copies = this.books.filter(b => b.isbn === book.isbn)
     if (copies.length == 1) {
       book.removeFromShelf(this)
     }
-    this.#books.splice(index, 1)
+    this.books.splice(index, 1)
   }
 }
