@@ -2,7 +2,7 @@ extends ../layout
 
 block content
   h1 #{shelf.name}
-  p Owned by #{shelf.owner.username}
+  p Owned by #{shelf.owner}
   h2 Stored books:
   if shelf.books.length
     ul
