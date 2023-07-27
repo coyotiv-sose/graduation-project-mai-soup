@@ -55,4 +55,12 @@ module.exports = class User {
     this.subscribedBookshelves.splice(shelfIndex, 1)
     shelf.removeSubscriber(this)
   }
+
+  static createUser({ username, email }) {
+    const newUser = new User({ username, email })
+    User.list.push(newUser)
+    return newUser
+  }
+
+  static list = []
 }
