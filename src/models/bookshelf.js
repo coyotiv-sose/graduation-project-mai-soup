@@ -88,4 +88,19 @@ module.exports = class Bookshelf {
     }
     this.books.splice(index, 1)
   }
+
+  static create({ name, owner, latitude, longitude }) {
+    const newBookshelf = new Bookshelf({
+      name,
+      owner,
+      latitude,
+      longitude,
+    })
+
+    this.list.push(newBookshelf)
+
+    return newBookshelf
+  }
+
+  static list = []
 }

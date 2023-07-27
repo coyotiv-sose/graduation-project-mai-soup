@@ -1,0 +1,22 @@
+extends ../layout
+
+block content
+  h1 #{shelf.name}
+  p Owned by #{shelf.owner.username}
+  h2 Stored books:
+  if shelf.books.length
+    ul
+    each book in shelf.books
+      li
+        a(href='/books/' + book.title)= book.title
+  else
+    p None yet!
+
+  h2 Subscribed users:
+  if shelf.subscribers.length
+    ul
+    each username in shelf.subscribers
+      li
+        a(href='/users/' + username)= username
+  else
+    p None yet!

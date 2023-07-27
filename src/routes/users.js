@@ -31,4 +31,23 @@ router.get('/:id', (req, res) => {
   return res.render('users/user', { user })
 })
 
+router.post('/:id/ownedShelves', (req, res) => {
+  const { id } = req.params
+  const user = User.list.filter(u => u.username === id)[0]
+  if (!user) {
+    return res.status(404).send('User not found')
+  }
+
+  const { name, latitude, longitude } = req.body
+  const shelf = user.createShelf({ name, latitude, longitude })
+  res.send({
+    shelf: {
+      name: shelf.name,
+      latitude: shelf.latitude,
+      longitude: shelf.longitude,
+      owner: shelf.owner.username, // only send username to avoid circular reference
+    },
+  })
+})
+
 module.exports = router

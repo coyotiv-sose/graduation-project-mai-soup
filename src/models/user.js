@@ -32,7 +32,7 @@ module.exports = class User {
   }
 
   createShelf({ name, latitude, longitude }) {
-    const newShelf = new Bookshelf({
+    const newShelf = Bookshelf.create({
       name,
       owner: this,
       latitude,

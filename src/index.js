@@ -16,6 +16,12 @@ async function main() {
   const { data } = await axios.get(`${BASE_URL}/users?json=true`)
   console.log('users:')
   console.log(data)
+
+  await axios.post(`${BASE_URL}/users/maijs/ownedShelves`, {
+    name: 'mai shelf',
+    latitude: 0,
+    longitude: 0,
+  })
 }
 
 main()

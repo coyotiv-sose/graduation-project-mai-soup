@@ -8,6 +8,6 @@ block content
     ul
     each shelf in user.subscribedBookshelves
       li
-        a(href='/shelves/' + shelf.name)= shelf.name
+        a(href='/bookshelves/' + shelf.name)= shelf.name
   else
     p None yet!
