@@ -4,7 +4,11 @@ const User = require('../models/user')
 
 /* GET users listing. */
 router.get('/', (req, res, next) => {
-  res.send(User.list)
+  if (req.query.json) {
+    return res.send(User.list)
+  }
+
+  return res.render('users', { users: User.list })
 })
 
 router.post('/', (req, res) => {

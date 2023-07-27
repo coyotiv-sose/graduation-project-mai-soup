@@ -13,7 +13,7 @@ async function main() {
     email: 'britt@example.com',
   })
 
-  const { data } = await axios.get(`${BASE_URL}/users`)
+  const { data } = await axios.get(`${BASE_URL}/users?json=true`)
   console.log('users:')
   console.log(data)
 }
