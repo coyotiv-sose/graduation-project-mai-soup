@@ -1,0 +1,13 @@
+extends ../layout
+
+block content
+  h1 #{user.username}
+  p User since #{user.dateCreated}
+  h2 Subscribed shelves:
+  if user.subscribedBookshelves.length
+    ul
+    each shelf in user.subscribedBookshelves
+      li
+        a(href='/shelves/' + shelf.name)= shelf.name
+  else
+    p None yet!
