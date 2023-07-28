@@ -13,9 +13,10 @@ router.get('/', async (req, res, next) => {
   return res.render('users/users', { users: allUsers })
 })
 
-router.post('/', (req, res) => {
+router.post('/', async (req, res) => {
   const { username, email } = req.body
-  const user = User.create({ username, email })
+  const user = await User.create({ username, email })
+
   res.send(user)
 })
 
@@ -33,23 +34,17 @@ router.get('/:username', async (req, res) => {
   return res.render('users/user', { user })
 })
 
-// router.post('/:id/ownedShelves', (req, res) => {
-//   const { id } = req.params
-//   const user = User.list.filter(u => u.username === id)[0]
-//   if (!user) {
-//     return res.status(404).send('User not found')
-//   }
+router.post('/:username/ownedShelves', async (req, res) => {
+  const { username } = req.params
+  const user = await User.findOne({ username })
 
-//   const { name, latitude, longitude } = req.body
-//   const shelf = user.createShelf({ name, latitude, longitude })
-//   res.send({
-//     shelf: {
-//       name: shelf.name,
-//       latitude: shelf.latitude,
-//       longitude: shelf.longitude,
-//       owner: shelf.owner.username, // only send username to avoid circular reference
-//     },
-//   })
-// })
+  if (!user) {
+    return res.status(404).send('User not found')
+  }
+
+  const { name, latitude, longitude } = req.body
+  const shelf = await user.createShelf({ name, latitude, longitude })
+  res.send({ shelf })
+})
 
 module.exports = router

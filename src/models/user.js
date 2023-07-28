@@ -31,20 +31,24 @@ const userSchema = new mongoose.Schema({
 })
 
 class User {
-  createShelf({ name, latitude, longitude }) {
-    const newShelf = Bookshelf.create({
+  async createShelf({ name, latitude, longitude }) {
+    const newShelf = await Bookshelf.create({
       name,
       owner: this,
       latitude,
       longitude,
     })
 
+    this.subscribedBookshelves.push(newShelf)
+    await this.save()
+    await newShelf.save()
     return newShelf
   }
 
-  subscribeToShelf(shelf) {
+  async subscribeToShelf(shelf) {
     this.subscribedBookshelves.push(shelf)
-    shelf.addSubscriber(this)
+    await this.save()
+    await shelf.addSubscriber(this)
   }
 
   unsubscribeFromShelf(shelf) {
@@ -58,5 +62,6 @@ class User {
 }
 
 userSchema.loadClass(User)
+userSchema.plugin(autopopulate)
 
 module.exports = mongoose.model('User', userSchema)

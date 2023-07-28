@@ -17,13 +17,11 @@ async function main() {
   console.log('users:')
   console.log(data)
 
-  // await axios.post(`${BASE_URL}/users/maijs/ownedShelves`, {
-  //   name: 'mai shelf',
-  //   latitude: 0,
-  //   longitude: 0,
-  // })
+  await axios.post(`${BASE_URL}/users/maijs/ownedShelves`, {
+    name: 'mai shelf',
+    latitude: 0,
+    longitude: 0,
+  })
 }
 
-main().catch(err =>
-  console.log(err.data && err.data.message ? err.data.message : err)
-)
+main().catch(err => console.log(err.data.message ? err.data.message : err))

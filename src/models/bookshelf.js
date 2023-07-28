@@ -1,60 +1,77 @@
 const Book = require('./book')
+const mongoose = require('mongoose')
+const autopopulate = require('mongoose-autopopulate')
 
-module.exports = class Bookshelf {
-  name
-  owner
-  latitude
-  longitude
-  subscribers = []
-  books = []
+const bookshelfSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: true,
+    minlength: 5,
+    maxlength: 40,
+    match: /^[a-zA-Z0-9 _-]+$/,
+  },
+  owner: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true,
+    autopopulate: true,
+  },
+  latitude: {
+    type: Number,
+    required: true,
+    min: -90,
+    max: 90,
+  },
+  longitude: {
+    type: Number,
+    required: true,
+    min: -180,
+    max: 180,
+  },
+  subscribers: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      autopopulate: true,
+    },
+  ],
+  books: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Book',
+      // autopopulate: true,
+    },
+  ],
+})
 
-  constructor({ name, owner, latitude, longitude }) {
-    this.setName(name)
-    this.setOwner(owner)
-    this.latitude = latitude
-    this.longitude = longitude
-  }
+bookshelfSchema.pre('save', async function (next) {
+  await this.setOwner(this.owner)
+  next()
+})
 
-  setOwner(newOwner) {
-    if (!newOwner) {
-      throw new Error('bookshelf must have an owner')
-    }
-
+// TODO: only owner can change name
+class Bookshelf {
+  async setOwner(newOwner) {
     // TODO: check that owner isn't suspended
 
-    // subscribe new owner
-    this.owner = newOwner
-    this.owner.subscribeToShelf(this)
-  }
-  setName(newName) {
-    // TODO: only owner can change name
-    // name requirements:
-    // string 5-40 chars in length
-    // alphanumeric, spaces, dashes, underscores
-    if (typeof newName !== 'string') {
-      throw new Error('name must be a string')
+    // subscribe new owner if owner has changed or document is new
+    if (this.isModified('owner') || this.isNew) {
+      if (!newOwner.subscribedBookshelves.includes(this)) {
+        // subscribe new owner
+        this.subscribers.push(newOwner)
+      }
     }
-    if (newName.length < 5 || newName.length > 40) {
-      throw new Error('name must be 5-40 characters in length')
-    }
-    if (!newName.match(/^[a-zA-Z0-9 _-]+$/)) {
-      throw new Error(
-        'name must only contain alphanumeric, spaces, dashes, and underscores'
-      )
-    }
-    this.name = newName
   }
 
   get location() {
     return [this.longitude, this.latitude]
   }
 
-  addSubscriber(user) {
-    if (this.subscribers.includes(user)) {
-      throw new Error('user is already subscribed to this bookshelf')
-    }
+  async addSubscriber(user) {
+    if (this.subscribers.includes(user)) return
 
     this.subscribers.push(user)
+    await this.save()
   }
 
   removeSubscriber(user) {
@@ -88,19 +105,9 @@ module.exports = class Bookshelf {
     }
     this.books.splice(index, 1)
   }
-
-  static create({ name, owner, latitude, longitude }) {
-    const newBookshelf = new Bookshelf({
-      name,
-      owner,
-      latitude,
-      longitude,
-    })
-
-    this.list.push(newBookshelf)
-
-    return newBookshelf
-  }
-
-  static list = []
 }
+
+bookshelfSchema.loadClass(Bookshelf)
+bookshelfSchema.plugin(autopopulate)
+
+module.exports = mongoose.model('Bookshelf', bookshelfSchema)
