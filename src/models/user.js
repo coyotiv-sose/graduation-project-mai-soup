@@ -1,36 +1,36 @@
 const Bookshelf = require('./bookshelf')
+const mongoose = require('mongoose')
+const autopopulate = require('mongoose-autopopulate')
 
-module.exports = class User {
-  username
-  subscribedBookshelves = []
+const userSchema = new mongoose.Schema({
+  username: {
+    type: String,
+    required: true,
+    minlength: 3,
+    maxlength: 24,
+    match: /^[a-zA-Z0-9_-]+$/,
+    // TODO: make uniqueness case-insensitive
+    // unique: true,
+  },
+  email: {
+    // TODO: validate email
+    type: String,
+    required: true,
+  },
+  dateCreated: {
+    type: Date,
+    default: Date.now,
+  },
+  subscribedBookshelves: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Bookshelf',
+      autopopulate: true,
+    },
+  ],
+})
 
-  constructor({ username, email }) {
-    this.setUsername(username)
-    this.email = email
-    this.dateCreated = new Date()
-  }
-
-  setUsername(newUsername) {
-    // username requirements:
-    // - string 3-24 chars in length
-    // - only alphanumeric, dashes, underscores
-    // - case-insensitively unique
-    if (typeof newUsername !== 'string') {
-      throw new Error('username must be a string')
-    }
-    if (newUsername.length < 3 || newUsername.length > 24) {
-      throw new Error('username must be 3-24 characters in length')
-    }
-    if (!newUsername.match(/^[a-zA-Z0-9_-]+$/)) {
-      throw new Error(
-        'username must only contain alphanumeric, dashes, and underscores'
-      )
-    }
-    // TODO: check for case-insensitive uniqueness
-
-    this.username = newUsername
-  }
-
+class User {
   createShelf({ name, latitude, longitude }) {
     const newShelf = Bookshelf.create({
       name,
@@ -55,12 +55,8 @@ module.exports = class User {
     this.subscribedBookshelves.splice(shelfIndex, 1)
     shelf.removeSubscriber(this)
   }
-
-  static createUser({ username, email }) {
-    const newUser = new User({ username, email })
-    User.list.push(newUser)
-    return newUser
-  }
-
-  static list = []
 }
+
+userSchema.loadClass(User)
+
+module.exports = mongoose.model('User', userSchema)

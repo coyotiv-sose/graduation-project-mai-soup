@@ -30,7 +30,7 @@ app.use('/bookshelves', bookshelvesRouter)
 app.use(function (req, res, next) {
   next(createError(404))
 })
-
+require('./index')
 // error handler
 app.use(function (err, req, res, next) {
   // set locals, only providing error in development

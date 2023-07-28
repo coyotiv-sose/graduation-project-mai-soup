@@ -1,8 +1,10 @@
 const mongoose = require('mongoose')
 require('dotenv').config()
-mongoose.connect(process.env.MONGO_URI)
+mongoose
+  .connect(process.env.MONGO_URI)
+  .then(() => console.log('connected to mongo'))
 
-const Cat = mongoose.model('Cat', { name: String })
+// const Cat = mongoose.model('Cat', { name: String })
 
-const kitty = new Cat({ name: 'Zildjian' })
-kitty.save().then(() => console.log('meow'))
+// const kitty = new Cat({ name: 'Zildjian' })
+// kitty.save().then(() => console.log('meow'))

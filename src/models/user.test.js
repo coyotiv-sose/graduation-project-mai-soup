@@ -1,6 +1,7 @@
 const User = require('./user')
 const Test = require('../test.test')
 
+// TODO: fix tests after integrating mongo
 module.exports = class UserTests extends Test {
   static validUsernames = ['validUsername', 'valid-username', 'valid_username']
 
