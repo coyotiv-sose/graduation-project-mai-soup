@@ -22,6 +22,22 @@ async function main() {
     latitude: 0,
     longitude: 0,
   })
+
+  axios
+    .post(`${BASE_URL}/books?json=true`, {
+      title: 'The Book Thief',
+      author: 'Markus Zusak',
+      isbn: '9780375842207',
+    })
+    .then(res => console.log(`book thief: ${res.data}`))
+
+  axios
+    .post(`${BASE_URL}/books?json=true`, {
+      title: 'Sapiens: A Brief History of Humankind',
+      author: 'Yuval Noah Harari',
+      isbn: '9780062316097',
+    })
+    .then(res => console.log(`sapiens: ${res.data}`))
 }
 
 main().catch(err => console.log(err.data.message ? err.data.message : err))

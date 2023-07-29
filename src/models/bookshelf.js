@@ -83,15 +83,12 @@ class Bookshelf {
     this.subscribers.splice(index, 1)
   }
 
-  addBook(book) {
-    if (!(book instanceof Book)) {
-      throw new Error('book must be an instance of Book')
-    }
-
+  async addBook(book) {
     if (!this.books.includes(book)) {
-      book.addToShelf(this)
+      await book.addToShelf(this)
     }
     this.books.push(book)
+    await this.save()
   }
 
   removeBook(book) {

@@ -1,0 +1,13 @@
+extends ../layout
+
+block content
+  h1 #{book.title}
+  p By #{book.author}
+  h2 Stored in:
+  if book.shelvesFoundOn.length
+    ul
+    each shelf in book.shelvesFoundOn
+      li
+        a(href='/bookshelves/' + shelf.name)= shelf.name
+  else
+    p None yet!

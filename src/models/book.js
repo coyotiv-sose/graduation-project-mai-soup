@@ -1,23 +1,34 @@
-module.exports = class Book {
-  title
-  author
-  isbn
-  shelvesFoundOn = []
-  imageUrl
+const mongoose = require('mongoose')
+const autopopulate = require('mongoose-autopopulate')
 
-  constructor({ title, author, isbn, imageUrl = '' }) {
-    if (!title) throw new Error('book must have a title')
-    if (!author) throw new Error('book must have an author')
-    if (!isbn) throw new Error('book must have an isbn')
+const bookshelfSchema = new mongoose.Schema({
+  title: {
+    type: String,
+    required: true,
+  },
+  author: {
+    type: String,
+    required: true,
+  },
+  isbn: {
+    type: String,
+    required: true,
+  },
+  imageUrl: {
+    type: String,
+  },
+  shelvesFoundOn: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Bookshelf',
+    },
+  ],
+})
 
-    this.title = title
-    this.author = author
-    this.isbn = isbn
-    this.imageUrl = imageUrl
-  }
-
-  addToShelf(shelf) {
+class Book {
+  async addToShelf(shelf) {
     this.shelvesFoundOn.push(shelf)
+    await this.save()
   }
 
   removeFromShelf(shelf) {
@@ -27,5 +38,10 @@ module.exports = class Book {
     }
 
     this.shelvesFoundOn.splice(index, 1)
+    this.save()
   }
 }
+
+bookshelfSchema.loadClass(Book)
+bookshelfSchema.plugin(autopopulate)
+module.exports = mongoose.model('Book', bookshelfSchema)
