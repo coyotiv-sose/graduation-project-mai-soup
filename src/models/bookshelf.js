@@ -32,14 +32,14 @@ const bookshelfSchema = new mongoose.Schema({
     {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
-      autopopulate: true,
+      autopopulate: { maxDepth: 2 },
     },
   ],
   books: [
     {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Book',
-      // autopopulate: true,
+      autopopulate: { maxDepth: 2 },
     },
   ],
 })
