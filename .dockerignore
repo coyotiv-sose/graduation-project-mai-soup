@@ -1,0 +1,11 @@
+node_modules
+.devcontainer
+.vscode
+architecture
+.env.example
+.eslintrc.js
+.prettierignore
+.prettierrc
+LICENSE
+README.md
+Dockerfile
