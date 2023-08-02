@@ -1,0 +1,21 @@
+services:
+  api:
+    image: api
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - '3000:3000'
+    # depends_on:
+    #   - db
+    env_file:
+      - .env
+    volumes:
+      - ./src:/app/src
+
+  mongo:
+    image: mongo
+    ports:
+      - '27017:27017'
+    volumes:
+      - ./data/db:/data/db
