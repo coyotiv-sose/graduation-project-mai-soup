@@ -17,6 +17,7 @@ router.post('/', async (req, res) => {
   const { username, email } = req.body
   const user = await User.create({ username, email })
 
+  // TODO: should be 201 Created
   res.send(user)
 })
 
