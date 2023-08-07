@@ -10,7 +10,8 @@
     "index": "node src/index.js",
     "eslint:check": "npx eslint .",
     "eslint:fix": "npx eslint --fix .",
-    "test": "jest --forceExit"
+    "test": "jest --forceExit",
+    "test:watch": "jest --watchAll --coverage"
   },
   "devDependencies": {
     "eslint": "^8.19.0",
