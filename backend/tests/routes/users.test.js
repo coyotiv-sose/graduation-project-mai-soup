@@ -12,3 +12,19 @@ it('should sign up a new user', async () => {
   expect(response.status).toBe(200)
   expect(response.body).toMatchObject(user)
 })
+
+it('should get all users', async () => {
+  const user = await User.create({
+    username: 'maijs',
+    email: 'beepboop@gmail.com',
+  })
+  const response = await request(app).get('/users?json=true')
+
+  expect(response.status).toBe(200)
+  expect(response.body.users).toContainEqual(
+    expect.objectContaining({
+      username: user.username,
+      email: user.email,
+    })
+  )
+})
