@@ -2,14 +2,14 @@ services:
   api:
     image: api
     build:
-      context: .
+      context: ./backend
       dockerfile: Dockerfile
     ports:
       - '3000:3000'
     env_file:
-      - .env
+      - ./backend/.env
     volumes:
-      - ./src:/app/src
+      - ./backend/src:/app/src
 
   mongo:
     image: mongo
