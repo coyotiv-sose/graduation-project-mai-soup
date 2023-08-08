@@ -1,4 +1,6 @@
 const express = require('express')
+const mongoose = require('mongoose')
+
 const router = express.Router()
 
 /* GET home page. */
@@ -7,7 +9,7 @@ router.get('/', function (req, res, next) {
 })
 
 router.get('/danger', async (req, res) => {
-  await require('mongoose').connection.db.dropDatabase()
+  await mongoose.connection.db.dropDatabase()
   res.send('danger executed')
 })
 

@@ -45,9 +45,7 @@ newLine(2)
 console.log("britt can subscribe to mai's shelf")
 britt.subscribeToShelf(maiShelf)
 console.log(`mai's shelf has ${maiShelf.subscribers.length} subscribers`)
-console.log(
-  `britt is subscribed to ${britt.subscribedBookshelves.length} shelves`
-)
+console.log(`britt is subscribed to ${britt.subscribedBookshelves.length} shelves`)
 console.log(`the subscribers of mai's shelf are:
 ${maiShelf.subscribers.map(u => u.username).join('\n')}`)
 
@@ -58,15 +56,11 @@ maiShelf.removeBook(book)
 console.log(`mai's shelf has ${maiShelf.books.length} books`)
 console.log(`the books on mai's shelf are:
 ${maiShelf.books.map(b => b.title).join('\n') || 'none'}`)
-console.log(
-  `the shelf britt is subscribed to has ${maiShelf.books.length} books (it's the same shelf!)`
-)
+console.log(`the shelf britt is subscribed to has ${maiShelf.books.length} books (it's the same shelf!)`)
 
 newLine(2)
 
-console.log(
-  "mai and britt can add multiple books to the shelf they're subscribed to"
-)
+console.log("mai and britt can add multiple books to the shelf they're subscribed to")
 const book2 = new Book({
   title: 'A Promised Land',
   author: 'Barack Obama',
@@ -102,9 +96,7 @@ console.log('britt can unsubscribe from mai shelf')
 newLine()
 britt.unsubscribeFromShelf(maiShelf)
 console.log(`mai's shelf has ${maiShelf.subscribers.length} subscribers`)
-console.log(
-  `britt is subscribed to ${britt.subscribedBookshelves.length} shelves`
-)
+console.log(`britt is subscribed to ${britt.subscribedBookshelves.length} shelves`)
 console.log(`the subscribers of mai's shelf are:
 ${maiShelf.subscribers.map(u => u.username).join('\n')}`)
 
