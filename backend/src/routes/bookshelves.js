@@ -1,10 +1,12 @@
 const express = require('express')
+
 const router = express.Router()
 const Bookshelf = require('../models/bookshelf')
 
 router.get('/:id', (req, res) => {
   // decode URI component for each param
   // since name can contain spaces, etc.
+  // TODO: that's not how you do it, fix
   Object.keys(req.params).forEach(p => {
     req.params.p = decodeURIComponent(req.params.p)
   })

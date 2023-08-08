@@ -1,6 +1,6 @@
-const Bookshelf = require('./bookshelf')
 const mongoose = require('mongoose')
 const autopopulate = require('mongoose-autopopulate')
+const Bookshelf = require('./bookshelf')
 
 const userSchema = new mongoose.Schema({
   username: {

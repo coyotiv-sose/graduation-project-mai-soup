@@ -1,4 +1,3 @@
-const Book = require('./book')
 const mongoose = require('mongoose')
 const autopopulate = require('mongoose-autopopulate')
 
@@ -97,7 +96,7 @@ class Bookshelf {
       throw new Error('book is not in this bookshelf')
     }
     const copies = this.books.filter(b => b.isbn === book.isbn)
-    if (copies.length == 1) {
+    if (copies.length === 1) {
       book.removeFromShelf(this)
     }
     this.books.splice(index, 1)

@@ -1,9 +1,10 @@
 const express = require('express')
+
 const router = express.Router()
 const User = require('../models/user')
 
 /* GET users listing. */
-router.get('/', async (req, res, next) => {
+router.get('/', async (req, res) => {
   const allUsers = await User.find()
 
   if (req.query.json) {
@@ -45,7 +46,7 @@ router.post('/:username/ownedShelves', async (req, res) => {
 
   const { name, latitude, longitude } = req.body
   const shelf = await user.createShelf({ name, latitude, longitude })
-  res.send({ shelf })
+  return res.send({ shelf })
 })
 
 module.exports = router
