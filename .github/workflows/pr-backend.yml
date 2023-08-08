@@ -1,0 +1,27 @@
+name: 'Run backend tests on PR'
+
+on:
+  pull_request:
+    paths:
+      - 'backend/**'
+
+jobs:
+  check-run-tests:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./backend
+    steps:
+      - name: Checkout
+        uses: actions/checkout@master
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '20.3'
+      - name: Install dependencies
+        run: npm install
+      - name: Check ESLint
+        run: npm run eslint:check
+      - name: Run tests
+        env:
+          MONGODB_CONNECTION_STRING: ${{ secrets.MONGODB_CONNECTION_STRING }}
+        run: npm run test
