@@ -43,6 +43,7 @@ const bookshelfSchema = new mongoose.Schema({
   ],
 })
 
+// eslint-disable-next-line func-names
 bookshelfSchema.pre('save', async function (next) {
   await this.setOwner(this.owner)
   next()
