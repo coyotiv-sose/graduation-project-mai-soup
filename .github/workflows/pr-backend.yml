@@ -23,5 +23,5 @@ jobs:
         run: npm run eslint:check
       - name: Run tests
         env:
-          MONGO_URI: ${{ secrets.MONGODB_CONNECTION_STRING }}
+          MONGO_URI: ${{ secrets.MONGO_URI }}
         run: npm run test
