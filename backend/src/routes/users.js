@@ -7,11 +7,7 @@ const User = require('../models/user')
 router.get('/', async (req, res) => {
   const allUsers = await User.find()
 
-  if (req.query.json) {
-    return res.send({ users: allUsers })
-  }
-
-  return res.render('users/users', { users: allUsers })
+  return res.send({ users: allUsers })
 })
 
 router.post('/', async (req, res) => {
@@ -29,11 +25,7 @@ router.get('/:username', async (req, res) => {
     return res.status(404).send('User not found')
   }
 
-  if (req.query.json) {
-    return res.send(user)
-  }
-
-  return res.render('users/user', { user })
+  return res.send(user)
 })
 
 router.post('/:username/ownedShelves', async (req, res) => {
@@ -46,6 +38,7 @@ router.post('/:username/ownedShelves', async (req, res) => {
 
   const { name, latitude, longitude } = req.body
   const shelf = await user.createShelf({ name, latitude, longitude })
+  // TODO: should be 201 Created
   return res.send({ shelf })
 })
 

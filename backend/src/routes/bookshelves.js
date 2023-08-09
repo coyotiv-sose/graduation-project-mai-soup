@@ -21,13 +21,7 @@ router.get('/:id', (req, res) => {
   }
   console.log(subscribers)
 
-  if (req.query.json) {
-    return res.send({ ...shelf, owner, subscribers })
-  }
-
-  return res.render('bookshelves/bookshelf', {
-    shelf: { ...shelf, owner, subscribers },
-  })
+  return res.send({ ...shelf, owner, subscribers })
 })
 
 module.exports = router
