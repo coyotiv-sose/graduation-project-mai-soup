@@ -20,8 +20,7 @@ router.post('/', async (req, res) => {
 
   await book.save()
 
-  // TODO: 201 Created
-  return res.send(book)
+  return res.status(201).send(book)
 })
 
 module.exports = router

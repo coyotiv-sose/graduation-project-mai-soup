@@ -14,8 +14,7 @@ router.post('/', async (req, res) => {
   const { username, email } = req.body
   const user = await User.create({ username, email })
 
-  // TODO: should be 201 Created
-  res.send(user)
+  res.status(201).send(user)
 })
 
 router.get('/:username', async (req, res) => {
@@ -38,8 +37,8 @@ router.post('/:username/ownedShelves', async (req, res) => {
 
   const { name, latitude, longitude } = req.body
   const shelf = await user.createShelf({ name, latitude, longitude })
-  // TODO: should be 201 Created
-  return res.send({ shelf })
+
+  return res.status(201).send({ shelf })
 })
 
 module.exports = router
