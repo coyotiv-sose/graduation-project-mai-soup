@@ -11,11 +11,7 @@ router.get('/:isbn', (req, res) => {
     return res.status(404).send('Book not found')
   }
 
-  if (req.query.json) {
-    return res.send(book)
-  }
-
-  return res.render('books/book', { book })
+  return res.send(book)
 })
 
 router.post('/', async (req, res) => {
@@ -24,11 +20,8 @@ router.post('/', async (req, res) => {
 
   await book.save()
 
-  if (req.query.json) {
-    return res.send(book)
-  }
-
-  return res.redirect(`/books/${isbn}`)
+  // TODO: 201 Created
+  return res.send(book)
 })
 
 module.exports = router
