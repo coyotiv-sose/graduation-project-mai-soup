@@ -3,11 +3,18 @@ const express = require('express')
 const router = express.Router()
 const User = require('../models/user')
 
-/* GET users listing. */
 router.get('/', async (req, res) => {
-  const allUsers = await User.find()
-
-  return res.send(allUsers)
+  try {
+    const allUsers = await User.find()
+    return res.send(allUsers)
+  } catch (error) {
+    console.error(error)
+    return res
+      .status(500)
+      .send(
+        'An error occurred while retrieving user information. Please try again later.'
+      )
+  }
 })
 
 router.post('/', async (req, res) => {
@@ -34,12 +41,23 @@ router.post('/', async (req, res) => {
 
 router.get('/:username', async (req, res) => {
   const { username } = req.params
-  const user = await User.findOne({ username })
-  if (!user) {
-    return res.status(404).send('User not found')
-  }
 
-  return res.send(user)
+  try {
+    const user = await User.findOne({ username })
+
+    if (!user) {
+      return res.status(404).send('User not found')
+    }
+
+    return res.send(user)
+  } catch (error) {
+    console.error(error)
+    return res
+      .status(500)
+      .send(
+        'An error occurred while retrieving the user. Please try again later.'
+      )
+  }
 })
 
 router.post('/:username/ownedLibraries', async (req, res) => {
