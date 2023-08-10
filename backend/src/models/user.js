@@ -10,12 +10,13 @@ const userSchema = new mongoose.Schema({
     maxlength: 24,
     match: /^[a-zA-Z0-9_-]+$/,
     // TODO: make uniqueness case-insensitive
-    // unique: true,
+    unique: true,
   },
   email: {
     // TODO: validate email
     type: String,
     required: true,
+    unique: true,
   },
   dateCreated: {
     type: Date,
