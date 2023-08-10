@@ -13,7 +13,7 @@ const bookshelfSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
     required: true,
-    autopopulate: true,
+    autopopulate: { maxDepth: 1 },
   },
   latitude: {
     type: Number,
@@ -31,14 +31,14 @@ const bookshelfSchema = new mongoose.Schema({
     {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
-      autopopulate: { maxDepth: 2 },
+      autopopulate: { maxDepth: 1 },
     },
   ],
   books: [
     {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Book',
-      autopopulate: { maxDepth: 2 },
+      autopopulate: { maxDepth: 1 },
     },
   ],
 })
