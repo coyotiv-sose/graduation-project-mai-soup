@@ -54,5 +54,5 @@ main
   h2 Signed up users
   ul
     li(v-for='user in users', :key='user._id')
-      | {{ user.username }}
+      | <RouterLink :to="{ name: 'user', params: { username: user.username } }">{{ user.username }}</RouterLink>
 </template>
