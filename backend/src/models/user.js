@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 const autopopulate = require('mongoose-autopopulate')
-const Bookshelf = require('./bookshelf')
+const Library = require('./library')
 
 const userSchema = new mongoose.Schema({
   username: {
@@ -21,43 +21,43 @@ const userSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
-  subscribedBookshelves: [
+  memberships: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Bookshelf',
+      ref: 'Library',
       autopopulate: { maxDepth: 2 },
     },
   ],
 })
 
 class User {
-  async createShelf({ name, latitude, longitude }) {
-    const newShelf = await Bookshelf.create({
+  async createLibrary({ name, latitude, longitude }) {
+    const newLibrary = await Library.create({
       name,
       owner: this,
       latitude,
       longitude,
     })
 
-    this.subscribedBookshelves.push(newShelf)
+    this.memberships.push(newLibrary)
     await this.save()
-    await newShelf.save()
-    return newShelf
+    await newLibrary.save()
+    return newLibrary
   }
 
-  async subscribeToShelf(shelf) {
-    this.subscribedBookshelves.push(shelf)
+  async joinLibrary(library) {
+    this.memberships.push(library)
     await this.save()
-    await shelf.addSubscriber(this)
+    await library.addSubscriber(this)
   }
 
-  unsubscribeFromShelf(shelf) {
-    const shelfIndex = this.subscribedBookshelves.indexOf(shelf)
-    if (shelfIndex === -1) {
-      throw new Error('user is not subscribed to this bookshelf')
+  leaveLibrary(library) {
+    const libraryIndex = this.memberships.indexOf(library)
+    if (libraryIndex === -1) {
+      throw new Error('user is not member of this library')
     }
-    this.subscribedBookshelves.splice(shelfIndex, 1)
-    shelf.removeSubscriber(this)
+    this.memberships.splice(libraryIndex, 1)
+    library.removeMember(this)
   }
 }
 

@@ -27,7 +27,7 @@ router.get('/:username', async (req, res) => {
   return res.send(user)
 })
 
-router.post('/:username/ownedShelves', async (req, res) => {
+router.post('/:username/ownedLibraries', async (req, res) => {
   const { username } = req.params
   const user = await User.findOne({ username })
 
@@ -36,9 +36,9 @@ router.post('/:username/ownedShelves', async (req, res) => {
   }
 
   const { name, latitude, longitude } = req.body
-  const shelf = await user.createShelf({ name, latitude, longitude })
+  const library = await user.createLibrary({ name, latitude, longitude })
 
-  return res.status(201).send({ shelf })
+  return res.status(201).send({ library })
 })
 
 module.exports = router
