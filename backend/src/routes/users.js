@@ -7,7 +7,7 @@ const User = require('../models/user')
 router.get('/', async (req, res) => {
   const allUsers = await User.find()
 
-  return res.send({ users: allUsers })
+  return res.send(allUsers)
 })
 
 router.post('/', async (req, res) => {
@@ -38,7 +38,7 @@ router.post('/:username/ownedLibraries', async (req, res) => {
   const { name, latitude, longitude } = req.body
   const library = await user.createLibrary({ name, latitude, longitude })
 
-  return res.status(201).send({ library })
+  return res.status(201).send(library)
 })
 
 module.exports = router

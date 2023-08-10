@@ -29,10 +29,11 @@ export default {
     }
   },
   async mounted() {
-    // TODO: probably makes more sense to send users directly
-    // instead of wrapping them in an object
-    const { data: userData } = await axios.get('http://localhost:3000/users')
-    this.users = userData.users
+    try {
+      this.users = (await axios.get('http://localhost:3000/users')).data
+    } catch (error) {
+      // TODO: handle error
+    }
   }
 }
 </script>
