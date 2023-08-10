@@ -9,7 +9,7 @@ it('should sign up a new user', async () => {
   }
   const response = await request(app).post('/users').send(user)
 
-  expect(response.status).toBe(200)
+  expect(response.status).toBe(201)
   expect(response.body).toMatchObject(user)
 })
 
@@ -21,7 +21,7 @@ it('should get all users', async () => {
   const response = await request(app).get('/users?json=true')
 
   expect(response.status).toBe(200)
-  expect(response.body.users).toContainEqual(
+  expect(response.body).toContainEqual(
     expect.objectContaining({
       username: user.username,
       email: user.email,
