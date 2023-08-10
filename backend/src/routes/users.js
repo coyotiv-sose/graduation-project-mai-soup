@@ -44,14 +44,38 @@ router.get('/:username', async (req, res) => {
 
 router.post('/:username/ownedLibraries', async (req, res) => {
   const { username } = req.params
-  const user = await User.findOne({ username })
+  let user
+
+  try {
+    user = await User.findOne({ username })
+  } catch (err) {
+    console.error(err)
+    return res
+      .status(500)
+      .send(
+        'An error occurred while retrieving the user information. Please try again later.'
+      )
+  }
 
   if (!user) {
     return res.status(404).send('User not found')
   }
 
   const { name, latitude, longitude } = req.body
-  const library = await user.createLibrary({ name, latitude, longitude })
+
+  // can't check for !name || !latitude || !longitude because latitude and longitude can be 0
+  if (!name || latitude === undefined || longitude === undefined) {
+    return res.status(400).send('Name, latitude, and longitude are required')
+  }
+
+  let library
+
+  try {
+    library = await user.createLibrary({ name, latitude, longitude })
+  } catch (error) {
+    console.error(error)
+    return res.status(500).send('An error occurred while creating the library')
+  }
 
   return res.status(201).send(library)
 })
