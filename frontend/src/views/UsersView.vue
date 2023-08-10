@@ -17,7 +17,7 @@ export default {
           email: this.email
         })
 
-        // clear the input fields - DOES NOT WORK
+        // clear the input fields
         this.username = ''
         this.email = ''
 
