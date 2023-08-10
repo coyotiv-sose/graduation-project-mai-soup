@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 const autopopulate = require('mongoose-autopopulate')
 
-const bookshelfSchema = new mongoose.Schema({
+const bookSchema = new mongoose.Schema({
   title: {
     type: String,
     required: true,
@@ -17,31 +17,31 @@ const bookshelfSchema = new mongoose.Schema({
   imageUrl: {
     type: String,
   },
-  shelvesFoundOn: [
+  librariesFoundIn: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Bookshelf',
+      ref: 'Library',
     },
   ],
 })
 
 class Book {
-  async addToShelf(shelf) {
-    this.shelvesFoundOn.push(shelf)
+  async addToLibrary(library) {
+    this.librariesFoundIn.push(library)
     await this.save()
   }
 
-  removeFromShelf(shelf) {
-    const index = this.shelvesFoundOn.indexOf(shelf)
+  removeFromlibrary(library) {
+    const index = this.librariesFoundIn.indexOf(library)
     if (index === -1) {
-      throw new Error('book is not in this bookshelf')
+      throw new Error('book is not in this library')
     }
 
-    this.shelvesFoundOn.splice(index, 1)
+    this.librariesFoundIn.splice(index, 1)
     this.save()
   }
 }
 
-bookshelfSchema.loadClass(Book)
-bookshelfSchema.plugin(autopopulate)
-module.exports = mongoose.model('Book', bookshelfSchema)
+bookSchema.loadClass(Book)
+bookSchema.plugin(autopopulate)
+module.exports = mongoose.model('Book', bookSchema)

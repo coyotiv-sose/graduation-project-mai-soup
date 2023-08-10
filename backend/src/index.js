@@ -17,8 +17,8 @@ async function main() {
   console.log('users:')
   console.log(data)
 
-  await axios.post(`${BASE_URL}/users/maijs/ownedShelves`, {
-    name: 'mai shelf',
+  await axios.post(`${BASE_URL}/users/maijs/ownedLibraries`, {
+    name: 'mai library',
     latitude: 0,
     longitude: 0,
   })

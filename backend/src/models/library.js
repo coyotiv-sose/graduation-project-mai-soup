@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 const autopopulate = require('mongoose-autopopulate')
 
-const bookshelfSchema = new mongoose.Schema({
+const librarySchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
@@ -27,7 +27,7 @@ const bookshelfSchema = new mongoose.Schema({
     min: -180,
     max: 180,
   },
-  subscribers: [
+  members: [
     {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
@@ -44,21 +44,21 @@ const bookshelfSchema = new mongoose.Schema({
 })
 
 // eslint-disable-next-line func-names
-bookshelfSchema.pre('save', async function (next) {
+librarySchema.pre('save', async function (next) {
   await this.setOwner(this.owner)
   next()
 })
 
 // TODO: only owner can change name
-class Bookshelf {
+class Library {
   async setOwner(newOwner) {
     // TODO: check that owner isn't suspended
 
     // subscribe new owner if owner has changed or document is new
     if (this.isModified('owner') || this.isNew) {
-      if (!newOwner.subscribedBookshelves.includes(this)) {
+      if (!newOwner.memberships.includes(this)) {
         // subscribe new owner
-        this.subscribers.push(newOwner)
+        this.members.push(newOwner)
       }
     }
   }
@@ -67,20 +67,20 @@ class Bookshelf {
     return [this.longitude, this.latitude]
   }
 
-  async addSubscriber(user) {
-    if (this.subscribers.includes(user)) return
+  async addMember(user) {
+    if (this.members.includes(user)) return
 
-    this.subscribers.push(user)
+    this.members.push(user)
     await this.save()
   }
 
-  removeSubscriber(user) {
-    const index = this.subscribers.indexOf(user)
+  removeMember(user) {
+    const index = this.members.indexOf(user)
     if (index === -1) {
-      throw new Error('user is not subscribed to this bookshelf')
+      throw new Error('user is not a member of this library')
     }
 
-    this.subscribers.splice(index, 1)
+    this.members.splice(index, 1)
   }
 
   async addBook(book) {
@@ -94,7 +94,7 @@ class Bookshelf {
   removeBook(book) {
     const index = this.books.indexOf(book)
     if (index === -1) {
-      throw new Error('book is not in this bookshelf')
+      throw new Error('book is not in this library')
     }
     const copies = this.books.filter(b => b.isbn === book.isbn)
     if (copies.length === 1) {
@@ -104,7 +104,7 @@ class Bookshelf {
   }
 }
 
-bookshelfSchema.loadClass(Bookshelf)
-bookshelfSchema.plugin(autopopulate)
+librarySchema.loadClass(Library)
+librarySchema.plugin(autopopulate)
 
-module.exports = mongoose.model('Bookshelf', bookshelfSchema)
+module.exports = mongoose.model('Library', librarySchema)

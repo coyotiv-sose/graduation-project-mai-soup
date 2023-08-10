@@ -8,7 +8,7 @@ require('./database-connection')
 
 const indexRouter = require('./routes/index')
 const usersRouter = require('./routes/users')
-const bookshelvesRouter = require('./routes/bookshelves')
+const librariesRouter = require('./routes/libraries')
 const booksRouter = require('./routes/books')
 
 const app = express()
@@ -27,7 +27,7 @@ app.use(express.static(path.join(__dirname, 'public')))
 
 app.use('/', indexRouter)
 app.use('/users', usersRouter)
-app.use('/bookshelves', bookshelvesRouter)
+app.use('/libraries', librariesRouter)
 app.use('/books', booksRouter)
 
 // catch 404 and forward to error handler
