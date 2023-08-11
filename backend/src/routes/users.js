@@ -35,7 +35,9 @@ router.post('/', async (req, res) => {
 
     // other errors
     console.error(error)
-    res.status(500).json({ error: 'Server error' })
+    res.status(500).json({
+      error: 'An error occured while adding the user. Please try again later.',
+    })
   }
 })
 
@@ -92,7 +94,11 @@ router.post('/:username/ownedLibraries', async (req, res) => {
     library = await user.createLibrary({ name, latitude, longitude })
   } catch (error) {
     console.error(error)
-    return res.status(500).send('An error occurred while creating the library')
+    return res
+      .status(500)
+      .send(
+        'An error occurred while creating the library. Please try again later.'
+      )
   }
 
   return res.status(201).send(library)
