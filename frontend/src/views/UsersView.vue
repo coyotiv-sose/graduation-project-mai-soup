@@ -6,7 +6,8 @@ export default {
     return {
       users: [],
       username: '',
-      email: ''
+      email: '',
+      error: ''
     }
   },
   methods: {
@@ -22,9 +23,17 @@ export default {
         this.email = ''
 
         this.users.push(userData)
+
+        this.error = ''
       } catch (error) {
-        // TODO: handle error
-        console.error('error creating user:', error)
+        if (error.response) {
+          // The request was made and the server responded with a status code
+          // that falls out of the range of 2xx
+          this.error = error.response.data.message
+        } else {
+          // Something happened in setting up the request that triggered an Error
+          this.error = error.message
+        }
       }
     }
   },
@@ -50,6 +59,7 @@ main
     div
       label(for="email") Email:
       input(type="email" id="email" v-model="email" required)
+    p.error(v-if="error") {{ error }}
     button(type="submit") Submit
 
   h2 Signed up users
@@ -57,3 +67,9 @@ main
     li(v-for='user in users', :key='user._id')
       | <RouterLink :to="{ name: 'user', params: { username: user.username } }">{{ user.username }}</RouterLink>
 </template>
+
+<style lang="scss">
+.error {
+  color: red;
+}
+</style>
