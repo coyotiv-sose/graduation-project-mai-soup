@@ -137,6 +137,18 @@ it('should handle server errors when getting a user by username', async () => {
   expect(response.status).toBe(500)
 })
 
+it('should return a 404 when getting a user by username that does not exist', async () => {
+  let username = chance.word({ length: 5 })
+
+  // make sure the username does not exist
+  while (await User.exists({ username })) {
+    username = chance.word({ length: 5 })
+  }
+
+  const response = await request(app).get(`/users/${username}`)
+  expect(response.status).toBe(404)
+})
+
 // restore the original behavior of User.find
 afterEach(() => {
   jest.restoreAllMocks()
