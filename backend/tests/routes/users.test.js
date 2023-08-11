@@ -4,6 +4,11 @@ const User = require('../../src/models/user')
 const Library = require('../../src/models/library')
 const app = require('../../src/app')
 
+// restore the original behavior of mocked functions
+afterEach(() => {
+  jest.restoreAllMocks()
+})
+
 it('should sign up a new user', async () => {
   const user = {
     username: 'maijs',
@@ -212,9 +217,4 @@ it('should handle server errors when creating a library for a user', async () =>
     .post(`/users/${user.username}/ownedLibraries`)
     .send(library)
   expect(response2.status).toBe(500)
-})
-
-// restore the original behavior of User.find
-afterEach(() => {
-  jest.restoreAllMocks()
 })
