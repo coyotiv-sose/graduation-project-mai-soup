@@ -118,7 +118,7 @@ it('should handle duplicate isbn', async () => {
   expect(response.status).toBe(409)
 })
 
-it('should handle server error', async () => {
+it('should handle server error when creating a book', async () => {
   jest.spyOn(Book, 'create').mockImplementationOnce(() => {
     throw new Error('error')
   })
@@ -156,4 +156,19 @@ it('should handle book not found', async () => {
 
   const response = await request(app).get(`/books/${isbn}`)
   expect(response.status).toBe(404)
+})
+
+it('should handle server error when getting a book', async () => {
+  jest.spyOn(Book, 'findOne').mockImplementationOnce(() => {
+    throw new Error('error')
+  })
+
+  const book = {
+    title: chance.sentence(),
+    author: chance.name(),
+    isbn: generateISBN(),
+  }
+
+  const response = await request(app).get(`/books/${book.isbn}`)
+  expect(response.status).toBe(500)
 })
