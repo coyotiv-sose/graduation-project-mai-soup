@@ -99,3 +99,12 @@ it('should get all users', async () => {
     })
   )
 })
+
+it('should handle server errors when getting all users', async () => {
+  jest.spyOn(User, 'find').mockImplementationOnce(() => {
+    throw new Error('error')
+  })
+
+  const response = await request(app).get('/users')
+  expect(response.status).toBe(500)
+})
