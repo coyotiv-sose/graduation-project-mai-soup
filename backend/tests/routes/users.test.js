@@ -302,3 +302,5 @@ it('should return a 400 when trying to create a library with an empty or no name
     .send(library2)
   expect(response2.status).toBe(400)
 })
+
+// TODO: test with invalid params
