@@ -44,3 +44,24 @@ it('should handle server errors when listing libraries', async () => {
   const response = await request(app).get('/libraries')
   expect(response.status).toBe(500)
 })
+
+it('should get a library by id', async () => {
+  const owner = await User.create({
+    username: chance.word({ length: 5 }),
+    email: chance.email(),
+  })
+
+  const library = await owner.createLibrary({
+    name: chance.word({ length: 25 }),
+    longitude: chance.longitude(),
+    latitude: chance.latitude(),
+  })
+
+  const response = await request(app).get(`/libraries/${library._id}`)
+  expect(response.status).toBe(200)
+  expect(response.body).toMatchObject({
+    name: library.name,
+    longitude: library.longitude,
+    latitude: library.latitude,
+  })
+})
