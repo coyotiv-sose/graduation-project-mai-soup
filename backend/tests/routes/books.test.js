@@ -147,3 +147,13 @@ it('should get a book by isbn', async () => {
   expect(response.status).toBe(200)
   expect(response.body).toMatchObject(book)
 })
+
+it('should handle book not found', async () => {
+  let isbn = generateISBN()
+  while (await Book.exists({ isbn })) {
+    isbn = generateISBN()
+  }
+
+  const response = await request(app).get(`/books/${isbn}`)
+  expect(response.status).toBe(404)
+})
