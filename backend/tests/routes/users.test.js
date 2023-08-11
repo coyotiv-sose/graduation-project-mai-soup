@@ -1,6 +1,7 @@
 const request = require('supertest')
 const chance = require('chance').Chance()
 const User = require('../../src/models/user')
+const Library = require('../../src/models/library')
 const app = require('../../src/app')
 
 it('should sign up a new user', async () => {
@@ -180,6 +181,37 @@ it('should create a valid library for a user', async () => {
     .send(library)
   expect(response.status).toBe(201)
   expect(response.body).toMatchObject(library)
+})
+
+it('should handle server errors when creating a library for a user', async () => {
+  jest.spyOn(User, 'findOne').mockImplementationOnce(() => {
+    throw new Error('error')
+  })
+
+  const user = await User.create({
+    username: chance.word({ length: 5 }),
+    email: chance.email(),
+  })
+
+  const library = {
+    name: chance.word({ length: 5 }),
+    latitude: chance.latitude(),
+    longitude: chance.longitude(),
+  }
+
+  const response1 = await request(app)
+    .post(`/users/${user.username}/ownedLibraries`)
+    .send(library)
+  expect(response1.status).toBe(500)
+
+  jest.spyOn(Library, 'create').mockImplementationOnce(() => {
+    throw new Error('error')
+  })
+
+  const response2 = await request(app)
+    .post(`/users/${user.username}/ownedLibraries`)
+    .send(library)
+  expect(response2.status).toBe(500)
 })
 
 // restore the original behavior of User.find
