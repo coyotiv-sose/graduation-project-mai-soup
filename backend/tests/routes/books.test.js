@@ -117,3 +117,18 @@ it('should handle duplicate isbn', async () => {
   const response = await request(app).post('/books').send(book2)
   expect(response.status).toBe(409)
 })
+
+it('should handle server error', async () => {
+  jest.spyOn(Book, 'create').mockImplementationOnce(() => {
+    throw new Error('error')
+  })
+
+  const book = {
+    title: chance.sentence(),
+    author: chance.name(),
+    isbn: generateISBN(),
+  }
+
+  const response = await request(app).post('/books').send(book)
+  expect(response.status).toBe(500)
+})
