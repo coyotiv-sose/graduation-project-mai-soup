@@ -123,6 +123,20 @@ it('should get a user by username', async () => {
   })
 })
 
+it('should handle server errors when getting a user by username', async () => {
+  jest.spyOn(User, 'findOne').mockImplementationOnce(() => {
+    throw new Error('error')
+  })
+
+  const user = await User.create({
+    username: chance.word({ length: 5 }),
+    email: chance.email(),
+  })
+
+  const response = await request(app).get(`/users/${user.username}`)
+  expect(response.status).toBe(500)
+})
+
 // restore the original behavior of User.find
 afterEach(() => {
   jest.restoreAllMocks()
