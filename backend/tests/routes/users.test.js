@@ -13,9 +13,25 @@ it('should sign up a new user', async () => {
   expect(response.body).toMatchObject(user)
 })
 
+it('should not sign up a new user with an existing username', async () => {
+  const user = {
+    username: 'abc',
+    email: 'abc@example.com',
+  }
+  await request(app).post('/users').send(user)
+
+  const user2 = {
+    username: 'abc',
+    email: 'def@example.com',
+  }
+
+  const response = await request(app).post('/users').send(user2)
+  expect(response.status).toBe(409)
+})
+
 it('should get all users', async () => {
   const user = await User.create({
-    username: 'maijs',
+    username: 'beeper',
     email: 'beepboop@gmail.com',
   })
   const response = await request(app).get('/users?json=true')
