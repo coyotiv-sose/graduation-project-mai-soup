@@ -3,11 +3,11 @@ const express = require('express')
 const router = express.Router()
 const Book = require('../models/book')
 
-router.get('/:isbn', (req, res) => {
+router.get('/:isbn', async (req, res) => {
   const { isbn } = req.params
 
   try {
-    const book = Book.findOne({ isbn })
+    const book = await Book.findOne({ isbn })
 
     if (!book) {
       return res.status(404).json({

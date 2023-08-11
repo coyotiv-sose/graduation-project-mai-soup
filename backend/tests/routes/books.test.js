@@ -132,3 +132,18 @@ it('should handle server error', async () => {
   const response = await request(app).post('/books').send(book)
   expect(response.status).toBe(500)
 })
+
+it('should get a book by isbn', async () => {
+  const book = {
+    title: chance.sentence(),
+    author: chance.name(),
+    isbn: generateISBN(),
+  }
+
+  await Book.create(book)
+
+  const response = await request(app).get(`/books/${book.isbn}`)
+  console.log(response.body)
+  expect(response.status).toBe(200)
+  expect(response.body).toMatchObject(book)
+})
