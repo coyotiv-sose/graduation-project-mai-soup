@@ -122,3 +122,8 @@ it('should get a user by username', async () => {
     email: user.email,
   })
 })
+
+// restore the original behavior of User.find
+afterEach(() => {
+  jest.restoreAllMocks()
+})
