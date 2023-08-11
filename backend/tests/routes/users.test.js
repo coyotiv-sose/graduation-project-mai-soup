@@ -274,3 +274,31 @@ it('should return a 400 when trying to create a library with invalid location', 
     .send(library3)
   expect(response3.status).toBe(400)
 })
+
+it('should return a 400 when trying to create a library with an empty or no name', async () => {
+  const user = await User.create({
+    username: chance.word({ length: 5 }),
+    email: chance.email(),
+  })
+
+  const library = {
+    name: '',
+    latitude: chance.latitude(),
+    longitude: chance.longitude(),
+  }
+
+  const response = await request(app)
+    .post(`/users/${user.username}/ownedLibraries`)
+    .send(library)
+  expect(response.status).toBe(400)
+
+  const library2 = {
+    latitude: chance.latitude(),
+    longitude: chance.longitude(),
+  }
+
+  const response2 = await request(app)
+    .post(`/users/${user.username}/ownedLibraries`)
+    .send(library2)
+  expect(response2.status).toBe(400)
+})
