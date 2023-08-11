@@ -21,7 +21,10 @@ module.exports = {
     'import/newline-after-import': ['error', { count: 1 }],
     'no-unused-vars': ['warn'],
     'prefer-template': ['warn'],
-    'class-methods-use-this': ['warn', { exceptMethods: ['profile'], enforceForClassFields: true }],
+    'class-methods-use-this': [
+      'warn',
+      { exceptMethods: ['profile'], enforceForClassFields: true },
+    ],
     'func-names': ['warn', 'as-needed'],
     'prefer-const': ['warn'],
     'prettier/prettier': [
@@ -29,7 +32,7 @@ module.exports = {
       {
         singleQuote: true,
         arrowParens: 'avoid',
-        printWidth: 120,
+        printWidth: 80,
         semi: false,
         trailingComma: 'es5',
         tabWidth: 2,
