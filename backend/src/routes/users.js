@@ -9,11 +9,7 @@ router.get('/', async (req, res) => {
     return res.send(allUsers)
   } catch (error) {
     console.error(error)
-    return res
-      .status(500)
-      .send(
-        'An error occurred while retrieving user information. Please try again later.'
-      )
+    return res.status(500).send('An error occurred while retrieving user information. Please try again later.')
   }
 })
 
@@ -29,13 +25,13 @@ router.post('/', async (req, res) => {
     return res.status(201).send(user)
   } catch (err) {
     // code 11000 represents a duplicate key error in mongo
-    if (error.code === 11000) {
+    if (err.code === 11000) {
       return res.status(409).json({ error: 'Username or email already exists' })
     }
 
     // other errors
-    console.error(error)
-    res.status(500).json({
+    console.error(err)
+    return res.status(500).json({
       error: 'An error occured while adding the user. Please try again later.',
     })
   }
@@ -54,11 +50,7 @@ router.get('/:username', async (req, res) => {
     return res.send(user)
   } catch (error) {
     console.error(error)
-    return res
-      .status(500)
-      .send(
-        'An error occurred while retrieving the user. Please try again later.'
-      )
+    return res.status(500).send('An error occurred while retrieving the user. Please try again later.')
   }
 })
 
@@ -70,11 +62,7 @@ router.post('/:username/ownedLibraries', async (req, res) => {
     user = await User.findOne({ username })
   } catch (err) {
     console.error(err)
-    return res
-      .status(500)
-      .send(
-        'An error occurred while retrieving the user information. Please try again later.'
-      )
+    return res.status(500).send('An error occurred while retrieving the user information. Please try again later.')
   }
 
   if (!user) {
@@ -94,11 +82,7 @@ router.post('/:username/ownedLibraries', async (req, res) => {
     library = await user.createLibrary({ name, latitude, longitude })
   } catch (error) {
     console.error(error)
-    return res
-      .status(500)
-      .send(
-        'An error occurred while creating the library. Please try again later.'
-      )
+    return res.status(500).send('An error occurred while creating the library. Please try again later.')
   }
 
   return res.status(201).send(library)

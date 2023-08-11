@@ -16,11 +16,7 @@ router.get('/:id', async (req, res) => {
     return res.send(library)
   } catch (err) {
     console.error(err)
-    return res
-      .status(500)
-      .send(
-        'An error occurred while retrieving the library. Please try again later.'
-      )
+    return res.status(500).send('An error occurred while retrieving the library. Please try again later.')
   }
 })
 
