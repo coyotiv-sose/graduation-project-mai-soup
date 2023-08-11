@@ -2,7 +2,6 @@ const request = require('supertest')
 const chance = require('chance').Chance()
 const app = require('../../src/app')
 const Book = require('../../src/models/book')
-const e = require('express')
 
 // restore the original behavior of mocked functions
 afterEach(() => {
@@ -18,7 +17,9 @@ function generateISBN() {
 
   // Compute the check digit
   const checkDigit = isbnBase.split('').reduce((sum, digit, index) => {
-    return sum + (index % 2 === 0 ? parseInt(digit) : 3 * parseInt(digit))
+    return (
+      sum + (index % 2 === 0 ? parseInt(digit, 10) : 3 * parseInt(digit, 10))
+    )
   }, 0)
 
   // Compute the final check digit modulo 10 for ISBN-13
@@ -28,9 +29,6 @@ function generateISBN() {
 }
 
 it('should create a new book', async () => {
-  // generate valid isbn, chance doesn't offer this directly
-  const isbn = chance.string
-
   const book = {
     title: chance.sentence(),
     author: chance.name(),
@@ -149,12 +147,9 @@ it('should get a book by isbn', async () => {
 })
 
 it('should handle book not found', async () => {
-  let isbn = generateISBN()
-  while (await Book.exists({ isbn })) {
-    isbn = generateISBN()
-  }
+  jest.spyOn(Book, 'findOne').mockImplementationOnce(() => null)
 
-  const response = await request(app).get(`/books/${isbn}`)
+  const response = await request(app).get(`/books/${generateISBN()}`)
   expect(response.status).toBe(404)
 })
 
