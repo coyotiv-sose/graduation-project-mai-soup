@@ -98,3 +98,22 @@ it('should handle no or empty isbn', async () => {
   const response2 = await request(app).post('/books').send(book2)
   expect(response2.status).toBe(400)
 })
+
+it('should handle duplicate isbn', async () => {
+  const book = {
+    title: chance.sentence(),
+    author: chance.name(),
+    isbn: generateISBN(),
+  }
+
+  await Book.create(book)
+
+  const book2 = {
+    title: chance.sentence(),
+    author: chance.name(),
+    isbn: book.isbn,
+  }
+
+  const response = await request(app).post('/books').send(book2)
+  expect(response.status).toBe(409)
+})
