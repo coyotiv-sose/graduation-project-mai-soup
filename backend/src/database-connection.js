@@ -1,10 +1,7 @@
 const mongoose = require('mongoose')
 
-mongoose
-  .connect(process.env.MONGO_URI)
-  .then(() => console.log('connected to mongo'))
+const conn = mongoose.connect(process.env.MONGO_URI)
 
-// const Cat = mongoose.model('Cat', { name: String })
+conn.then(() => console.log('connected to mongo'))
 
-// const kitty = new Cat({ name: 'Zildjian' })
-// kitty.save().then(() => console.log('meow'))
+module.exports = conn
