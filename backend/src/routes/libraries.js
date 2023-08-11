@@ -25,4 +25,17 @@ router.get('/:id', async (req, res) => {
   }
 })
 
+router.get('/', async (req, res) => {
+  try {
+    const libraries = await Library.find()
+    return res.send(libraries)
+  } catch (err) {
+    console.error(err)
+    return res.status(500).json({
+      message:
+        'An error occurred while retrieving the libraries. Please try again later.',
+    })
+  }
+})
+
 module.exports = router
