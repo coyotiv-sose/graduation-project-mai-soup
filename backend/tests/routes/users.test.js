@@ -108,3 +108,17 @@ it('should handle server errors when getting all users', async () => {
   const response = await request(app).get('/users')
   expect(response.status).toBe(500)
 })
+
+it('should get a user by username', async () => {
+  const user = await User.create({
+    username: chance.word({ length: 5 }),
+    email: chance.email(),
+  })
+
+  const response = await request(app).get(`/users/${user.username}`)
+  expect(response.status).toBe(200)
+  expect(response.body).toMatchObject({
+    username: user.username,
+    email: user.email,
+  })
+})
