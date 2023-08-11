@@ -84,6 +84,20 @@ it('should not sign up a new user with an empty email', async () => {
   expect(response.status).toBe(400)
 })
 
+it('should handle server errors when signing up a new user', async () => {
+  jest.spyOn(User, 'create').mockImplementationOnce(() => {
+    throw new Error('error')
+  })
+
+  const user = {
+    username: chance.word(),
+    email: chance.email(),
+  }
+
+  const response = await request(app).post('/users').send(user)
+  expect(response.status).toBe(500)
+})
+
 it('should get all users', async () => {
   const user = await User.create({
     username: 'beeper',
