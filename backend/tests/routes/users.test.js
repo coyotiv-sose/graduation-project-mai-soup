@@ -163,6 +163,25 @@ it('should return a 404 when getting a user by username that does not exist', as
   expect(response.status).toBe(404)
 })
 
+it('should create a valid library for a user', async () => {
+  const user = await User.create({
+    username: chance.word({ length: 5 }),
+    email: chance.email(),
+  })
+
+  const library = {
+    name: chance.word({ length: 5 }),
+    latitude: chance.latitude(),
+    longitude: chance.longitude(),
+  }
+
+  const response = await request(app)
+    .post(`/users/${user.username}/ownedLibraries`)
+    .send(library)
+  expect(response.status).toBe(201)
+  expect(response.body).toMatchObject(library)
+})
+
 // restore the original behavior of User.find
 afterEach(() => {
   jest.restoreAllMocks()
