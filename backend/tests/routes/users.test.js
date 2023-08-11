@@ -1,4 +1,5 @@
 const request = require('supertest')
+const chance = require('chance').Chance()
 const User = require('../../src/models/user')
 const app = require('../../src/app')
 
@@ -43,6 +44,44 @@ it('should not sign up a new user with an existing email', async () => {
 
   const response = await request(app).post('/users').send(user2)
   expect(response.status).toBe(409)
+})
+
+it('should not sign up a new user without a username', async () => {
+  const user = {
+    email: chance.email(),
+  }
+
+  const response = await request(app).post('/users').send(user)
+  expect(response.status).toBe(400)
+})
+
+it('should not sign up a new user without an email', async () => {
+  const user = {
+    username: chance.word(),
+  }
+
+  const response = await request(app).post('/users').send(user)
+  expect(response.status).toBe(400)
+})
+
+it('should not sign up a new user with an empty username', async () => {
+  const user = {
+    username: '',
+    email: chance.email(),
+  }
+
+  const response = await request(app).post('/users').send(user)
+  expect(response.status).toBe(400)
+})
+
+it('should not sign up a new user with an empty email', async () => {
+  const user = {
+    username: chance.word(),
+    email: '',
+  }
+
+  const response = await request(app).post('/users').send(user)
+  expect(response.status).toBe(400)
 })
 
 it('should get all users', async () => {
