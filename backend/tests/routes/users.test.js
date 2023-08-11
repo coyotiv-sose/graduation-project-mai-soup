@@ -158,14 +158,11 @@ it('should handle server errors when getting a user by username', async () => {
 })
 
 it('should return a 404 when getting a user by username that does not exist', async () => {
-  let username = chance.word({ length: 5 })
+  jest.spyOn(User, 'findOne').mockImplementationOnce(() => null)
 
-  // make sure the username does not exist
-  while (await User.exists({ username })) {
-    username = chance.word({ length: 5 })
-  }
-
-  const response = await request(app).get(`/users/${username}`)
+  const response = await request(app).get(
+    `/users/${chance.word({ length: 5 })}`
+  )
   expect(response.status).toBe(404)
 })
 
@@ -220,12 +217,7 @@ it('should handle server errors when creating a library for a user', async () =>
 })
 
 it('should return a 404 when creating a library for a user that does not exist', async () => {
-  let username = chance.word({ length: 5 })
-
-  // make sure the username does not exist
-  while (await User.exists({ username })) {
-    username = chance.word({ length: 5 })
-  }
+  jest.spyOn(User, 'findOne').mockImplementationOnce(() => null)
 
   const library = {
     name: chance.word({ length: 5 }),
@@ -234,7 +226,7 @@ it('should return a 404 when creating a library for a user that does not exist',
   }
 
   const response = await request(app)
-    .post(`/users/${username}/ownedLibraries`)
+    .post(`/users/${chance.word({ length: 5 })}/ownedLibraries`)
     .send(library)
   expect(response.status).toBe(404)
 })

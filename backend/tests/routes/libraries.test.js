@@ -1,6 +1,6 @@
 const request = require('supertest')
-const app = require('../../src/app')
 const chance = require('chance').Chance()
+const app = require('../../src/app')
 const Library = require('../../src/models/library')
 const User = require('../../src/models/user')
 
@@ -57,6 +57,7 @@ it('should get a library by id', async () => {
     latitude: chance.latitude(),
   })
 
+  // eslint-disable-next-line no-underscore-dangle
   const response = await request(app).get(`/libraries/${library._id}`)
   expect(response.status).toBe(200)
   expect(response.body).toMatchObject({
