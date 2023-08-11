@@ -65,3 +65,17 @@ it('should get a library by id', async () => {
     latitude: library.latitude,
   })
 })
+
+it('should handle server errors when getting a library by id', async () => {
+  jest.spyOn(Library, 'findById').mockRejectedValue(new Error('oops'))
+
+  const response = await request(app).get(`/libraries/${chance.word()}`)
+  expect(response.status).toBe(500)
+})
+
+it('should handle not found errors when getting a library by id', async () => {
+  jest.spyOn(Library, 'findById').mockResolvedValue(null)
+
+  const response = await request(app).get(`/libraries/${chance.word()}`)
+  expect(response.status).toBe(404)
+})
