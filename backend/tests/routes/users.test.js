@@ -103,7 +103,7 @@ it('should get all users', async () => {
     username: 'beeper',
     email: 'beepboop@gmail.com',
   })
-  const response = await request(app).get('/users?json=true')
+  const response = await request(app).get('/users')
 
   expect(response.status).toBe(200)
   expect(response.body).toContainEqual(
