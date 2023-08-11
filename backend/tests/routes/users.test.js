@@ -218,3 +218,59 @@ it('should handle server errors when creating a library for a user', async () =>
     .send(library)
   expect(response2.status).toBe(500)
 })
+
+it('should return a 404 when creating a library for a user that does not exist', async () => {
+  let username = chance.word({ length: 5 })
+
+  // make sure the username does not exist
+  while (await User.exists({ username })) {
+    username = chance.word({ length: 5 })
+  }
+
+  const library = {
+    name: chance.word({ length: 5 }),
+    latitude: chance.latitude(),
+    longitude: chance.longitude(),
+  }
+
+  const response = await request(app)
+    .post(`/users/${username}/ownedLibraries`)
+    .send(library)
+  expect(response.status).toBe(404)
+})
+
+it('should return a 400 when trying to create a library with invalid location', async () => {
+  const user = await User.create({
+    username: chance.word({ length: 5 }),
+    email: chance.email(),
+  })
+
+  const library = {
+    name: chance.word({ length: 5 }),
+    latitude: chance.latitude(),
+  }
+
+  const response = await request(app)
+    .post(`/users/${user.username}/ownedLibraries`)
+    .send(library)
+  expect(response.status).toBe(400)
+
+  const library2 = {
+    name: chance.word({ length: 5 }),
+    longitude: chance.longitude(),
+  }
+
+  const response2 = await request(app)
+    .post(`/users/${user.username}/ownedLibraries`)
+    .send(library2)
+  expect(response2.status).toBe(400)
+
+  const library3 = {
+    name: chance.word({ length: 5 }),
+  }
+
+  const response3 = await request(app)
+    .post(`/users/${user.username}/ownedLibraries`)
+    .send(library3)
+  expect(response3.status).toBe(400)
+})
