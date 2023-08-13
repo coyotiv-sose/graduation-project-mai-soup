@@ -1,7 +1,12 @@
 <script>
 import axios from 'axios'
+import { mapStores } from 'pinia'
+import { useUserStore } from '../stores/user'
 
 export default {
+  computed: {
+    ...mapStores(useUserStore, ['userStore'])
+  },
   data() {
     return {
       users: [],
@@ -35,6 +40,13 @@ export default {
           this.error = error.message
         }
       }
+    },
+    async login(username) {
+      if (this.userStore.username) {
+        return
+      }
+
+      await this.userStore.login(username)
     }
   },
   async mounted() {
@@ -63,9 +75,11 @@ main
     button(type="submit") Submit
 
   h2 Signed up users
-  ul
-    li(v-for='user in users', :key='user._id')
-      | <RouterLink :to="{ name: 'user', params: { username: user.username } }">{{ user.username }}</RouterLink>
+  // for each user, show link to user page as well as log in button if not logged in
+  div(v-for="user in users" :key="user.id")
+    RouterLink(:to="{ name: 'user', params: { username: user.username } }") {{ user.username }}
+    // if user is not logged in, show login button. if logged in, show nothing
+    button(@click="login(user.username)" v-if="!userStore.username") Login
 </template>
 
 <style lang="scss">
