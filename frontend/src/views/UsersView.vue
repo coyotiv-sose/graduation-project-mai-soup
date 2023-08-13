@@ -75,7 +75,6 @@ main
     button(type="submit") Submit
 
   h2 Signed up users
-  // for each user, show link to user page as well as log in button if not logged in
   div(v-for="user in users" :key="user.id")
     RouterLink(:to="{ name: 'user', params: { username: user.username } }") {{ user.username }}
     // if user is not logged in, show login button. if logged in, show nothing

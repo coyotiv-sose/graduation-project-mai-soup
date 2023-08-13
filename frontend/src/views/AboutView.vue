@@ -1,6 +1,19 @@
+<script>
+import { useUserStore } from '../stores/user'
+import { mapStores } from 'pinia'
+
+export default {
+  computed: {
+    ...mapStores(useUserStore, ['userStore'])
+  }
+}
+</script>
+
 <template>
   <div class="about">
-    <h1>This is an about page</h1>
+    <!-- if there is a logged in user, display it. otherwise, say no one is logged in -->
+    <h1 v-if="userStore.username">Logged in as {{ userStore.username }}</h1>
+    <h1 v-else>No one is logged in</h1>
   </div>
 </template>
 
