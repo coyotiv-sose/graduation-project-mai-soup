@@ -5,6 +5,8 @@ const cookieParser = require('cookie-parser')
 const logger = require('morgan')
 const cors = require('cors')
 const session = require('express-session')
+const MongoStore = require('connect-mongo')
+const mongoose = require('mongoose')
 
 require('./database-connection')
 
@@ -21,9 +23,16 @@ app.use(cors())
 app.set('views', path.join(__dirname, 'views'))
 app.set('view engine', 'pug')
 
+const connectionPromise = mongoose.connection
+  .asPromise()
+  .then(connection => (connection = connection.getClient()))
+
 // session setup
 app.use(
   session({
+    store: MongoStore.create({
+      clientPromise: connectionPromise,
+    }),
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: true,
