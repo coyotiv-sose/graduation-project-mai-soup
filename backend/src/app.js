@@ -4,6 +4,8 @@ const path = require('path')
 const cookieParser = require('cookie-parser')
 const logger = require('morgan')
 const cors = require('cors')
+const session = require('express-session')
+
 require('./database-connection')
 
 const indexRouter = require('./routes/index')
@@ -18,6 +20,21 @@ app.use(cors())
 // view engine setup
 app.set('views', path.join(__dirname, 'views'))
 app.set('view engine', 'pug')
+
+// session setup
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: true,
+    // in production, cookies should be set to https only
+    cookie: {
+      secure: process.env.NODE_ENV === 'production',
+      // max age of 2 weeks
+      maxAge: 1000 * 60 * 60 * 24 * 14,
+    },
+  })
+)
 
 app.use(logger('dev'))
 app.use(express.json())
