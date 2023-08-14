@@ -12,6 +12,7 @@ export default {
       users: [],
       username: '',
       email: '',
+      password: '',
       error: ''
     }
   },
@@ -20,12 +21,14 @@ export default {
       try {
         const { data: userData } = await axios.post('http://localhost:3000/users', {
           username: this.username,
-          email: this.email
+          email: this.email,
+          password: this.password
         })
 
         // clear the input fields
         this.username = ''
         this.email = ''
+        this.password = ''
 
         this.users.push(userData)
 
@@ -71,6 +74,9 @@ main
     div
       label(for="email") Email:
       input(type="email" id="email" v-model="email" required)
+    div
+      label(for="password") Password:
+      input(type="password" id="password" v-model="password" required)
     p.error(v-if="error") {{ error }}
     button(type="submit") Submit
 
