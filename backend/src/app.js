@@ -7,8 +7,15 @@ const cors = require('cors')
 const session = require('express-session')
 const MongoStore = require('connect-mongo')
 const mongoose = require('mongoose')
+const User = require('./models/user')
+const passport = require('passport')
 
 require('./database-connection')
+
+// passport setup
+passport.use(User.createStrategy())
+passport.serializeUser(User.serializeUser())
+passport.deserializeUser(User.deserializeUser())
 
 const indexRouter = require('./routes/index')
 const usersRouter = require('./routes/users')
@@ -44,6 +51,7 @@ app.use(
     },
   })
 )
+app.use(passport.session())
 
 app.use(logger('dev'))
 app.use(express.json())
