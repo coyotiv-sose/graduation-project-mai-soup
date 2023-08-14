@@ -1,17 +1,18 @@
 const mongoose = require('mongoose')
 const autopopulate = require('mongoose-autopopulate')
 const Library = require('./library')
+const passportLocalMongoose = require('passport-local-mongoose')
 
 const userSchema = new mongoose.Schema({
-  username: {
-    type: String,
-    required: true,
-    minlength: 3,
-    maxlength: 24,
-    match: /^[a-zA-Z0-9_-]+$/,
-    // TODO: make uniqueness case-insensitive
-    unique: true,
-  },
+  // username: {
+  //   type: String,
+  //   required: true,
+  //   minlength: 3,
+  //   maxlength: 24,
+  //   match: /^[a-zA-Z0-9_-]+$/,
+  //   // TODO: make uniqueness case-insensitive
+  //   unique: true,
+  // },
   email: {
     // TODO: validate email
     type: String,
@@ -64,5 +65,6 @@ class User {
 
 userSchema.loadClass(User)
 userSchema.plugin(autopopulate)
+userSchema.plugin(passportLocalMongoose)
 
 module.exports = mongoose.model('User', userSchema)
