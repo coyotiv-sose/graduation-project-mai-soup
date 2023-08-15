@@ -25,7 +25,12 @@ const accountsRouter = require('./routes/accounts')
 
 const app = express()
 
-app.use(cors())
+app.use(
+  cors({
+    origin: true,
+    credentials: true,
+  })
+)
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'))
