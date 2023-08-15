@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 const autopopulate = require('mongoose-autopopulate')
-const Library = require('./library')
 const passportLocalMongoose = require('passport-local-mongoose')
+const Library = require('./library')
 
 const userSchema = new mongoose.Schema({
   // username: {

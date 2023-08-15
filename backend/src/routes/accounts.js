@@ -1,4 +1,5 @@
 const express = require('express')
+
 const router = express.Router()
 const passport = require('passport')
 const User = require('../models/user')
@@ -32,12 +33,14 @@ router.post(
 )
 
 router.delete('/session', (req, res) => {
-  req.logout(err => {
+  // return to appease the eslint overlords
+  return req.logout(err => {
     if (err) return res.sendStatus(500)
 
-    req.session.destroy(err =>
-      err ? res.sendStatus(500) : res.sendStatus(200)
-    )
+    // return to appease the eslint overlords
+    return req.session.destroy(error => {
+      return error ? res.sendStatus(500) : res.sendStatus(200)
+    })
   })
 })
 
