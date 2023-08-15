@@ -2,9 +2,14 @@
 import { RouterLink, RouterView } from 'vue-router'
 import HelloWorld from './components/HelloWorld.vue'
 import { useAccountStore } from './stores/account'
+import { onMounted } from 'vue'
 
 const accountStore = useAccountStore()
 const logout = () => accountStore.logout()
+
+onMounted(() => {
+  accountStore.fetchUser()
+})
 </script>
 
 <template>
@@ -18,10 +23,12 @@ const logout = () => accountStore.logout()
         <RouterLink to="/">Home</RouterLink>
         <RouterLink to="/about">About</RouterLink>
         <RouterLink to="/users">Users</RouterLink>
+        <RouterLink to="/login">Login</RouterLink>
+        <RouterLink to="/signup">Sign Up</RouterLink>
       </nav>
 
       <!-- display currently logged in user and logout button, if someone is logged in -->
-      <div v-if="accountStore.username">
+      <div v-if="accountStore.isLoggedIn">
         <p>Hello, {{ accountStore.username }}!</p>
         <button @click="logout">Logout</button>
       </div>
