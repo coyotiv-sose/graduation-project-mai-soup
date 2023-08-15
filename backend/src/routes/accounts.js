@@ -1,5 +1,6 @@
 const express = require('express')
 const router = express.Router()
+const passport = require('passport')
 const User = require('../models/user')
 
 router.get('/', (req, res) => {
@@ -17,5 +18,13 @@ router.post('/', async (req, res) => {
     return res.status(400).send({ error: 'Registration failed' })
   }
 })
+
+router.post(
+  '/session',
+  passport.authenticate('local', { failWithError: true }),
+  (req, res) => {
+    res.send(req.user)
+  }
+)
 
 module.exports = router
