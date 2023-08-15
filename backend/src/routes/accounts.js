@@ -32,7 +32,13 @@ router.post(
 )
 
 router.delete('/session', (req, res) => {
-  req.logout(err => (err ? res.sendStatus(500) : res.sendStatus(200)))
+  req.logout(err => {
+    if (err) return res.sendStatus(500)
+
+    req.session.destroy(err =>
+      err ? res.sendStatus(500) : res.sendStatus(200)
+    )
+  })
 })
 
 module.exports = router
