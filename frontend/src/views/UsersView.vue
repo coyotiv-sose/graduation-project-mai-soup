@@ -1,11 +1,11 @@
 <script>
 import axios from 'axios'
 import { mapStores } from 'pinia'
-import { useUserStore } from '../stores/user'
+import { useAccountStore } from '../stores/account'
 
 export default {
   computed: {
-    ...mapStores(useUserStore, ['userStore'])
+    ...mapStores(useAccountStore, ['accountStore'])
   },
   data() {
     return {
@@ -45,11 +45,11 @@ export default {
       }
     },
     async login(username) {
-      if (this.userStore.username) {
+      if (this.accountStore.username) {
         return
       }
 
-      await this.userStore.login(username)
+      await this.accountStore.login(username)
     }
   },
   async mounted() {
@@ -84,7 +84,7 @@ main
   div(v-for="user in users" :key="user.id")
     RouterLink(:to="{ name: 'user', params: { username: user.username } }") {{ user.username }}
     // if user is not logged in, show login button. if logged in, show nothing
-    button(@click="login(user.username)" v-if="!userStore.username") Login
+    button(@click="login(user.username)" v-if="!accountStore.username") Login
 </template>
 
 <style lang="scss">

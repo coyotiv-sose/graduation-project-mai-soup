@@ -1,10 +1,10 @@
 <script>
-import { useUserStore } from '../stores/user'
+import { useAccountStore } from '../stores/account'
 import { mapStores } from 'pinia'
 
 export default {
   computed: {
-    ...mapStores(useUserStore, ['userStore'])
+    ...mapStores(useAccountStore, ['accountStore'])
   }
 }
 </script>
@@ -12,7 +12,7 @@ export default {
 <template>
   <div class="about">
     <!-- if there is a logged in user, display it. otherwise, say no one is logged in -->
-    <h1 v-if="userStore.username">Logged in as {{ userStore.username }}</h1>
+    <h1 v-if="accountStore.username">Logged in as {{ accountStore.username }}</h1>
     <h1 v-else>No one is logged in</h1>
   </div>
 </template>
