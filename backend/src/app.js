@@ -7,8 +7,8 @@ const cors = require('cors')
 const session = require('express-session')
 const MongoStore = require('connect-mongo')
 const mongoose = require('mongoose')
-const User = require('./models/user')
 const passport = require('passport')
+const User = require('./models/user')
 
 require('./database-connection')
 
@@ -38,6 +38,7 @@ app.set('view engine', 'pug')
 
 const connectionPromise = mongoose.connection
   .asPromise()
+  // eslint-disable-next-line no-return-assign, no-param-reassign
   .then(connection => (connection = connection.getClient()))
 
 // session setup
