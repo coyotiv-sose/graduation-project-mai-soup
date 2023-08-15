@@ -19,6 +19,10 @@ router.post('/', async (req, res) => {
   }
 })
 
+router.get('/session', (req, res) => {
+  res.send(req.user)
+})
+
 router.post(
   '/session',
   passport.authenticate('local', { failWithError: true }),
@@ -26,5 +30,10 @@ router.post(
     res.send(req.user)
   }
 )
+
+router.delete('/session', (req, res) => {
+  req.logout()
+  res.sendStatus(200)
+})
 
 module.exports = router
