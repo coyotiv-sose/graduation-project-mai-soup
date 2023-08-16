@@ -16,6 +16,7 @@ router.get('/', async (req, res) => {
   }
 })
 
+// TODO: remove this route and refactor tests to use the accounts route
 router.post('/', async (req, res) => {
   const { username, email } = req.body
 
