@@ -1,6 +1,8 @@
 <script>
 import axios from 'axios'
 
+axios.baseURL = import.meta.env.VITE_API_URL
+
 export default {
   data() {
     return {
@@ -9,7 +11,7 @@ export default {
   },
   async mounted() {
     try {
-      this.users = (await axios.get('http://localhost:3000/users')).data
+      this.users = (await axios.get('/users')).data
     } catch (error) {
       // TODO: handle error
     }
