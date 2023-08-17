@@ -47,6 +47,7 @@ export default {
 </template>
 
 <style scoped>
+/* TODO: add proper styles */
 .navbar {
   display: flex;
   justify-content: space-between;
