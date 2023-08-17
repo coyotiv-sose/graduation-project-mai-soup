@@ -2,6 +2,7 @@ const express = require('express')
 
 const router = express.Router()
 const Library = require('../models/library')
+const descriptionEnhancer = require('../lib/description-enhancer')
 
 router.get('/:id', async (req, res) => {
   const { id } = req.params
@@ -36,6 +37,17 @@ router.get('/', async (req, res) => {
         'An error occurred while retrieving the libraries. Please try again later.',
     })
   }
+})
+
+router.post('/test', async (req, res) => {
+  const { description } = req.body
+  if (!description) {
+    return res.status(400).json({
+      message: 'Please provide a description',
+    })
+  }
+  const enhancedDescription = await descriptionEnhancer(description)
+  return res.send(enhancedDescription)
 })
 
 module.exports = router
