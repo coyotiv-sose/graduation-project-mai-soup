@@ -25,4 +25,5 @@ jobs:
         env:
           MONGO_URI: ${{ secrets.MONGO_URI }}
           SESSION_SECRET: ${{ secrets.SESSION_SECRET }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: npm run test
