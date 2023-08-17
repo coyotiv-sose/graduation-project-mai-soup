@@ -53,7 +53,7 @@ app.use(
     // in production, cookies should be set to https only
     cookie: {
       secure: process.env.NODE_ENV === 'production',
-      // sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
       // max age of 2 weeks
       maxAge: 1000 * 60 * 60 * 24 * 14,
     },
