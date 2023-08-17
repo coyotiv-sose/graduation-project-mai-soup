@@ -1,105 +1,72 @@
-<script setup>
+<script>
 import { RouterLink, RouterView } from 'vue-router'
 import HelloWorld from './components/HelloWorld.vue'
 import { useAccountStore } from './stores/account'
-import { onMounted } from 'vue'
+import { mapActions, mapState } from 'pinia'
 
-const accountStore = useAccountStore()
-const logout = () => accountStore.logout()
-
-onMounted(() => {
-  accountStore.fetchUser()
-})
+export default {
+  computed: {
+    ...mapState(useAccountStore, ['isLoggedIn', 'username'])
+  },
+  components: {
+    RouterLink,
+    RouterView,
+    HelloWorld
+  },
+  methods: {
+    ...mapActions(useAccountStore, ['logout', 'fetchUser']),
+    async doLogout() {
+      await this.logout()
+    }
+  },
+  mounted() {
+    this.fetchUser()
+  }
+}
 </script>
 
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
+  <header class="navbar">
+    <nav class="nav-items">
+      <RouterLink to="/">Home</RouterLink>
+      <RouterLink to="/about">About</RouterLink>
+      <RouterLink to="/users">Users</RouterLink>
+      <RouterLink v-if="!isLoggedIn" to="/login">Login</RouterLink>
+      <RouterLink v-if="!isLoggedIn" to="/signup">Sign Up</RouterLink>
+    </nav>
 
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-
-      <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
-        <RouterLink to="/users">Users</RouterLink>
-        <RouterLink to="/login">Login</RouterLink>
-        <RouterLink to="/signup">Sign Up</RouterLink>
-      </nav>
-
-      <!-- display currently logged in user and logout button, if someone is logged in -->
-      <div v-if="accountStore.isLoggedIn">
-        <p>Hello, {{ accountStore.username }}!</p>
-        <button @click="logout">Logout</button>
-      </div>
+    <div v-if="isLoggedIn" class="user-info">
+      <span>Hello, {{ username }}!</span>
+      <button @click="doLogout">Logout</button>
     </div>
   </header>
 
-  <Suspense>
+  <main class="container">
     <RouterView />
-  </Suspense>
+  </main>
 </template>
 
 <style scoped>
-header {
-  line-height: 1.5;
-  max-height: 100vh;
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
+.nav-items {
+  display: flex;
+  gap: 15px;
 }
 
-nav {
-  width: 100%;
-  font-size: 12px;
-  text-align: center;
-  margin-top: 2rem;
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
-nav a.router-link-exact-active {
-  color: var(--color-text);
-}
-
-nav a.router-link-exact-active:hover {
-  background-color: transparent;
-}
-
-nav a {
-  display: inline-block;
-  padding: 0 1rem;
-  border-left: 1px solid var(--color-border);
-}
-
-nav a:first-of-type {
-  border: 0;
-}
-
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
-
-  nav {
-    text-align: left;
-    margin-left: -1rem;
-    font-size: 1rem;
-
-    padding: 1rem 0;
-    margin-top: 1rem;
-  }
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 15px;
 }
 </style>
