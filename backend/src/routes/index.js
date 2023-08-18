@@ -1,8 +1,8 @@
 const express = require('express')
-const router = express.Router()
-const createError = require('http-errors')
 
-router.get('/', (req, res, next) => {
+const router = express.Router()
+
+router.get('/', (req, res) => {
   let lineBreak
   if (req.accepts('html')) {
     lineBreak = '<br />'
@@ -34,9 +34,8 @@ router.get('/', (req, res, next) => {
   if (req.accepts('html')) {
     const formattedString = `<pre>${teapot}</pre>`
     return res.status(418).send(formattedString.split('\n').join(lineBreak))
-  } else {
-    return res.status(418).send("I'm a teapot")
   }
+  return res.status(418).send("I'm a teapot")
 })
 
 module.exports = router
