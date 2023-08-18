@@ -59,7 +59,7 @@ router.post('/', async (req, res, next) => {
     owner,
   })
 
-  return res.send(library)
+  return res.status(201).send(library)
 })
 
 router.post('/test', async (req, res) => {
