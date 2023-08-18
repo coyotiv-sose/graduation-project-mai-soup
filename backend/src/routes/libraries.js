@@ -1,42 +1,39 @@
 const express = require('express')
 const createError = require('http-errors')
-
 const router = express.Router()
 const Library = require('../models/library')
 const descriptionEnhancer = require('../lib/description-enhancer')
 
-router.get('/:id', async (req, res) => {
+router.get('/:id', async (req, res, next) => {
   const { id } = req.params
 
   try {
     const library = await Library.findById(id)
 
-    if (!library) {
-      return res.status(404).json({
-        message: 'Library not found',
-      })
-    }
+    if (!library) return next(createError(404, 'Library not found'))
 
     return res.send(library)
   } catch (err) {
-    console.error(err)
-    return res.status(500).json({
-      message:
-        'An error occurred while retrieving the library. Please try again later.',
-    })
+    return next(
+      createError(
+        500,
+        'An error occurred while retrieving the library. Please try again later.'
+      )
+    )
   }
 })
 
-router.get('/', async (req, res) => {
+router.get('/', async (req, res, next) => {
   try {
     const libraries = await Library.find()
     return res.send(libraries)
   } catch (err) {
-    console.error(err)
-    return res.status(500).json({
-      message:
-        'An error occurred while retrieving the libraries. Please try again later.',
-    })
+    return next(
+      createError(
+        500,
+        'An error occurred while retrieving the libraries. Please try again later.'
+      )
+    )
   }
 })
 
