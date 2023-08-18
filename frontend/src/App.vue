@@ -31,6 +31,7 @@ export default {
       <RouterLink to="/">Home</RouterLink>
       <RouterLink to="/about">About</RouterLink>
       <RouterLink to="/users">Users</RouterLink>
+      <RouterLink to="/libraries">Libraries</RouterLink>
       <RouterLink v-if="!isLoggedIn" to="/login">Login</RouterLink>
       <RouterLink v-if="!isLoggedIn" to="/signup">Sign Up</RouterLink>
     </nav>

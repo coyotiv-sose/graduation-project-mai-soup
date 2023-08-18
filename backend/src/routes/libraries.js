@@ -40,7 +40,7 @@ router.get('/', async (req, res) => {
   }
 })
 
-router.post('/', async (req, res) => {
+router.post('/', async (req, res, next) => {
   const owner = req.user
 
   // only logged in users can create libraries
