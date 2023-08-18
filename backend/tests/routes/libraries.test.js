@@ -2,7 +2,6 @@ const request = require('supertest')
 const chance = require('chance').Chance()
 const app = require('../../src/app')
 const Library = require('../../src/models/library')
-const User = require('../../src/models/user')
 
 // restore the original behavior of mocked functions
 afterEach(() => {

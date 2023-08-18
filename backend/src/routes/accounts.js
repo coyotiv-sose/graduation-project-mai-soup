@@ -4,7 +4,6 @@ const router = express.Router()
 const passport = require('passport')
 const createError = require('http-errors')
 const User = require('../models/user')
-const { create } = require('connect-mongo')
 
 router.get('/', (req, res) => {
   res.send(req.session)
