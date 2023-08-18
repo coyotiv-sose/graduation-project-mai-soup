@@ -16,36 +16,6 @@ router.get('/', async (req, res) => {
   }
 })
 
-// TODO: remove this route and refactor tests to use the accounts route
-router.post('/', async (req, res) => {
-  const { username, email } = req.body
-
-  if (!username || !email) {
-    return res.status(400).json({
-      message: 'Username and email are required',
-    })
-  }
-
-  try {
-    const user = await User.create({ username, email })
-    return res.status(201).send(user)
-  } catch (err) {
-    // code 11000 represents a duplicate key error in mongo
-    if (err.code === 11000) {
-      return res
-        .status(409)
-        .json({ message: 'Username or email already exists' })
-    }
-
-    // other errors
-    console.error(err)
-    return res.status(500).json({
-      message:
-        'An error occured while adding the user. Please try again later.',
-    })
-  }
-})
-
 router.get('/:username', async (req, res) => {
   const { username } = req.params
 

@@ -7,107 +7,110 @@ const app = require('../../src/app')
 afterEach(() => {
   jest.restoreAllMocks()
 })
+// TODO: move and refactor signup tests to be for the /accounts endpoint
+// it('should sign up a new user', async () => {
+//   const user = {
+//     username: 'maijs',
+//     email: 'mai@example.com',
+//   }
+//   const response = await request(app).post('/users').send(user)
 
-it('should sign up a new user', async () => {
-  const user = {
-    username: 'maijs',
-    email: 'mai@example.com',
-  }
-  const response = await request(app).post('/users').send(user)
+//   expect(response.status).toBe(201)
+//   expect(response.body).toMatchObject(user)
+// })
 
-  expect(response.status).toBe(201)
-  expect(response.body).toMatchObject(user)
-})
+// it('should not sign up a new user with an existing username', async () => {
+//   const user = {
+//     username: 'abc',
+//     email: 'abc@example.com',
+//   }
+//   await request(app).post('/users').send(user)
 
-it('should not sign up a new user with an existing username', async () => {
-  const user = {
-    username: 'abc',
-    email: 'abc@example.com',
-  }
-  await request(app).post('/users').send(user)
+//   const user2 = {
+//     username: 'abc',
+//     email: 'def@example.com',
+//   }
 
-  const user2 = {
-    username: 'abc',
-    email: 'def@example.com',
-  }
+//   const response = await request(app).post('/users').send(user2)
+//   expect(response.status).toBe(409)
+// })
 
-  const response = await request(app).post('/users').send(user2)
-  expect(response.status).toBe(409)
-})
+// it('should not sign up a new user with an existing email', async () => {
+//   const user = {
+//     username: 'xyz',
+//     email: 'xyz@example.com',
+//   }
+//   await request(app).post('/users').send(user)
 
-it('should not sign up a new user with an existing email', async () => {
-  const user = {
-    username: 'xyz',
-    email: 'xyz@example.com',
-  }
-  await request(app).post('/users').send(user)
+//   const user2 = {
+//     username: 'uvw',
+//     email: 'xyz@example.com',
+//   }
 
-  const user2 = {
-    username: 'uvw',
-    email: 'xyz@example.com',
-  }
+//   const response = await request(app).post('/users').send(user2)
+//   expect(response.status).toBe(409)
+// })
 
-  const response = await request(app).post('/users').send(user2)
-  expect(response.status).toBe(409)
-})
+// it('should not sign up a new user without a username', async () => {
+//   const user = {
+//     email: chance.email(),
+//   }
 
-it('should not sign up a new user without a username', async () => {
-  const user = {
-    email: chance.email(),
-  }
+//   const response = await request(app).post('/users').send(user)
+//   expect(response.status).toBe(400)
+// })
 
-  const response = await request(app).post('/users').send(user)
-  expect(response.status).toBe(400)
-})
+// it('should not sign up a new user without an email', async () => {
+//   const user = {
+//     username: chance.word(),
+//   }
 
-it('should not sign up a new user without an email', async () => {
-  const user = {
-    username: chance.word(),
-  }
+//   const response = await request(app).post('/users').send(user)
+//   expect(response.status).toBe(400)
+// })
 
-  const response = await request(app).post('/users').send(user)
-  expect(response.status).toBe(400)
-})
+// it('should not sign up a new user with an empty username', async () => {
+//   const user = {
+//     username: '',
+//     email: chance.email(),
+//   }
 
-it('should not sign up a new user with an empty username', async () => {
-  const user = {
-    username: '',
-    email: chance.email(),
-  }
+//   const response = await request(app).post('/users').send(user)
+//   expect(response.status).toBe(400)
+// })
 
-  const response = await request(app).post('/users').send(user)
-  expect(response.status).toBe(400)
-})
+// it('should not sign up a new user with an empty email', async () => {
+//   const user = {
+//     username: chance.word(),
+//     email: '',
+//   }
 
-it('should not sign up a new user with an empty email', async () => {
-  const user = {
-    username: chance.word(),
-    email: '',
-  }
+//   const response = await request(app).post('/users').send(user)
+//   expect(response.status).toBe(400)
+// })
 
-  const response = await request(app).post('/users').send(user)
-  expect(response.status).toBe(400)
-})
+// it('should handle server errors when signing up a new user', async () => {
+//   jest.spyOn(User, 'create').mockImplementationOnce(() => {
+//     throw new Error('error')
+//   })
 
-it('should handle server errors when signing up a new user', async () => {
-  jest.spyOn(User, 'create').mockImplementationOnce(() => {
-    throw new Error('error')
-  })
+//   const user = {
+//     username: chance.word(),
+//     email: chance.email(),
+//   }
 
-  const user = {
-    username: chance.word(),
-    email: chance.email(),
-  }
-
-  const response = await request(app).post('/users').send(user)
-  expect(response.status).toBe(500)
-})
+//   const response = await request(app).post('/users').send(user)
+//   expect(response.status).toBe(500)
+// })
 
 it('should get all users', async () => {
-  const user = await User.create({
-    username: 'beeper',
-    email: 'beepboop@gmail.com',
-  })
+  const user = await User.register(
+    {
+      username: 'beeper',
+      email: 'beepboop@gmail.com',
+    },
+    'beepboop'
+  )
   const response = await request(app).get('/users')
 
   expect(response.status).toBe(200)
