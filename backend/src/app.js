@@ -32,10 +32,6 @@ app.use(
   })
 )
 
-// view engine setup
-app.set('views', path.join(__dirname, 'views'))
-app.set('view engine', 'pug')
-
 const connectionPromise = mongoose.connection
   .asPromise()
   // eslint-disable-next-line no-return-assign, no-param-reassign
