@@ -1,4 +1,5 @@
 const express = require('express')
+const createError = require('http-errors')
 
 const router = express.Router()
 const Library = require('../models/library')
@@ -37,6 +38,28 @@ router.get('/', async (req, res) => {
         'An error occurred while retrieving the libraries. Please try again later.',
     })
   }
+})
+
+router.post('/', async (req, res) => {
+  const owner = req.user
+
+  // only logged in users can create libraries
+  if (!owner)
+    return next(createError(401, 'You must be logged in to create a library'))
+
+  const { name, latitude, longitude } = req.body
+  // can't check for !name || !latitude || !longitude because latitude and longitude can be 0
+  if (!name || latitude === undefined || longitude === undefined)
+    return next(createError(400, 'Name, latitude, and longitude are required'))
+
+  const library = await Library.create({
+    name,
+    latitude,
+    longitude,
+    owner,
+  })
+
+  return res.send(library)
 })
 
 router.post('/test', async (req, res) => {
