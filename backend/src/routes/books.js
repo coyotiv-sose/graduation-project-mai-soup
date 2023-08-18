@@ -1,37 +1,32 @@
 const express = require('express')
-
 const router = express.Router()
+const createError = require('http-errors')
 const Book = require('../models/book')
 
-router.get('/:isbn', async (req, res) => {
+router.get('/:isbn', async (req, res, next) => {
   const { isbn } = req.params
 
   try {
     const book = await Book.findOne({ isbn })
 
-    if (!book) {
-      return res.status(404).json({
-        message: 'Book not found',
-      })
-    }
+    if (!book) return next(createError(404, 'Book not found'))
 
     return res.send(book)
   } catch (err) {
-    console.error(err)
-    return res
-      .status(500)
-      .json({ message: 'An error occurred while retrieving the book' })
+    return next(
+      createError(
+        500,
+        'An error occurred while retrieving the book. Please try again later.'
+      )
+    )
   }
 })
 
-router.post('/', async (req, res) => {
+router.post('/', async (req, res, next) => {
   const { isbn, title, author } = req.body
 
-  if (!isbn || !title || !author) {
-    return res.status(400).json({
-      message: 'ISBN, title, and author are required',
-    })
-  }
+  if (!isbn || !title || !author)
+    return next(createError(400, 'Missing fields'))
 
   try {
     const book = await Book.create({ isbn, title, author })
@@ -39,15 +34,16 @@ router.post('/', async (req, res) => {
   } catch (err) {
     // code 11000 represents a duplicate key error in mongo
     if (err.code === 11000) {
-      return res.status(409).json({ message: 'ISBN already exists' })
+      return next(createError(409, 'Book already exists'))
     }
 
     // other errors
-    console.error(err)
-    return res.status(500).json({
-      message:
-        'An error occured while adding the book. Please try again later.',
-    })
+    return next(
+      createError(
+        500,
+        'An error occurred while creating the book. Please try again later.'
+      )
+    )
   }
 })
 
