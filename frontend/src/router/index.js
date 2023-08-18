@@ -38,6 +38,21 @@ const router = createRouter({
       path: '/signup',
       name: 'signup',
       component: () => import('../views/SignUpView.vue')
+    },
+    {
+      path: '/libraries',
+      name: 'libraries',
+      component: () => import('../views/LibrariesView.vue')
+    },
+    {
+      path: '/libraries/create',
+      name: 'create-library',
+      component: () => import('../views/CreateLibraryView.vue')
+    },
+    {
+      path: '/libraries/:id',
+      name: 'library',
+      component: () => import('../views/LibraryView.vue')
     }
   ]
 })
