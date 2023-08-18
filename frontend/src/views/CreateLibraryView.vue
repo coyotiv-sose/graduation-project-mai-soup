@@ -30,7 +30,7 @@ export default {
         latitude: this.latitude,
         longitude: this.longitude
       })
-      this.$router.push({ name: 'Library', params: { id: response.data.id } })
+      this.$router.push({ name: 'library', params: { id: response.data._id } })
     }
   }
 }
