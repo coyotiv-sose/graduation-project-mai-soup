@@ -2,13 +2,15 @@ const express = require('express')
 
 const router = express.Router()
 const passport = require('passport')
+const createError = require('http-errors')
 const User = require('../models/user')
+const { create } = require('connect-mongo')
 
 router.get('/', (req, res) => {
   res.send(req.session)
 })
 
-router.post('/', async (req, res) => {
+router.post('/', async (req, res, next) => {
   try {
     const { username, email, password } = req.body
 
@@ -16,7 +18,7 @@ router.post('/', async (req, res) => {
 
     return res.send(user)
   } catch (err) {
-    return res.status(400).send({ error: 'Registration failed' })
+    return next(createError(400, 'Registration failed'))
   }
 })
 
@@ -32,14 +34,16 @@ router.post(
   }
 )
 
-router.delete('/session', (req, res) => {
+router.delete('/session', (req, res, next) => {
   // return to appease the eslint overlords
   return req.logout(err => {
-    if (err) return res.sendStatus(500)
+    if (err) return next(createError(500, 'Logout failed'))
 
     // return to appease the eslint overlords
     return req.session.destroy(error => {
-      return error ? res.sendStatus(500) : res.sendStatus(200)
+      return error
+        ? next(createError(500, "Couldn't destroy session"))
+        : res.sendStatus(200)
     })
   })
 })
