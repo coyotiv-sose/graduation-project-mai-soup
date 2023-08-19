@@ -127,12 +127,12 @@ router.get('/:id/members', async (req, res, next) => {
 
 router.post('/:id/members', async (req, res, next) => {
   const { id } = req.params
-  const { username } = req.body
+  const user = req.user
 
   const library = await Library.findById(id)
   if (!library) return next(createError(404, 'Library not found'))
 
-  const newMember = await User.findOne({ username })
+  const newMember = await User.findOne({ username: user?.username })
   if (!newMember) return next(createError(404, 'User not found'))
 
   try {
@@ -145,19 +145,24 @@ router.post('/:id/members', async (req, res, next) => {
 
 router.patch('/:id/members', async (req, res, next) => {
   const { id } = req.params
-  const username = req.body.userToRemove
+  const user = req.user
 
   const library = await Library.findById(id)
   if (!library) return next(createError(404, 'Library not found'))
 
-  const userToRemove = await User.findOne({ username })
-  if (!userToRemove) return next(createError(404, 'User not found'))
+  if (req.body.remove) {
+    const userToRemove = await User.findOne({ username: user?.username })
+    if (!userToRemove) return next(createError(404, 'User not found'))
 
-  try {
-    await userToRemove.leaveLibrary(library)
-    return res.status(204).send()
-  } catch (err) {
-    return next(createError(500, err.message))
+    try {
+      await userToRemove.leaveLibrary(library)
+      return res.status(204).send()
+    } catch (err) {
+      console.error(err)
+      return next(createError(500, err.message))
+    }
+  } else {
+    return next(createError(400, 'Invalid request'))
   }
 })
 
