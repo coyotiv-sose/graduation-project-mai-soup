@@ -53,6 +53,21 @@ const router = createRouter({
       path: '/libraries/:id',
       name: 'library',
       component: () => import('../views/LibraryView.vue')
+    },
+    {
+      path: '/books',
+      name: 'books',
+      component: () => import('../views/BooksView.vue')
+    },
+    {
+      path: '/books/create',
+      name: 'create-book',
+      component: () => import('../views/CreateBookView.vue')
+    },
+    {
+      path: '/books/:isbn',
+      name: 'book',
+      component: () => import('../views/BookView.vue')
     }
   ]
 })
