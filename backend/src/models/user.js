@@ -60,13 +60,14 @@ class User {
     await library.addSubscriber(this)
   }
 
-  leaveLibrary(library) {
+  async leaveLibrary(library) {
     const libraryIndex = this.memberships.indexOf(library)
     if (libraryIndex === -1) {
       throw new Error('user is not member of this library')
     }
     this.memberships.splice(libraryIndex, 1)
-    library.removeMember(this)
+    await this.save()
+    await library.removeMember(this)
   }
 }
 

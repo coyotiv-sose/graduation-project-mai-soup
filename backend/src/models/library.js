@@ -74,13 +74,14 @@ class Library {
     await this.save()
   }
 
-  removeMember(user) {
+  async removeMember(user) {
     const index = this.members.indexOf(user)
     if (index === -1) {
       throw new Error('user is not a member of this library')
     }
 
     this.members.splice(index, 1)
+    await this.save()
   }
 
   async addBook(book) {

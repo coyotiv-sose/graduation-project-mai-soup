@@ -4,6 +4,7 @@ const createError = require('http-errors')
 const router = express.Router()
 const Library = require('../models/library')
 const Book = require('../models/book')
+const User = require('../models/user')
 const descriptionEnhancer = require('../lib/description-enhancer')
 
 router.get('/:id', async (req, res, next) => {
@@ -104,6 +105,56 @@ router.delete('/:id/books/:isbn', async (req, res, next) => {
 
   try {
     await library.removeBook(book)
+    return res.status(204).send()
+  } catch (err) {
+    return next(createError(500, err.message))
+  }
+})
+
+router.get('/:id/members', async (req, res, next) => {
+  const { id } = req.params
+
+  const library = await Library.findById(id)
+  if (!library) return next(createError(404, 'Library not found'))
+
+  try {
+    const members = library.members
+    return res.send(members)
+  } catch (err) {
+    return next(createError(500, err.message))
+  }
+})
+
+router.post('/:id/members', async (req, res, next) => {
+  const { id } = req.params
+  const { username } = req.body
+
+  const library = await Library.findById(id)
+  if (!library) return next(createError(404, 'Library not found'))
+
+  const newMember = await User.findOne({ username })
+  if (!newMember) return next(createError(404, 'User not found'))
+
+  try {
+    await newMember.joinLibrary(library)
+    return res.status(201).send(library)
+  } catch (err) {
+    return next(createError(500, err.message))
+  }
+})
+
+router.patch('/:id/members', async (req, res, next) => {
+  const { id } = req.params
+  const username = req.body.userToRemove
+
+  const library = await Library.findById(id)
+  if (!library) return next(createError(404, 'Library not found'))
+
+  const userToRemove = await User.findOne({ username })
+  if (!userToRemove) return next(createError(404, 'User not found'))
+
+  try {
+    await userToRemove.leaveLibrary(library)
     return res.status(204).send()
   } catch (err) {
     return next(createError(500, err.message))
