@@ -58,7 +58,6 @@ it('should handle server errors when listing libraries', async () => {
 //     latitude: chance.latitude(),
 //   })
 
-//   // eslint-disable-next-line no-underscore-dangle
 //   const response = await request(app).get(`/libraries/${library._id}`)
 //   expect(response.status).toBe(200)
 //   expect(response.body).toMatchObject({
