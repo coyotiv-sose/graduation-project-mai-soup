@@ -10,7 +10,9 @@ export default {
     }
   },
   async mounted() {
-    const { data: userData } = await axios.get(`/users/${this.$route.params.username}`)
+    const { data: userData } = await axios.get(
+      `/users/${this.$route.params.username}`
+    )
     this.user = userData
 
     // TODO: handle error
@@ -23,4 +25,8 @@ h1 {{ user.username }}
 ul
   li Email: {{ user.email }}
   li Created at: {{ user.dateCreated }}
+h2 Memberships
+ul
+  li(v-for="library in user.memberships" :key="library._id")
+    RouterLink(:to="{ name: 'library', params: { id: library._id } }") {{ library.name }}
 </template>
