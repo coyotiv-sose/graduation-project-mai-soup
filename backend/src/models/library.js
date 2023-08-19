@@ -75,12 +75,16 @@ class Library {
   }
 
   async removeMember(user) {
-    const index = this.members.indexOf(user)
-    if (index === -1) {
+    const userId = user._id.toString()
+    const memberIds = this.members.map(member => member._id.toString())
+
+    if (!memberIds.includes(userId)) {
       throw new Error('user is not a member of this library')
     }
 
+    const index = memberIds.indexOf(userId)
     this.members.splice(index, 1)
+
     await this.save()
   }
 

@@ -57,15 +57,20 @@ class User {
   async joinLibrary(library) {
     this.memberships.push(library)
     await this.save()
-    await library.addSubscriber(this)
+    await library.addMember(this)
   }
 
   async leaveLibrary(library) {
-    const libraryIndex = this.memberships.indexOf(library)
-    if (libraryIndex === -1) {
+    const libraryId = library._id.toString()
+    const membershipIds = this.memberships.map(m => m._id.toString())
+
+    if (!membershipIds.includes(libraryId)) {
       throw new Error('user is not member of this library')
     }
+
+    const libraryIndex = membershipIds.indexOf(libraryId)
     this.memberships.splice(libraryIndex, 1)
+
     await this.save()
     await library.removeMember(this)
   }
