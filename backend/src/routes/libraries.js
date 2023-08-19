@@ -118,7 +118,7 @@ router.get('/:id/members', async (req, res, next) => {
   if (!library) return next(createError(404, 'Library not found'))
 
   try {
-    const members = library.members
+    const { members } = library
     return res.send(members)
   } catch (err) {
     return next(createError(500, err.message))
@@ -127,7 +127,7 @@ router.get('/:id/members', async (req, res, next) => {
 
 router.post('/:id/members', async (req, res, next) => {
   const { id } = req.params
-  const user = req.user
+  const { user } = req
 
   const library = await Library.findById(id)
   if (!library) return next(createError(404, 'Library not found'))
@@ -145,7 +145,7 @@ router.post('/:id/members', async (req, res, next) => {
 
 router.patch('/:id/members', async (req, res, next) => {
   const { id } = req.params
-  const user = req.user
+  const { user } = req
 
   const library = await Library.findById(id)
   if (!library) return next(createError(404, 'Library not found'))

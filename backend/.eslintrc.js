@@ -27,6 +27,13 @@ module.exports = {
     ],
     'func-names': ['warn', 'as-needed'],
     'prefer-const': ['warn'],
+    'no-underscore-dangle': [
+      'error',
+      {
+        allow: ['_id'],
+        enforceInMethodNames: true,
+      },
+    ],
     'prettier/prettier': [
       'error',
       {
