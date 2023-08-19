@@ -85,7 +85,7 @@ class Library {
 
   async addBook(book) {
     if (!this.books.includes(book)) {
-      await book.addToShelf(this)
+      await book.addToLibrary(this)
     }
     this.books.push(book)
     await this.save()
@@ -98,7 +98,7 @@ class Library {
     }
     const copies = this.books.filter(b => b.isbn === book.isbn)
     if (copies.length === 1) {
-      book.removeFromShelf(this)
+      book.removeFromLibrary(this)
     }
     this.books.splice(index, 1)
   }
