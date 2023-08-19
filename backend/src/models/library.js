@@ -84,23 +84,19 @@ class Library {
   }
 
   async addBook(book) {
-    if (!this.books.includes(book)) {
-      await book.addToLibrary(this)
-    }
+    await book.addToLibrary(this)
     this.books.push(book)
     await this.save()
   }
 
-  removeBook(book) {
-    const index = this.books.indexOf(book)
+  async removeBook(book) {
+    const index = this.books.findIndex(b => b.isbn === book.isbn)
     if (index === -1) {
       throw new Error('book is not in this library')
     }
-    const copies = this.books.filter(b => b.isbn === book.isbn)
-    if (copies.length === 1) {
-      book.removeFromLibrary(this)
-    }
+    await book.removeFromLibrary(this)
     this.books.splice(index, 1)
+    await this.save()
   }
 }
 

@@ -93,4 +93,21 @@ router.post('/:id/books', async (req, res, next) => {
   }
 })
 
+router.delete('/:id/books/:isbn', async (req, res, next) => {
+  const { id, isbn } = req.params
+
+  const library = await Library.findById(id)
+  if (!library) return next(createError(404, 'Library not found'))
+
+  const book = await Book.findOne({ isbn })
+  if (!book) return next(createError(404, 'Book not found'))
+
+  try {
+    await library.removeBook(book)
+    return res.status(204).send()
+  } catch (err) {
+    return next(createError(500, err.message))
+  }
+})
+
 module.exports = router

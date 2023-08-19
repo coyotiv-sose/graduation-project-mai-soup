@@ -14,10 +14,6 @@ export const useAccountStore = defineStore('account', {
   actions: {
     async fetchUser() {
       this.user = (await axios.get('/accounts/session')).data
-      console.log('fetched user')
-      console.table(this.user)
-      console.log('libs')
-      console.table(this.user.ownedLibraries)
     },
     async login({ username, password }) {
       this.user = (
