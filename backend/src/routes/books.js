@@ -48,4 +48,18 @@ router.post('/', async (req, res, next) => {
   }
 })
 
+router.get('/', async (req, res, next) => {
+  try {
+    const books = await Book.find({})
+    return res.send(books)
+  } catch (err) {
+    return next(
+      createError(
+        500,
+        'An error occurred while retrieving the books. Please try again later.'
+      )
+    )
+  }
+})
+
 module.exports = router
