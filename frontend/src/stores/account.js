@@ -8,14 +8,21 @@ export const useAccountStore = defineStore('account', {
   state: () => ({ user: null }),
   getters: {
     username: (state) => state.user?.username,
-    isLoggedIn: (state) => !!state.user
+    isLoggedIn: (state) => !!state.user,
+    ownedLibraries: (state) => state.user?.ownedLibraries
   },
   actions: {
     async fetchUser() {
       this.user = (await axios.get('/accounts/session')).data
+      console.log('fetched user')
+      console.table(this.user)
+      console.log('libs')
+      console.table(this.user.ownedLibraries)
     },
     async login({ username, password }) {
-      this.user = (await axios.post('/accounts/session', { username, password })).data
+      this.user = (
+        await axios.post('/accounts/session', { username, password })
+      ).data
     },
     async logout() {
       await axios.delete('/accounts/session')

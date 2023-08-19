@@ -30,6 +30,13 @@ const userSchema = new mongoose.Schema({
       autopopulate: { maxDepth: 2 },
     },
   ],
+  ownedLibraries: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Library',
+      autopopulate: { maxDepth: 2 },
+    },
+  ],
 })
 
 class User {

@@ -13,6 +13,8 @@ form(@submit.prevent="doCreateLibrary")
 
 <script>
 import axios from 'axios'
+import { useAccountStore } from '../stores/account'
+import { mapActions } from 'pinia'
 
 export default {
   name: 'CreateLibraryView',
@@ -24,12 +26,14 @@ export default {
     }
   },
   methods: {
+    ...mapActions(useAccountStore, ['fetchUser']),
     async doCreateLibrary() {
       const response = await axios.post('/libraries', {
         name: this.name,
         latitude: this.latitude,
         longitude: this.longitude
       })
+      await this.fetchUser()
       this.$router.push({ name: 'library', params: { id: response.data._id } })
     }
   }

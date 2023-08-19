@@ -5,6 +5,10 @@ div(v-else)
   p Location: {{ library.latitude }}, {{ library.longitude }}
   p Owner:
     RouterLink(v-if="ownerUsername" :to="{ name: 'user', params: { username: ownerUsername } }") {{ ownerUsername }}
+  h2 Books
+  ul
+    li(v-for="book in library.books" :key="book.isbn")
+      RouterLink(:to="{ name: 'book', params: { isbn: book.isbn } }") {{ book.title }}
 </template>
 
 <script>
