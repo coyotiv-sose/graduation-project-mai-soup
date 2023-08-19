@@ -33,14 +33,18 @@ class Book {
     await this.save()
   }
 
-  removeFromlibrary(library) {
-    const index = this.librariesFoundIn.indexOf(library)
-    if (index === -1) {
+  async removeFromLibrary(library) {
+    const libraryWithId = this.librariesFoundIn.find(
+      l => l._id.toString() === library._id.toString()
+    )
+
+    if (!libraryWithId) {
       throw new Error('book is not in this library')
     }
 
+    const index = this.librariesFoundIn.indexOf(libraryWithId)
     this.librariesFoundIn.splice(index, 1)
-    this.save()
+    await this.save()
   }
 }
 

@@ -69,6 +69,7 @@ export default {
       await axios.delete(
         `http://localhost:3000/libraries/${this.libraryId}/books/${this.book.isbn}`
       )
+      await this.fetchUser()
       this.$router.push({ name: 'library', params: { id: this.libraryId } })
     }
   }
