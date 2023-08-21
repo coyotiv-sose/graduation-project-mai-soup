@@ -76,7 +76,7 @@ router.post('/test', async (req, res) => {
   return res.send(enhancedDescription)
 })
 
-router.post('/:id/books', async (req, res, next) => {
+router.post('/:id/copies', async (req, res, next) => {
   const { id } = req.params
   const { isbn } = req.body
 
