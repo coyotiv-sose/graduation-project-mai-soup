@@ -36,7 +36,7 @@ export default {
     }
   },
   created() {
-    axios.get('http://localhost:3000/books').then((response) => {
+    axios.get('/books').then((response) => {
       this.books = response.data
     })
   }
