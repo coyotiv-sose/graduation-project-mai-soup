@@ -37,6 +37,13 @@ const userSchema = new mongoose.Schema({
       autopopulate: { maxDepth: 2 },
     },
   ],
+  loans: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'BookCopy',
+      autopopulate: { maxDepth: 1 },
+    },
+  ],
 })
 
 class User {
@@ -73,6 +80,31 @@ class User {
 
     await this.save()
     await library.removeMember(this)
+  }
+
+  async borrowBook(bookCopy) {
+    if (bookCopy.status !== 'available') {
+      throw new Error('book copy is not available')
+    }
+
+    await bookCopy.borrow(this)
+    this.loans.push(bookCopy)
+    await this.save()
+  }
+
+  async returnBook(bookCopy) {
+    if (
+      bookCopy.status !== 'borrowed' ||
+      bookCopy.borrower._id.toString() !== this._id.toString()
+    ) {
+      throw new Error('book copy is not borrowed by this user')
+    }
+
+    await bookCopy.return()
+    const bookCopyId = bookCopy._id.toString()
+    // filter out bookCopy from loans
+    this.loans = this.loans.filter(loan => loan._id.toString() !== bookCopyId)
+    await this.save()
   }
 }
 
