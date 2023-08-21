@@ -16,7 +16,11 @@ div(v-else)
   h2 Books
   ul
     li(v-for="book in library.books" :key="book._id")
-      RouterLink(:to="{ name: 'book', params: { isbn: book.bookInfo.isbn } }") {{ book.bookInfo.title }}
+      div
+        RouterLink(:to="{ name: 'book', params: { isbn: book.bookInfo.isbn } }") {{ book.bookInfo.title }}
+        span(v-if="book.status === 'borrowed' && book.borrower.username !== this.username") Borrowed by {{ book.borrower.username }} until {{ book.returnDate }}
+        button(v-if="isUserMember && book.status === 'available'" @click="doBorrowOrReturn(book)") Borrow
+        button(v-if="isUserMember && book.status === 'borrowed' && book.borrower.username === this.username" @click="doBorrowOrReturn(book)") Return
 </template>
 
 <script>
@@ -63,6 +67,19 @@ export default {
       this.library.members = this.library.members.filter(
         (member) => member.username !== this.username
       )
+    },
+    async doBorrowOrReturn(book) {
+      if (book.status === 'borrowed') {
+        await axios.patch(`/copies/${book._id}`, {
+          action: 'return'
+        })
+      } else {
+        await axios.patch(`/copies/${book._id}`, {
+          action: 'borrow'
+        })
+      }
+      const response = await axios.get(`/libraries/${this.$route.params.id}`)
+      this.library = response.data
     }
   }
 }

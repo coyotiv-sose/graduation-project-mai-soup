@@ -73,23 +73,27 @@ router.post('/:isbn', async (req, res, next) => {
 })
 
 router.patch('/:id', async (req, res, next) => {
-  // 3 actions - borrow, return, mark as lost
   const { id } = req.params
   const { action } = req.body
+  const user = req.user
 
-  if (!action) {
-    return next(createError(400, 'Missing action'))
+  if (!user) {
+    return next(createError(401, 'Unauthorized'))
+  }
+
+  const bookCopy = await BookCopy.findById(id)
+
+  if (!bookCopy) {
+    return next(createError(404, 'Book copy not found'))
   }
 
   try {
-    const bookCopy = await BookCopy.findById(id)
-
     switch (action) {
       case 'borrow':
-        await bookCopy.borrow()
+        await user.borrowBook(bookCopy)
         return res.send(bookCopy)
       case 'return':
-        await bookCopy.return()
+        await user.returnBook(bookCopy)
         return res.send(bookCopy)
       case 'lose':
         await bookCopy.lose()
@@ -98,6 +102,7 @@ router.patch('/:id', async (req, res, next) => {
         return next(createError(400, 'Invalid action'))
     }
   } catch (err) {
+    console.error(err)
     return next(
       createError(
         500,
