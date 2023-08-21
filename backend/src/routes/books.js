@@ -2,22 +2,22 @@ const express = require('express')
 
 const router = express.Router()
 const createError = require('http-errors')
-const Book = require('../models/book')
+const BookInfo = require('../models/book-info')
 
 router.get('/:isbn', async (req, res, next) => {
   const { isbn } = req.params
 
   try {
-    const book = await Book.findOne({ isbn })
+    const bookInfo = await BookInfo.findOne({ isbn })
 
-    if (!book) return next(createError(404, 'Book not found'))
+    if (!bookInfo) return next(createError(404, 'Book not found'))
 
-    return res.send(book)
+    return res.send(bookInfo)
   } catch (err) {
     return next(
       createError(
         500,
-        'An error occurred while retrieving the book. Please try again later.'
+        "An error occurred while retrieving the book's info. Please try again later."
       )
     )
   }
@@ -30,8 +30,8 @@ router.post('/', async (req, res, next) => {
     return next(createError(400, 'Missing fields'))
 
   try {
-    const book = await Book.create({ isbn, title, author })
-    return res.status(201).send(book)
+    const bookInfo = await BookInfo.create({ isbn, title, author })
+    return res.status(201).send(bookInfo)
   } catch (err) {
     // code 11000 represents a duplicate key error in mongo
     if (err.code === 11000) {
@@ -50,13 +50,13 @@ router.post('/', async (req, res, next) => {
 
 router.get('/', async (req, res, next) => {
   try {
-    const books = await Book.find({})
+    const books = await BookInfo.find({})
     return res.send(books)
   } catch (err) {
     return next(
       createError(
         500,
-        'An error occurred while retrieving the books. Please try again later.'
+        'An error occurred while retrieving the book infos. Please try again later.'
       )
     )
   }
