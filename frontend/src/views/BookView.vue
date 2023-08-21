@@ -36,11 +36,9 @@ export default {
     }
   },
   created() {
-    axios
-      .get(`http://localhost:3000/books/${this.$route.params.isbn}`)
-      .then((response) => {
-        this.book = response.data
-      })
+    axios.get(`/books/${this.$route.params.isbn}`).then((response) => {
+      this.book = response.data
+    })
   },
   computed: {
     ...mapState(useAccountStore, ['ownedLibraries']),
@@ -56,19 +54,14 @@ export default {
   methods: {
     ...mapActions(useAccountStore, ['fetchUser']),
     async doAddToLibrary() {
-      await axios.post(
-        `http://localhost:3000/libraries/${this.libraryId}/books`,
-        {
-          isbn: this.book.isbn
-        }
-      )
+      await axios.post(`/libraries/${this.libraryId}/books`, {
+        isbn: this.book.isbn
+      })
       await this.fetchUser()
       this.$router.push({ name: 'library', params: { id: this.libraryId } })
     },
     async doRemoveFromLibrary() {
-      await axios.delete(
-        `http://localhost:3000/libraries/${this.libraryId}/books/${this.book.isbn}`
-      )
+      await axios.delete(`/libraries/${this.libraryId}/books/${this.book.isbn}`)
       await this.fetchUser()
       this.$router.push({ name: 'library', params: { id: this.libraryId } })
     }

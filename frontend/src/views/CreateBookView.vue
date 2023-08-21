@@ -29,7 +29,7 @@ export default {
   },
   methods: {
     async doCreateBook() {
-      await axios.post('http://localhost:3000/books', {
+      await axios.post('/books', {
         title: this.title,
         author: this.author,
         isbn: this.isbn
