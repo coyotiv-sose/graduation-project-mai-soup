@@ -26,6 +26,9 @@ const bookCopySchema = new mongoose.Schema({
     ref: 'User',
     autopopulate: { maxDepth: 1 },
   },
+  returnDate: {
+    type: Date,
+  },
   // TODO: add history of borrows? should this be kept under a user?
   // how to be sure that the correct copy is updated if there are several? difficult.
 })
@@ -38,6 +41,7 @@ class BookCopy {
 
     this.status = 'borrowed'
     this.borrower = user
+    this.returnDate = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000) // 14 days from now
     await this.save()
   }
 
@@ -48,12 +52,25 @@ class BookCopy {
 
     this.status = 'available'
     this.borrower = null
+    this.returnDate = null
+    await this.save()
+  }
+
+  async extend() {
+    if (this.status !== 'borrowed') {
+      throw new Error('book is not borrowed')
+    }
+
+    this.returnDate = new Date(
+      this.returnDate.getTime() + 7 * 24 * 60 * 60 * 1000
+    ) // 7 days from now
     await this.save()
   }
 
   async lose() {
     this.status = 'lost'
     this.borrower = null
+    this.returnDate = null
     await this.save()
   }
 }
