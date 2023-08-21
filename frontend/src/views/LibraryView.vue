@@ -15,8 +15,8 @@ div(v-else)
       RouterLink(:to="{ name: 'user', params: { username: member._id } }") {{ member.username }}
   h2 Books
   ul
-    li(v-for="book in library.books" :key="book.isbn")
-      RouterLink(:to="{ name: 'book', params: { isbn: book.isbn } }") {{ book.title }}
+    li(v-for="book in library.books" :key="book._id")
+      RouterLink(:to="{ name: 'book', params: { isbn: book.bookInfo.isbn } }") {{ book.bookInfo.title }}
 </template>
 
 <script>

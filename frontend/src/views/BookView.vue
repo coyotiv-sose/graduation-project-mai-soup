@@ -15,11 +15,6 @@ div(v-if="ownedLibraries && ownedLibraries.length > 0")
   select(v-model="libraryId")
     option(v-for="library in ownedLibraries" :key="library._id" :value="library._id") {{ library.name }}
   button(@click="doAddToLibrary") Add to library
-
-  h2 Remove from library
-  select(v-model="libraryId")
-    option(v-for="library in ownedLibrariesWithBook" :key="library._id" :value="library._id") {{ library.name }}
-  button(@click="doRemoveFromLibrary") Remove from library
 </template>
 
 <script>
@@ -41,27 +36,14 @@ export default {
     })
   },
   computed: {
-    ...mapState(useAccountStore, ['ownedLibraries']),
-    ownedLibrariesWithBook() {
-      if (this.book && this.ownedLibraries) {
-        return this.ownedLibraries.filter((library) => {
-          return library.books.some((b) => b.isbn === this.book.isbn)
-        })
-      }
-      return []
-    }
+    ...mapState(useAccountStore, ['ownedLibraries'])
   },
   methods: {
     ...mapActions(useAccountStore, ['fetchUser']),
     async doAddToLibrary() {
-      await axios.post(`/libraries/${this.libraryId}/books`, {
+      await axios.post(`/libraries/${this.libraryId}/copies`, {
         isbn: this.book.isbn
       })
-      await this.fetchUser()
-      this.$router.push({ name: 'library', params: { id: this.libraryId } })
-    },
-    async doRemoveFromLibrary() {
-      await axios.delete(`/libraries/${this.libraryId}/books/${this.book.isbn}`)
       await this.fetchUser()
       this.$router.push({ name: 'library', params: { id: this.libraryId } })
     }
