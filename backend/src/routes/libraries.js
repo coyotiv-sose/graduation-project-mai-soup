@@ -3,7 +3,7 @@ const createError = require('http-errors')
 
 const router = express.Router()
 const Library = require('../models/library')
-const Book = require('../models/book')
+const BookInfo = require('../models/book-info')
 const User = require('../models/user')
 const descriptionEnhancer = require('../lib/description-enhancer')
 
@@ -83,7 +83,7 @@ router.post('/:id/books', async (req, res, next) => {
   const library = await Library.findById(id)
   if (!library) return next(createError(404, 'Library not found'))
 
-  const book = await Book.findOne({ isbn })
+  const book = await BookInfo.findOne({ isbn })
   if (!book) return next(createError(404, 'Book not found'))
 
   try {
@@ -100,7 +100,7 @@ router.delete('/:id/books/:isbn', async (req, res, next) => {
   const library = await Library.findById(id)
   if (!library) return next(createError(404, 'Library not found'))
 
-  const book = await Book.findOne({ isbn })
+  const book = await BookInfo.findOne({ isbn })
   if (!book) return next(createError(404, 'Book not found'))
 
   try {

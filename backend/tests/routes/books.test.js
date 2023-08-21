@@ -1,7 +1,7 @@
 const request = require('supertest')
 const chance = require('chance').Chance()
 const app = require('../../src/app')
-const Book = require('../../src/models/book')
+const BookInfo = require('../../src/models/book-info')
 
 // restore the original behavior of mocked functions
 afterEach(() => {
@@ -104,7 +104,7 @@ it('should handle duplicate isbn', async () => {
     isbn: generateISBN(),
   }
 
-  await Book.create(book)
+  await BookInfo.create(book)
 
   const book2 = {
     title: chance.sentence(),
@@ -117,7 +117,7 @@ it('should handle duplicate isbn', async () => {
 })
 
 it('should handle server error when creating a book', async () => {
-  jest.spyOn(Book, 'create').mockImplementationOnce(() => {
+  jest.spyOn(BookInfo, 'create').mockImplementationOnce(() => {
     throw new Error('error')
   })
 
@@ -138,7 +138,7 @@ it('should get a book by isbn', async () => {
     isbn: generateISBN(),
   }
 
-  await Book.create(book)
+  await BookInfo.create(book)
 
   const response = await request(app).get(`/books/${book.isbn}`)
   console.log(response.body)
@@ -147,14 +147,14 @@ it('should get a book by isbn', async () => {
 })
 
 it('should handle book not found', async () => {
-  jest.spyOn(Book, 'findOne').mockImplementationOnce(() => null)
+  jest.spyOn(BookInfo, 'findOne').mockImplementationOnce(() => null)
 
   const response = await request(app).get(`/books/${generateISBN()}`)
   expect(response.status).toBe(404)
 })
 
 it('should handle server error when getting a book', async () => {
-  jest.spyOn(Book, 'findOne').mockImplementationOnce(() => {
+  jest.spyOn(BookInfo, 'findOne').mockImplementationOnce(() => {
     throw new Error('error')
   })
 

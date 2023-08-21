@@ -37,7 +37,7 @@ const librarySchema = new mongoose.Schema({
   books: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Book',
+      ref: 'BookCopy',
       autopopulate: { maxDepth: 1 },
     },
   ],
@@ -88,18 +88,20 @@ class Library {
     await this.save()
   }
 
-  async addBook(book) {
-    await book.addToLibrary(this)
-    this.books.push(book)
+  async addBook(bookInfo) {
+    const bookCopy = await bookInfo.addToLibrary(this)
+    this.books.push(bookCopy)
     await this.save()
   }
 
-  async removeBook(book) {
-    const index = this.books.findIndex(b => b.isbn === book.isbn)
+  async removeBookCopy(bookCopy) {
+    const index = this.books.findIndex(
+      b => b._id.toString() === bookCopy._id.toString()
+    )
     if (index === -1) {
-      throw new Error('book is not in this library')
+      throw new Error('copy is not in this library')
     }
-    await book.removeFromLibrary(this)
+    await bookCopy.removeFromLibrary(this)
     this.books.splice(index, 1)
     await this.save()
   }

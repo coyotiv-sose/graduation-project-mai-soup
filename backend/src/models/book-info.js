@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 const autopopulate = require('mongoose-autopopulate')
 
-const bookSchema = new mongoose.Schema({
+const bookInfoSchema = new mongoose.Schema({
   title: {
     type: String,
     required: true,
@@ -27,7 +27,7 @@ const bookSchema = new mongoose.Schema({
   ],
 })
 
-class Book {
+class BookInfo {
   async addToLibrary(library) {
     this.librariesFoundIn.push(library)
     await this.save()
@@ -48,6 +48,6 @@ class Book {
   }
 }
 
-bookSchema.loadClass(Book)
-bookSchema.plugin(autopopulate)
-module.exports = mongoose.model('Book', bookSchema)
+bookInfoSchema.loadClass(BookInfo)
+bookInfoSchema.plugin(autopopulate)
+module.exports = mongoose.model('BookInfo', bookInfoSchema)
