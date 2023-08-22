@@ -95,6 +95,9 @@ router.patch('/:id', async (req, res, next) => {
       case 'return':
         await user.returnBook(bookCopy)
         return res.send(bookCopy)
+      case 'extend':
+        await bookCopy.extend()
+        return res.send(bookCopy)
       case 'lose':
         await bookCopy.lose()
         return res.send(bookCopy)
