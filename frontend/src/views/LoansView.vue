@@ -3,7 +3,10 @@ h1 Loans
 // if logged in user has any loans, show them
 div(v-if="loans?.length > 0")
   ul
-    li(v-for="loan in loans" :key="loan._id")
+    // if the loan is about to expire, add the .expiring class.
+    // calculate the time difference between now and the return date.
+    // if the difference is less than 3 days, add the .expiring class.
+    li(v-for="loan in loans" :key="loan._id" :class="{ expiring: (new Date(loan.returnDate) - new Date()) < 1000 * 60 * 60 * 24 * 3 }")
       div
         RouterLink(:to="{ name: 'book', params: { isbn: loan.bookInfo.isbn } }") {{ loan.bookInfo.title }}
         span Borrowed until {{ loan.returnDate }}
@@ -39,3 +42,9 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.expiring {
+  color: red;
+}
+</style>
