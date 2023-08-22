@@ -9,7 +9,8 @@ export const useAccountStore = defineStore('account', {
   getters: {
     username: (state) => state.user?.username,
     isLoggedIn: (state) => !!state.user,
-    ownedLibraries: (state) => state.user?.ownedLibraries
+    ownedLibraries: (state) => state.user?.ownedLibraries,
+    loans: (state) => state.user?.loans
   },
   actions: {
     async fetchUser() {

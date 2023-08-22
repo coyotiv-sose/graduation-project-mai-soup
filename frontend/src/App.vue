@@ -33,6 +33,7 @@ export default {
       <RouterLink to="/users">Users</RouterLink>
       <RouterLink to="/libraries">Libraries</RouterLink>
       <RouterLink to="/books">Books</RouterLink>
+      <RouterLink v-if="isLoggedIn" to="/loans">Loans</RouterLink>
       <RouterLink v-if="!isLoggedIn" to="/login">Login</RouterLink>
       <RouterLink v-if="!isLoggedIn" to="/signup">Sign Up</RouterLink>
     </nav>
