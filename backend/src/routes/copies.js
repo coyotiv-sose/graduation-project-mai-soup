@@ -1,4 +1,5 @@
 const express = require('express')
+
 const router = express.Router()
 const createError = require('http-errors')
 const Library = require('../models/library')
@@ -10,7 +11,7 @@ router.get('/:id', async (req, res, next) => {
 
   try {
     const bookCopy = BookCopy.findById(id)
-    res.send(bookCopy)
+    return res.send(bookCopy)
   } catch (err) {
     return next(
       createError(
@@ -24,7 +25,8 @@ router.get('/:id', async (req, res, next) => {
 router.post('/:isbn', async (req, res, next) => {
   const { isbn } = req.params
   const { libraryId } = req.body
-  let bookInfo, library
+  let bookInfo
+  let library
 
   try {
     bookInfo = await BookInfo.findOne({ isbn })
@@ -75,7 +77,7 @@ router.post('/:isbn', async (req, res, next) => {
 router.patch('/:id', async (req, res, next) => {
   const { id } = req.params
   const { action } = req.body
-  const user = req.user
+  const { user } = req
 
   if (!user) {
     return next(createError(401, 'Unauthorized'))
