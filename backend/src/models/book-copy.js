@@ -61,6 +61,11 @@ class BookCopy {
       throw new Error('book is not borrowed')
     }
 
+    // if the book's return date is more than 7 days from now, don't extend
+    if (this.returnDate.getTime() - Date.now() > 7 * 24 * 60 * 60 * 1000) {
+      throw new Error('return date is too far in the future')
+    }
+
     this.returnDate = new Date(
       this.returnDate.getTime() + 7 * 24 * 60 * 60 * 1000
     ) // 7 days from now
