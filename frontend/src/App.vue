@@ -30,7 +30,7 @@ export default {
 
 <template>
   <div v-if="!isInHomeRoute">
-    <header class="navbar default">
+    <header class="navbar">
       <nav class="nav-items">
         <RouterLink to="/">Home</RouterLink>
         <RouterLink to="/about">About</RouterLink>
@@ -54,7 +54,7 @@ export default {
 
 <style scoped lang="scss">
 /* TODO: add proper styles */
-.navbar.default {
+.navbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
