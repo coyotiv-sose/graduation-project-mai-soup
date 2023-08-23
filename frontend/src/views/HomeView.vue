@@ -4,11 +4,11 @@
       <header>
         <span class="title">Porch Reads Club</span>
         <nav>
-          <a href="#" class="active">Home</a>
-          <a href="#">Libraries</a>
-          <a href="#">Books</a>
-          <a href="#">Login</a>
-          <a href="#">Sign Up</a>
+          <RouterLink to="/" class="active">Home</RouterLink>
+          <RouterLink to="/libraries">Libraries</RouterLink>
+          <RouterLink to="/books">Books</RouterLink>
+          <RouterLink to="/login">Login</RouterLink>
+          <RouterLink to="/signup">Sign Up</RouterLink>
         </nav>
       </header>
       <main>
@@ -16,12 +16,25 @@
         <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
         <p>Quisquam, voluptatum. Quisquam, voluptatum. Quisquam, voluptatum.</p>
         <p>Sed suscipit arcu id nunc fringilla rutrum.</p>
-        <a href="#" class="action-btn">View Libraries</a>
+        <RouterLink to="/libraries" class="action-btn"
+          >View Libraries</RouterLink
+        >
       </main>
       <footer>Maijs Garais, 2023</footer>
     </div>
   </div>
 </template>
+
+<script>
+import { RouterLink } from 'vue-router'
+
+export default {
+  name: 'HomeView',
+  components: {
+    RouterLink
+  }
+}
+</script>
 
 <style scoped lang="scss">
 $text-color: rgba(255, 255, 255, 0.75);
@@ -91,15 +104,19 @@ $text-color: rgba(255, 255, 255, 0.75);
           border-radius: 0;
           margin-left: 1rem;
           font-weight: 700;
-        }
 
-        a:hover {
-          border-bottom-color: rgba(255, 255, 255, 0.5);
-        }
+          &:hover {
+            border-bottom-color: rgba(255, 255, 255, 0.5);
+          }
 
-        a.active {
-          color: white;
-          border-bottom-color: white;
+          &.active {
+            color: white;
+            border-bottom-color: white;
+          }
+
+          &:focus {
+            background-color: rgba(255, 255, 255, 0.1);
+          }
         }
       }
     }
