@@ -1,13 +1,25 @@
 <template>
   <div class="bg">
-    <main>
-      <h1>Porch Reads Club</h1>
-      <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
-      <p>Quisquam, voluptatum. Quisquam, voluptatum. Quisquam, voluptatum.</p>
-      <p>Sed suscipit arcu id nunc fringilla rutrum.</p>
-      <a href="#" role="button" class="contrast action-btn">View Libraries</a>
-    </main>
-    <footer>Maijs Garais, 2023</footer>
+    <div class="container">
+      <header>
+        <span class="title">Porch Reads Club</span>
+        <nav>
+          <a href="#" class="active">Home</a>
+          <a href="#">Libraries</a>
+          <a href="#">Books</a>
+          <a href="#">Login</a>
+          <a href="#">Sign Up</a>
+        </nav>
+      </header>
+      <main>
+        <h1>Porch Reads Club</h1>
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
+        <p>Quisquam, voluptatum. Quisquam, voluptatum. Quisquam, voluptatum.</p>
+        <p>Sed suscipit arcu id nunc fringilla rutrum.</p>
+        <a href="#" role="button" class="contrast action-btn">View Libraries</a>
+      </main>
+      <footer>Maijs Garais, 2023</footer>
+    </div>
   </div>
 </template>
 
@@ -27,22 +39,67 @@
   text-align: center;
   color: white;
 
-  .action-btn {
-    font-weight: 700;
-    transition: transform 0.4s;
+  .container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 16px;
+    padding-bottom: 16px;
 
-    &:hover {
-      transform: translate(0, -5px);
+    .action-btn {
+      font-weight: 700;
+      transition: transform 0.4s;
+
+      &:hover {
+        transform: translate(0, -5px);
+      }
     }
-  }
 
-  footer,
-  main {
-    margin-top: auto;
-  }
+    header {
+      margin-bottom: auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 80%;
 
-  p {
-    color: white;
+      .title {
+        font-size: 1.2rem;
+        font-weight: 700;
+      }
+
+      nav {
+        a {
+          color: rgba(255, 255, 255, 0.5);
+          padding: 0.25rem;
+          text-decoration: none;
+          transition: border-bottom-color 0.4s;
+          border-bottom: 0.15rem solid transparent;
+          border-radius: 0;
+          margin-left: 1rem;
+          font-weight: 700;
+        }
+
+        a:hover {
+          border-bottom-color: rgba(255, 255, 255, 0.5);
+        }
+
+        a.active {
+          color: white;
+          border-bottom-color: white;
+        }
+      }
+    }
+
+    footer {
+      margin-top: auto;
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    p {
+      color: white;
+    }
   }
 }
 </style>
