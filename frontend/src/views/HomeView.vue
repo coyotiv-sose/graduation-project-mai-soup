@@ -16,7 +16,7 @@
         <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
         <p>Quisquam, voluptatum. Quisquam, voluptatum. Quisquam, voluptatum.</p>
         <p>Sed suscipit arcu id nunc fringilla rutrum.</p>
-        <a href="#" role="button" class="contrast action-btn">View Libraries</a>
+        <a href="#" class="action-btn">View Libraries</a>
       </main>
       <footer>Maijs Garais, 2023</footer>
     </div>
@@ -55,6 +55,13 @@ $text-color: rgba(255, 255, 255, 0.75);
       transition: transform 0.4s;
       text-shadow: none;
       margin-top: 1rem;
+      color: black;
+      background-color: white;
+      padding: 1rem;
+      border-radius: 5px;
+      margin-top: 1rem;
+      text-decoration: none;
+      display: inline-block;
 
       &:hover {
         transform: translate(0, -5px);
