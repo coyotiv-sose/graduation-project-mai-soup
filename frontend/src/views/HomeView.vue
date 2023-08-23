@@ -24,6 +24,7 @@
 </template>
 
 <style scoped lang="scss">
+$text-color: rgba(255, 255, 255, 0.75);
 .bg {
   background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
     url('/src/assets/landing-bg.webp');
@@ -37,7 +38,7 @@
   justify-content: center;
   align-items: center;
   text-align: center;
-  color: white;
+  box-shadow: inset 0 0 5rem rgba(0, 0, 0, 0.5);
 
   .container {
     flex: 1;
@@ -47,10 +48,13 @@
     align-items: center;
     padding-top: 16px;
     padding-bottom: 16px;
+    text-shadow: 0 0.05rem 0.1rem rgba(0, 0, 0, 0.5);
 
     .action-btn {
       font-weight: 700;
       transition: transform 0.4s;
+      text-shadow: none;
+      margin-top: 1rem;
 
       &:hover {
         transform: translate(0, -5px);
@@ -67,6 +71,7 @@
       .title {
         font-size: 1.2rem;
         font-weight: 700;
+        color: $text-color;
       }
 
       nav {
@@ -94,11 +99,16 @@
 
     footer {
       margin-top: auto;
-      color: rgba(255, 255, 255, 0.7);
+      color: $text-color;
     }
 
     p {
-      color: white;
+      margin-bottom: 0.7rem;
+      color: $text-color;
+    }
+
+    h1 {
+      margin-bottom: 1rem;
     }
   }
 }
