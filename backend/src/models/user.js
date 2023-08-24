@@ -2,6 +2,7 @@ const mongoose = require('mongoose')
 const autopopulate = require('mongoose-autopopulate')
 const passportLocalMongoose = require('passport-local-mongoose')
 const Library = require('./library')
+const BookCopy = require('./book-copy')
 
 const userSchema = new mongoose.Schema({
   // username: {
@@ -93,15 +94,17 @@ class User {
   }
 
   async returnBook(bookCopy) {
+    const bookCopyObj = await BookCopy.findById(bookCopy._id)
+
     if (
-      bookCopy.status !== 'borrowed' ||
-      bookCopy.borrower._id.toString() !== this._id.toString()
+      bookCopyObj.status !== 'borrowed' ||
+      bookCopyObj.borrower._id.toString() !== this._id.toString()
     ) {
       throw new Error('book copy is not borrowed by this user')
     }
 
-    await bookCopy.return()
-    const bookCopyId = bookCopy._id.toString()
+    await bookCopyObj.return()
+    const bookCopyId = bookCopyObj._id.toString()
     // filter out bookCopy from loans
     this.loans = this.loans.filter(loan => loan._id.toString() !== bookCopyId)
     await this.save()
