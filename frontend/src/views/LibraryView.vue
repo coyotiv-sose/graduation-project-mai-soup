@@ -27,7 +27,7 @@ div(v-else)
 import axios from 'axios'
 import { RouterLink } from 'vue-router'
 import { useAccountStore } from '../stores/account'
-import { mapState } from 'pinia'
+import { mapActions, mapState } from 'pinia'
 
 export default {
   name: 'LibraryView',
@@ -56,9 +56,11 @@ export default {
     this.library = response.data
   },
   methods: {
+    ...mapActions(useAccountStore, ['fetchUser']),
     async join() {
       await axios.post(`/libraries/${this.$route.params.id}/members`)
       this.library.members.push({ _id: this.username, username: this.username })
+      this.fetchUser()
     },
     async leave() {
       await axios.patch(`/libraries/${this.$route.params.id}/members`, {
@@ -67,6 +69,7 @@ export default {
       this.library.members = this.library.members.filter(
         (member) => member.username !== this.username
       )
+      this.fetchUser()
     },
     async doBorrowOrReturn(book) {
       if (book.status === 'borrowed') {
