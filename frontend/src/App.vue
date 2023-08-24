@@ -33,7 +33,6 @@ export default {
     <header class="navbar">
       <nav class="nav-items">
         <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
         <RouterLink to="/users">Users</RouterLink>
         <RouterLink to="/libraries">Libraries</RouterLink>
         <RouterLink to="/books">Books</RouterLink>
