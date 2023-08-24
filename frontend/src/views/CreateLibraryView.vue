@@ -1,14 +1,15 @@
 <template lang="pug">
-h1 Create Library
-// form to create a new library. libraries have a name, latitude, longitude.
-form(@submit.prevent="doCreateLibrary")
-  label(for="name") Name
-  input#name(type="text" v-model="name")
-  label(for="latitude") Latitude
-  input#latitude(type="number" v-model="latitude")
-  label(for="longitude") Longitude
-  input#longitude(type="number" v-model="longitude")
-  button(type="submit") Create Library
+.container
+  h1 Create Library
+  // form to create a new library. libraries have a name, latitude, longitude.
+  form(@submit.prevent="doCreateLibrary")
+    label(for="name") Name
+    input#name(type="text" v-model="name")
+    label(for="latitude") Latitude
+    input#latitude(type="number" v-model="latitude")
+    label(for="longitude") Longitude
+    input#longitude(type="number" v-model="longitude")
+    button(type="submit") Create Library
 </template>
 
 <script>
