@@ -8,13 +8,21 @@ div(v-else)
     li(v-for="member in library.members" :key="member._id")
       RouterLink(:to="{ name: 'user', params: { username: member._id } }") {{ member.username }}
   h2 Books
-  ul
-    li(v-for="book in library.books" :key="book._id")
-      div
-        RouterLink(:to="{ name: 'book', params: { isbn: book.bookInfo.isbn } }") {{ book.bookInfo.title }}
-        span(v-if="book.status === 'borrowed' && book.borrower.username !== this.username") Borrowed by {{ book.borrower.username }} until {{ book.returnDate }}
-        button(v-if="isUserMember && book.status === 'available'" @click="doBorrowOrReturn(book)") Borrow
-        button(v-if="isUserMember && book.status === 'borrowed' && book.borrower.username === this.username" @click="doBorrowOrReturn(book)") Return
+  table
+    thead
+      tr
+        th Title
+        th Status
+        th Action
+    tbody
+      tr(v-for="book in library.books" :key="book._id")
+        td
+          RouterLink(:to="{ name: 'book', params: { isbn: book.bookInfo.isbn } }") {{ book.bookInfo.title }}
+        td
+          span(v-if="book.status === 'borrowed'") Borrowed by {{ book.borrower.username }} until {{ book.returnDate }}
+          span(v-else) {{ book.status }}
+        td
+          button(@click="doRemoveBook(book)") Remove from library
 </template>
 
 <script>
@@ -35,6 +43,14 @@ export default {
   async mounted() {
     const response = await axios.get(`/libraries/${this.$route.params.id}`)
     this.library = response.data
+  },
+  methods: {
+    async doRemoveBook(book) {
+      const response = await axios.delete(
+        `/libraries/${this.$route.params.id}/books/${book._id}`
+      )
+      this.library = response.data
+    }
   }
 }
 </script>
