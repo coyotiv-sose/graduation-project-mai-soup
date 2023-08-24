@@ -82,6 +82,7 @@ export default {
       }
       const response = await axios.get(`/libraries/${this.$route.params.id}`)
       this.library = response.data
+      this.fetchUser()
     }
   }
 }
