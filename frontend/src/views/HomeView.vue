@@ -7,8 +7,9 @@
           <RouterLink to="/" class="active">Home</RouterLink>
           <RouterLink to="/libraries">Libraries</RouterLink>
           <RouterLink to="/books">Books</RouterLink>
-          <RouterLink to="/login">Login</RouterLink>
-          <RouterLink to="/signup">Sign Up</RouterLink>
+          <RouterLink v-if="!isLoggedIn" to="/login">Login</RouterLink>
+          <RouterLink v-if="!isLoggedIn" to="/signup">Sign Up</RouterLink>
+          <a v-if="isLoggedIn" @click="doLogout">Logout</a>
         </nav>
       </header>
       <main>
@@ -27,11 +28,24 @@
 
 <script>
 import { RouterLink } from 'vue-router'
+import { useAccountStore } from '../stores/account'
+import { mapActions, mapState } from 'pinia'
 
 export default {
   name: 'HomeView',
   components: {
     RouterLink
+  },
+  computed: {
+    ...mapState(useAccountStore, ['isLoggedIn'])
+  },
+  methods: {
+    ...mapActions(useAccountStore, ['logout']),
+    async doLogout(e) {
+      console.log('doLogout')
+      e.preventDefault()
+      await this.logout()
+    }
   }
 }
 </script>
@@ -95,7 +109,8 @@ $text-color: rgba(255, 255, 255, 0.75);
       }
 
       nav {
-        a {
+        a,
+        button {
           color: rgba(255, 255, 255, 0.5);
           padding: 0.25rem;
           text-decoration: none;
