@@ -6,17 +6,18 @@ h1 Libraries
   h2 Owned Libraries
   ul
     li(v-for="library in this.user.ownedLibraries" :key="library.id")
-      RouterLink(:to="{ name: 'library', params: { id: library._id } }") {{ library.name }}
+      RouterLink(:to="{ name: 'owned-library', params: { id: library._id } }") {{ library.name }}
   // for each library in current user's memberships, display a link to the library's page
   h2 Memberships
   ul
     li(v-for="library in this.user.memberships" :key="library.id")
       RouterLink(:to="{ name: 'library', params: { id: library._id } }") {{ library.name }}
-  // for each library in libraries, display a link to the library's page
+  // for each library in libraries, display a link to the library's page.
+  // if the user is the owner, display a link to the owned library page instead.
   h2 All Libraries
   ul
     li(v-for="library in libraries" :key="library.id")
-      RouterLink(:to="{ name: 'library', params: { id: library._id } }") {{ library.name }}
+      RouterLink(:to="{ name: library.owner.username === this.user.username ? 'owned-library' : 'library', params: { id: library._id } }") {{ library.name }}
 </template>
 
 <script>
