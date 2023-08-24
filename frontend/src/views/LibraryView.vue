@@ -16,9 +16,8 @@ div(v-else)
   h2 Books
   ul
     li(v-for="book in library.books" :key="book._id")
-      div
-        RouterLink(:to="{ name: 'book', params: { isbn: book.bookInfo.isbn } }") {{ book.bookInfo.title }}
-        span(v-if="book.status === 'borrowed' && book.borrower.username !== this.username") Borrowed by {{ book.borrower.username }} until {{ book.returnDate }}
+      div.grid
+        RouterLink(:to="{ name: 'book', params: { isbn: book.bookInfo.isbn } }" :class="book.status === 'available' ? 'available' : 'unavailable'") {{ book.bookInfo.title }}
         button(v-if="isUserMember && book.status === 'available'" @click="doBorrowOrReturn(book)") Borrow
         button(v-if="isUserMember && book.status === 'borrowed' && book.borrower.username === this.username" @click="doBorrowOrReturn(book)") Return
 </template>
@@ -87,3 +86,14 @@ export default {
   }
 }
 </script>
+
+<style scoped lang="scss">
+.available {
+  color: green;
+}
+
+.unavailable {
+  color: red;
+  text-decoration: line-through;
+}
+</style>
