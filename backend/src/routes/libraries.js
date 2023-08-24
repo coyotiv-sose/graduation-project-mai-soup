@@ -4,6 +4,7 @@ const createError = require('http-errors')
 const router = express.Router()
 const Library = require('../models/library')
 const BookInfo = require('../models/book-info')
+const BookCopy = require('../models/book-copy')
 const User = require('../models/user')
 const descriptionEnhancer = require('../lib/description-enhancer')
 
@@ -94,17 +95,17 @@ router.post('/:id/copies', async (req, res, next) => {
   }
 })
 
-router.delete('/:id/books/:isbn', async (req, res, next) => {
-  const { id, isbn } = req.params
+router.delete('/:id/books/:bookId', async (req, res, next) => {
+  const { id, bookId } = req.params
 
   const library = await Library.findById(id)
   if (!library) return next(createError(404, 'Library not found'))
 
-  const book = await BookInfo.findOne({ isbn })
+  const book = await BookCopy.findById(bookId)
   if (!book) return next(createError(404, 'Book not found'))
 
   try {
-    await library.removeBook(book)
+    await library.removeBookCopy(book)
     return res.status(204).send()
   } catch (err) {
     return next(createError(500, err.message))
