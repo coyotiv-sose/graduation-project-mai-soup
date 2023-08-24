@@ -1,28 +1,29 @@
 <template lang="pug">
-div(v-if="!library") Loading...
-div(v-else)
-  h1 {{ library.name }}
-  p Location: {{ library.latitude }}, {{ library.longitude }}
-  h2 Members
-  ul
-    li(v-for="member in library.members" :key="member._id")
-      RouterLink(:to="{ name: 'user', params: { username: member._id } }") {{ member.username }}
-  h2 Books
-  table
-    thead
-      tr
-        th Title
-        th Status
-        th Action
-    tbody
-      tr(v-for="book in library.books" :key="book._id")
-        td
-          RouterLink(:to="{ name: 'book', params: { isbn: book.bookInfo.isbn } }") {{ book.bookInfo.title }}
-        td
-          span(v-if="book.status === 'borrowed'") Borrowed by {{ book.borrower.username }} until {{ book.returnDate }}
-          span(v-else) {{ book.status }}
-        td
-          button(@click="doRemoveBook(book)") Remove from library
+.container
+  div(v-if="!library") Loading...
+  div(v-else)
+    h1 {{ library.name }}
+    p Location: {{ library.latitude }}, {{ library.longitude }}
+    h2 Members
+    ul
+      li(v-for="member in library.members" :key="member._id")
+        RouterLink(:to="{ name: 'user', params: { username: member._id } }") {{ member.username }}
+    h2 Books
+    table
+      thead
+        tr
+          th Title
+          th Status
+          th Action
+      tbody
+        tr(v-for="book in library.books" :key="book._id")
+          td
+            RouterLink(:to="{ name: 'book', params: { isbn: book.bookInfo.isbn } }") {{ book.bookInfo.title }}
+          td
+            span(v-if="book.status === 'borrowed'") Borrowed by {{ book.borrower.username }} until {{ book.returnDate }}
+            span(v-else) {{ book.status }}
+          td
+            button(@click="doRemoveBook(book)") Remove from library
 </template>
 
 <script>

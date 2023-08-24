@@ -1,18 +1,19 @@
 <template lang="pug">
-h1 Create Book
-// books have title, author, isbn
-form(@submit.prevent="doCreateBook")
-  div
-    label(for="title") Title
-    input#title(type="text" v-model="title" required)
-  div
-    label(for="author") Author
-    input#author(type="text" v-model="author" required)
-  div
-    label(for="isbn") ISBN
-    input#isbn(type="text" v-model="isbn" required)
-  div
-    button(type="submit") Create Book
+.container
+  h1 Create Book
+  // books have title, author, isbn
+  form(@submit.prevent="doCreateBook")
+    div
+      label(for="title") Title
+      input#title(type="text" v-model="title" required)
+    div
+      label(for="author") Author
+      input#author(type="text" v-model="author" required)
+    div
+      label(for="isbn") ISBN
+      input#isbn(type="text" v-model="isbn" required)
+    div
+      button(type="submit") Create Book
 </template>
 
 <script>

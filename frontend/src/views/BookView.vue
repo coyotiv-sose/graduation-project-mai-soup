@@ -1,20 +1,21 @@
 <template lang="pug">
-div(v-if="book")
-  h1 {{ book.title }}
-  div by {{ book.author }}
-  div ISBN: {{ book.isbn }}
+.container
+  div(v-if="book")
+    h1 {{ book.title }}
+    div by {{ book.author }}
+    div ISBN: {{ book.isbn }}
 
-  h2 Libraries
-    ul
-      li(v-for="library in book.librariesFoundIn" :key="library._id")
-        RouterLink(:to="{ name: 'library', params: { id: library._id } }") {{ library.name }}
-div(v-else) Loading...
+    h2 Libraries
+      ul
+        li(v-for="library in book.librariesFoundIn" :key="library._id")
+          RouterLink(:to="{ name: 'library', params: { id: library._id } }") {{ library.name }}
+  div(v-else) Loading...
 
-div(v-if="ownedLibraries && ownedLibraries.length > 0")
-  h2 Add to library
-  select(v-model="libraryId")
-    option(v-for="library in ownedLibraries" :key="library._id" :value="library._id") {{ library.name }}
-  button(@click="doAddToLibrary") Add to library
+  div(v-if="ownedLibraries && ownedLibraries.length > 0")
+    h2 Add to library
+    select(v-model="libraryId")
+      option(v-for="library in ownedLibraries" :key="library._id" :value="library._id") {{ library.name }}
+    button(@click="doAddToLibrary") Add to library
 </template>
 
 <script>

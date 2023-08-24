@@ -1,5 +1,4 @@
 <script>
-import axios from 'axios'
 import { useAccountStore } from '../stores/account'
 import { mapActions } from 'pinia'
 
@@ -25,9 +24,10 @@ export default {
 </script>
 
 <template lang="pug">
-h1 Log In
-form(@submit.prevent="performLogin")
-  input(type="text" placeholder="Username" v-model="username")
-  input(type="password" placeholder="Password" v-model="password")
-  button(type="submit") Log In
+.container
+  h1 Log In
+  form(@submit.prevent="performLogin")
+    input(type="text" placeholder="Username" v-model="username")
+    input(type="password" placeholder="Password" v-model="password")
+    button(type="submit") Log In
 </template>
