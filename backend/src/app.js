@@ -3,6 +3,7 @@ const express = require('express')
 const cookieParser = require('cookie-parser')
 const logger = require('morgan')
 const cors = require('cors')
+const helmet = require('helmet')
 const session = require('express-session')
 const MongoStore = require('connect-mongo')
 const mongoose = require('mongoose')
@@ -31,6 +32,8 @@ app.use(
     credentials: true,
   })
 )
+
+app.use(helmet())
 
 const connectionPromise = mongoose.connection
   .asPromise()
