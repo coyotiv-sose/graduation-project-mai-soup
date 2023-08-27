@@ -2,7 +2,7 @@ const createError = require('http-errors')
 const validator = require('email-validator')
 const User = require('../models/user')
 
-module.exports = async function (req, res, next) {
+module.exports = async (req, res, next) => {
   // check for "identifier" and "password" properties in req.body
   const { identifier, password } = req.body
   if (!identifier || !password) {
@@ -32,7 +32,7 @@ module.exports = async function (req, res, next) {
   try {
     await user.authenticate(password)
     req.user = user
-    next()
+    return next()
   } catch (err) {
     return next(createError(401, 'Invalid credentials'))
   }
