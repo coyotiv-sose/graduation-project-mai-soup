@@ -5,7 +5,8 @@ import { mapActions } from 'pinia'
 export default {
   data() {
     return {
-      username: '',
+      // can be username or email
+      identifier: '',
       password: ''
     }
   },
@@ -13,7 +14,7 @@ export default {
     ...mapActions(useAccountStore, ['login']),
     async performLogin() {
       try {
-        await this.login({ username: this.username, password: this.password })
+        await this.login({ identifier: this.identifier, password: this.password })
         this.$router.push('/')
       } catch (err) {
         console.error(err)
@@ -27,7 +28,7 @@ export default {
 .container
   h1 Log In
   form(@submit.prevent="performLogin")
-    input(type="text" placeholder="Username" v-model="username")
+    input(type="text" placeholder="Username or email" v-model="identifier")
     input(type="password" placeholder="Password" v-model="password")
     button(type="submit") Log In
 </template>
