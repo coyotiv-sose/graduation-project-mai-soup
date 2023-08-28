@@ -16,10 +16,10 @@ export default {
   props: ['book'],
   methods: {
     async addBook () {
-      const response = await axios.post('/api/books', this.book)
+      const response = await axios.post('/books', this.book)
 
       if (response.status === 202) {
-        window.alert(response.data.message)
+        window.alert('gg, book doesnt exist in db')
       } else if (response.status === 201) {
         this.$router.push({ name: 'book', params: { isbn: this.book.industryIdentifiers[0].identifier}})
       }
