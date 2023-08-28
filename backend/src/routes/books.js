@@ -1,4 +1,5 @@
 const express = require('express')
+const axios = require('axios')
 
 const router = express.Router()
 const createError = require('http-errors')
@@ -60,6 +61,20 @@ router.get('/', async (req, res, next) => {
       )
     )
   }
+})
+
+router.post('/google-books-search', async (req, res, next) => {
+  const { query } = req.body
+
+  if (!query) return next(createError(400, 'Missing query'))
+
+  const results = (
+    await axios.get(`https://www.googleapis.com/books/v1/volumes?q=${query}`)
+  ).data.items.map(book => book.volumeInfo)
+
+  if (!results.length) return next(createError(404, 'No results found'))
+
+  return res.send(results)
 })
 
 module.exports = router

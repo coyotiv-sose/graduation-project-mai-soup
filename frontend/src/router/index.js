@@ -70,6 +70,11 @@ const router = createRouter({
       path: '/libraries/owned/:id',
       name: 'owned-library',
       component: () => import('../views/OwnedLibraryView.vue')
+    },
+    {
+      path: '/gb-test',
+      name: 'google-books-test',
+      component: () => import('../views/GoogleBooksTest.vue')
     }
   ]
 })
