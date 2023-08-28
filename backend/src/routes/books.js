@@ -1,5 +1,6 @@
 const express = require('express')
 const axios = require('axios')
+const ISBN = require('isbn3')
 
 const router = express.Router()
 const createError = require('http-errors')
@@ -57,6 +58,7 @@ router.post('/', async (req, res, next) => {
 
   return res.status(202).send()
 
+  // TODO: handle the verification of new info in the frontend
   // try {
   //   const bookInfo = await BookInfo.create({ isbn, title, author })
   //   return res.status(201).send(bookInfo)
@@ -96,10 +98,12 @@ router.post('/google-books-search', async (req, res, next) => {
   if (!query) return next(createError(400, 'Missing query'))
 
   const response = (
-    await axios.get(`https://www.googleapis.com/books/v1/volumes?q=${query}`)
+    await axios.get(
+      `https://www.googleapis.com/books/v1/volumes?q=${
+        ISBN.parse(query) ? 'isbn:' : ''
+      }${query}`
+    )
   ).data
-
-  console.error(response)
 
   const results = response.items.map(book => book.volumeInfo)
 
