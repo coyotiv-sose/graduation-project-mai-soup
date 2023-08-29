@@ -1,0 +1,17 @@
+@startuml Adding a book
+start
+:User, who is a library owner, wants to add a new copy to their library;
+:They gather the book details;
+:They put the details info a form to look the book up;
+if (Book exists in DB?) then (yes)
+  :Book details are displayed in list that user can add a copy to library from;
+  :User can select the book to immediately add to their library;
+else (no)
+  :Book details matching the query are fetched from Google Books;
+  :User is asked to select the one they have, in order to add to the database;
+  :The book is added to the database and the book is selected to be added to the library;
+endif
+:User is asked to confirm that it's the correct book to add to the library;
+:Book is added;
+stop
+@enduml
