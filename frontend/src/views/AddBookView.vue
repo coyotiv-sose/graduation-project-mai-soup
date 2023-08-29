@@ -1,9 +1,8 @@
 <template lang="pug">
-.container
-  h1 Google Books API test
-  // form for query to search for
-  // TODO: refactor to be same as other forms
-  form(v-on:submit.prevent="onSubmit")
+.container 
+  h1 Add Book to Library 
+  // form for query
+  form(@submit.prevent="doSearch")
     input(type="text" v-model="query")
     button(type="submit") Submit
 
@@ -13,12 +12,13 @@
     BookListItem(v-for="book in books" :key="book.canonicalVolumeLink" :book="book")
 </template>
 
+
 <script>
 import axios from 'axios';
 import BookListItem from '../components/BookListItem.vue';
 
 export default {
-  name: 'GoogleBooks',
+  name: 'AddBook',
   components: {
     BookListItem
   },
@@ -30,10 +30,10 @@ export default {
     }
   },
   methods: {
-    async onSubmit () {
+    async doSearch () {
       this.booksAreLoading = true;
-      const results = await axios.post('/books/google-books-search', {
-        query: this.query
+      const results = await axios.get('/books', {
+        params: {q: this.query}
       })
 
       this.books = results.data
