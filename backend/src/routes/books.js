@@ -26,6 +26,7 @@ router.get('/:isbn', async (req, res, next) => {
   }
 })
 
+// TODO: change to only expect a google book id
 router.post('/', async (req, res, next) => {
   // req body expected to have a google books volume info
   const { title, authors, industryIdentifiers, imageLinks } = req.body
@@ -125,6 +126,7 @@ router.get('/', async (req, res, next) => {
   }
 })
 
+// TODO: separate into own router
 router.post('/google-books-search', async (req, res, next) => {
   const { query } = req.body
 
@@ -138,6 +140,7 @@ router.post('/google-books-search', async (req, res, next) => {
     )
   ).data
 
+  // TODO: send whole book, can use id for lookup later
   const results = response.items.map(book => book.volumeInfo)
 
   if (!results.length) return next(createError(404, 'No results found'))
