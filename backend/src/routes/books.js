@@ -1,6 +1,7 @@
 const express = require('express')
 const axios = require('axios')
 const ISBN = require('isbn3')
+const Fuse = require('fuse.js')
 
 const router = express.Router()
 const createError = require('http-errors')
@@ -79,8 +80,40 @@ router.post('/', async (req, res, next) => {
 })
 
 router.get('/', async (req, res, next) => {
+  const query = req.query.q
+
   try {
     const books = await BookInfo.find({})
+
+    if (query) {
+      // is the query an isbn?
+      const isbn = ISBN.parse(query)
+      if (isbn) {
+        const book = books.find(
+          b => b.isbn === isbn.isbn13 || b.isbn === isbn.isbn10
+        )
+
+        if (!book) return next(createError(404, 'No results found'))
+        return res.send([book])
+      }
+      // since not an isbn, check title and author
+      // set up fuzzy search with Fuse.js
+      const fuse = new Fuse(books, {
+        keys: ['title', 'author'],
+      })
+
+      const results = fuse.search(query)
+
+      if (results.length === 0) {
+        return next(createError(404, 'No results found'))
+      }
+
+      const bestMatches = results.map(result => result.item) // get the actual book objects
+
+      return res.send(bestMatches)
+    }
+
+    // no query, return all books
     return res.send(books)
   } catch (err) {
     return next(

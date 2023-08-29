@@ -36,6 +36,7 @@
     "email-validator": "^2.0.4",
     "express": "^4.18.2",
     "express-session": "^1.17.3",
+    "fuse.js": "^6.6.2",
     "helmet": "^7.0.0",
     "http-errors": "^2.0.0",
     "isbn3": "^1.1.40",
