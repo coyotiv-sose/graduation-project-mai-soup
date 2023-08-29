@@ -2,7 +2,7 @@
 .grid(@click="addBook")
   div
     h2 {{ book.title }} 
-    p by {{ book.authors[0] }}
+    p by {{ book.authors? book.authors[0] : book.author }}
   // TODO: add downsized regular thumbnail if there's no small version
   // TODO: add default image for books that don't have one at all
   img(:src="book.imageLinks?.smallThumbnail" :alt="book.title")
