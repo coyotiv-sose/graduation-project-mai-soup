@@ -7,6 +7,7 @@
     button(type="submit") Submit
 
   // if books not null, display a BookListItem component for each
+  div(v-if="booksAreLoading" aria-busy="true")
   div(v-if="books")
     BookListItem(v-for="book in books" :key="book.canonicalVolumeLink" :book="book")
 </template>
@@ -23,16 +24,19 @@ export default {
   data () {
     return {
       query: '',
-      books: null
+      books: null,
+      booksAreLoading: false,
     }
   },
   methods: {
     async onSubmit () {
+      this.booksAreLoading = true;
       const results = await axios.post('/books/google-books-search', {
         query: this.query
       })
 
       this.books = results.data
+      this.booksAreLoading = false
     }
   }
 }
