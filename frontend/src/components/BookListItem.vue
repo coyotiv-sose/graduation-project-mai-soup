@@ -34,6 +34,7 @@ export default {
 .grid {
   padding-top: 1rem;
   padding-bottom: 1rem;
+  // TODO: the last one has a border too, it shouldn't?
   border-bottom: 1px solid rgba(255, 255, 255, 0.6)
 }
 </style>
