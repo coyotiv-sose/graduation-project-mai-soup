@@ -7,11 +7,11 @@ const router = express.Router()
 const createError = require('http-errors')
 const BookInfo = require('../models/book-info')
 
-router.get('/:isbn', async (req, res, next) => {
-  const { isbn } = req.params
+router.get('/:openLibraryId', async (req, res, next) => {
+  const { openLibraryId } = req.params
 
   try {
-    const bookInfo = await BookInfo.findOne({ isbn })
+    const bookInfo = await BookInfo.findOne({ openLibraryId })
 
     if (!bookInfo) return next(createError(404, 'Book not found'))
 

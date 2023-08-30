@@ -2,8 +2,8 @@
 .container
   div(v-if="book")
     h1 {{ book.title }}
-    div by {{ book.author }}
-    div ISBN: {{ book.isbn }}
+    img(:src="book.imageUrl" :alt="book.title")
+    div by {{ book.authors.join(', ') }}
 
     h2 Libraries
       ul
@@ -32,7 +32,7 @@ export default {
     }
   },
   created() {
-    axios.get(`/books/${this.$route.params.isbn}`).then((response) => {
+    axios.get(`/books/${this.$route.params.id}`).then((response) => {
       this.book = response.data
     })
   },
