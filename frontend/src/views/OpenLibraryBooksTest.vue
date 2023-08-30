@@ -1,6 +1,6 @@
 <template lang="pug">
 .container
-  h1 Google Books API test
+  h1 Open Library Books API test
   // form for query to search for
   // TODO: refactor to be same as other forms
   form(v-on:submit.prevent="onSubmit")
@@ -10,7 +10,7 @@
   // if books not null, display a BookListItem component for each
   div(v-if="booksAreLoading" aria-busy="true")
   div(v-if="books")
-    BookListItem(v-for="book in books" :key="book.canonicalVolumeLink" :book="book")
+    BookListItem(v-for="book in books" :key="book.id" :book="book")
 </template>
 
 <script>
@@ -18,7 +18,7 @@ import axios from 'axios';
 import BookListItem from '../components/BookListItem.vue';
 
 export default {
-  name: 'GoogleBooks',
+  name: 'OpenLibraryBooks',
   components: {
     BookListItem
   },
@@ -32,7 +32,7 @@ export default {
   methods: {
     async onSubmit () {
       this.booksAreLoading = true;
-      const results = await axios.get('/google-books', {
+      const results = await axios.get('/open-books', {
         params: {
           q: this.query
         }

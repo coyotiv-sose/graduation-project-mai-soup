@@ -73,8 +73,8 @@ const router = createRouter({
     },
     {
       path: '/gb-test',
-      name: 'google-books-test',
-      component: () => import('../views/GoogleBooksTest.vue')
+      name: 'open-library-books-test',
+      component: () => import('../views/OpenLibraryBooksTest.vue')
     },
     {
       path: '/add-book',

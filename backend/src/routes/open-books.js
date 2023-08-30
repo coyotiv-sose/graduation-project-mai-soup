@@ -11,17 +11,19 @@ router.get('/', async (req, res, next) => {
   if (!query) return next(createError(400, 'Missing query'))
 
   const response = (
-    await axios.get(
-      `https://www.googleapis.com/books/v1/volumes?q=${
-        ISBN.parse(query) ? 'isbn:' : ''
-      }${query}`
-    )
-  ).data
+    await axios.get(`https://openlibrary.org/search.json?q=${query}&limit=20`)
+  ).data.docs
 
-  // TODO: send whole book, can use id for lookup later
-  const results = response.items.map(book => book.volumeInfo)
+  if (!response.length) return next(createError(404, 'No results found'))
 
-  if (!results.length) return next(createError(404, 'No results found'))
+  const results = response.map(book => ({
+    title: book.title,
+    authors: book.author_name.join(', '),
+    id: book.key,
+    coverUrl: book.cover_i
+      ? `https://covers.openlibrary.org/b/id/${book.cover_i}-M.jpg`
+      : null,
+  }))
 
   return res.send(results)
 })
