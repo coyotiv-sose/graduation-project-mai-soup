@@ -6,11 +6,13 @@ const bookInfoSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  author: {
-    type: String,
-    required: true,
-  },
-  isbn: {
+  authors: [
+    {
+      type: String,
+      required: true,
+    },
+  ],
+  openLibraryId: {
     type: String,
     required: true,
     unique: true,

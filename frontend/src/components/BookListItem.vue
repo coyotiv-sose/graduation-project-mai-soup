@@ -15,15 +15,22 @@ export default {
   props: ['book'],
   methods: {
     async addBook () {
-      const response = await axios.post('/books', this.book.id)
+      try {
+        const response = await axios.post('/books', {
+          id: this.book.id
+        })
 
-      if (response.status === 202) {
-        window.alert('gg, book doesnt exist in db')
-      } else if (response.status === 201) {
-        this.$router.push({ name: 'book', params: { isbn: this.book.industryIdentifiers[0].identifier}})
+        if (response.status === 201) {
+          window.alert('book added successfully')
+          // TODO: handle success case
+        }
+      } catch (err) {
+        if (err.response.status === 409) {
+          this.$router.push({ name: 'book', params: { id: this.book.id}})
+        } else {
+          // handle other errors
+        }
       }
-
-      // TODO: error handling
     }
   }
 }

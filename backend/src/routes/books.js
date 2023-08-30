@@ -26,58 +26,49 @@ router.get('/:isbn', async (req, res, next) => {
   }
 })
 
-// TODO: change to only expect a google book id
 router.post('/', async (req, res, next) => {
-  // req body expected to have a google books volume info
-  const { title, authors, industryIdentifiers, imageLinks } = req.body
+  const { id } = req.body
 
-  if (!title || !authors || !industryIdentifiers)
-    return next(createError(400, 'Missing fields'))
+  if (!id) return next(createError(400, 'Missing parameters'))
 
-  const isbn13 = industryIdentifiers.find(
-    id => id.type === 'ISBN_13'
-  ).identifier
-  const isbn10 = industryIdentifiers.find(
-    id => id.type === 'ISBN_10'
-  ).identifier
+  try {
+    // check if volume already exists in db
+    const book = await BookInfo.findOne({ openLibraryId: id })
+    if (book) {
+      return res.status(409).send(book)
+    }
 
-  if (!isbn13 && !isbn10) return next(createError(400, 'Missing ISBN'))
-  let book
+    // fetch book info from OpenLibrary API
+    const volume = await axios.get(`https://openlibrary.org/works/${id}.json`)
+    // TODO: handle errors
 
-  // try looking up book by isbn13 if available
-  if (isbn13) {
-    book = await BookInfo.findOne({ isbn: isbn13 })
+    const { title, covers, authors } = volume.data
+
+    // convert author objects to author names
+    const authorIds = authors.map(item => item.author.key)
+
+    const authorNames = await Promise.all(
+      authorIds.map(async a => {
+        const author = await axios.get(`https://openlibrary.org${a}.json`)
+        console.error(a)
+        return author.data.name
+      })
+    )
+    // construct bookInfo
+    const newBook = await BookInfo.create({
+      openLibraryId: id,
+      title,
+      authors: [...new Set(authorNames)], // remove duplicate authors
+      imageUrl: covers
+        ? `https://covers.openlibrary.org/b/id/${covers[0]}-M.jpg`
+        : null,
+    })
+
+    return res.status(201).send(newBook)
+  } catch (err) {
+    console.error(err)
+    return next(createError(500, 'Error adding book'))
   }
-
-  // if none found or isbn13 wasn't available, try looking up book by isbn10
-  if (!book) {
-    book = await BookInfo.findOne({ isbn: isbn10 })
-  }
-
-  if (book) {
-    return res.status(201).send(book)
-  }
-
-  return res.status(202).send()
-
-  // TODO: handle the verification of new info in the frontend
-  // try {
-  //   const bookInfo = await BookInfo.create({ isbn, title, author })
-  //   return res.status(201).send(bookInfo)
-  // } catch (err) {
-  //   // code 11000 represents a duplicate key error in mongo
-  //   if (err.code === 11000) {
-  //     return next(createError(409, 'Book already exists'))
-  //   }
-
-  //   // other errors
-  //   return next(
-  //     createError(
-  //       500,
-  //       'An error occurred while creating the book. Please try again later.'
-  //     )
-  //   )
-  // }
 })
 
 router.get('/', async (req, res, next) => {
