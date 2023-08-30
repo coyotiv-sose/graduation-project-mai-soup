@@ -32,8 +32,10 @@ export default {
   methods: {
     async onSubmit () {
       this.booksAreLoading = true;
-      const results = await axios.post('/books/google-books-search', {
-        query: this.query
+      const results = await axios.get('/google-books', {
+        params: {
+          q: this.query
+        }
       })
 
       this.books = results.data
