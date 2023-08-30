@@ -1,6 +1,5 @@
 const express = require('express')
 const axios = require('axios')
-const ISBN = require('isbn3')
 const createError = require('http-errors')
 
 const router = express.Router()
@@ -18,8 +17,8 @@ router.get('/', async (req, res, next) => {
 
   const results = response.map(book => ({
     title: book.title,
-    authors: book.author_name.join(', '),
-    id: book.key,
+    authors: book.author_name?.join(', '),
+    id: book.key.replace('/works/', ''),
     coverUrl: book.cover_i
       ? `https://covers.openlibrary.org/b/id/${book.cover_i}-M.jpg`
       : null,
