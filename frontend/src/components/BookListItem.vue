@@ -2,10 +2,9 @@
 .grid(@click="addBook")
   div
     h2 {{ book.title }} 
-    p by {{ book.authors? book.authors[0] : book.author }}
-  // TODO: add downsized regular thumbnail if there's no small version
+    p by {{ book.authors }}
   // TODO: add default image for books that don't have one at all
-  img(:src="book.imageLinks?.smallThumbnail" :alt="book.title")
+  img(:src="book.coverUrl" :alt="book.title")
 </template>
 
 <script>
@@ -16,7 +15,7 @@ export default {
   props: ['book'],
   methods: {
     async addBook () {
-      const response = await axios.post('/books', this.book)
+      const response = await axios.post('/books', this.book.id)
 
       if (response.status === 202) {
         window.alert('gg, book doesnt exist in db')
