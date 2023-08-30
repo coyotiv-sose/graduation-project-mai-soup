@@ -11,11 +11,11 @@
           th Author
           th Actions
       tbody
-        tr(v-for="book in books" :key="book.id")
+        tr(v-for="book in books" :key="book.openLibraryId")
           td {{ book.title }}
           td {{ book.author }}
           td
-            RouterLink(:to="{ name: 'book', params: { isbn: book.isbn } }") View
+            RouterLink(:to="{ name: 'book', params: { id: book.openLibraryId } }") View
   div(v-else)
     div(v-if="books === null") Loading...
     div(v-else) No books exist.

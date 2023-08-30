@@ -57,7 +57,7 @@ const router = createRouter({
       component: () => import('../views/CreateBookView.vue')
     },
     {
-      path: '/books/:isbn',
+      path: '/books/:id',
       name: 'book',
       component: () => import('../views/BookView.vue')
     },
