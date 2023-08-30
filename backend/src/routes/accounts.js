@@ -1,9 +1,9 @@
 const express = require('express')
+const createError = require('http-errors')
+const passport = require('passport')
+const User = require('../models/user')
 
 const router = express.Router()
-const createError = require('http-errors')
-const authenticate = require('../middleware/auth')
-const User = require('../models/user')
 
 router.get('/', (req, res) => {
   res.send(req.session)
@@ -25,9 +25,13 @@ router.get('/session', (req, res) => {
   res.send(req.user)
 })
 
-router.post('/session', authenticate, (req, res) => {
-  res.send(req.user)
-})
+router.post(
+  '/session',
+  passport.authenticate('local', { failWithError: true }),
+  (req, res) => {
+    res.send(req.user)
+  }
+)
 
 router.delete('/session', (req, res, next) => {
   // return to appease the eslint overlords
