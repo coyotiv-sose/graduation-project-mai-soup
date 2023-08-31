@@ -2,6 +2,11 @@
 import { RouterLink, RouterView } from 'vue-router'
 import { useAccountStore } from './stores/account'
 import { mapActions, mapState } from 'pinia'
+import axios from 'axios'
+
+// set up axios defaults
+axios.defaults.baseURL = import.meta.env.VITE_API_URL
+axios.defaults.withCredentials = true
 
 export default {
   computed: {
