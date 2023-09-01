@@ -1,5 +1,6 @@
 const express = require('express')
 const createError = require('http-errors')
+const axios = require('axios')
 
 const router = express.Router()
 const Library = require('../models/library')
@@ -79,13 +80,40 @@ router.post('/test', async (req, res) => {
 
 router.post('/:id/copies', async (req, res, next) => {
   const { id } = req.params
-  const { isbn } = req.body
+  const { openLibraryId } = req.body
 
   const library = await Library.findById(id)
   if (!library) return next(createError(404, 'Library not found'))
 
-  const book = await BookInfo.findOne({ isbn })
-  if (!book) return next(createError(404, 'Book not found'))
+  let book = await BookInfo.findOne({ openLibraryId })
+  if (!book) {
+    // add from OpenLibrary API if not found locally
+    const volume = await axios.get(`https://openlibrary.org/works/${id}.json`)
+    // TODO: handle errors
+
+    const { title, covers, authors } = volume.data
+
+    // convert author objects to author names
+    const authorIds = authors.map(item => item.author.key)
+
+    const authorNames = await Promise.all(
+      authorIds.map(async a => {
+        const author = await axios.get(`https://openlibrary.org${a}.json`)
+        console.error(a)
+        return author.data.name
+      })
+    )
+    // construct bookInfo
+    // TODO: error handling
+    book = await BookInfo.create({
+      openLibraryId: id,
+      title,
+      authors: [...new Set(authorNames)], // remove duplicate authors
+      imageUrl: covers
+        ? `https://covers.openlibrary.org/b/id/${covers[0]}-M.jpg`
+        : null,
+    })
+  }
 
   try {
     await library.addBook(book)
