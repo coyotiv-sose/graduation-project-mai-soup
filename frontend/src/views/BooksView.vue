@@ -1,7 +1,6 @@
 <template lang="pug">
 .container
   h1 Books
-  RouterLink(:to="{ name: 'create-book' }") Add New
   // render table if books are loaded, otherwise show loading message. if no books exist, show message that no books exist.
   div(v-if="books?.length")
     table
@@ -19,7 +18,6 @@
   div(v-else)
     div(v-if="books === null") Loading...
     div(v-else) No books exist.
-      RouterLink(:to="{ name: 'create-book' }") Add New Book?
 </template>
 
 <script>

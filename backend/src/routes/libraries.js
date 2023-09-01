@@ -88,7 +88,9 @@ router.post('/:id/copies', async (req, res, next) => {
   let book = await BookInfo.findOne({ openLibraryId })
   if (!book) {
     // add from OpenLibrary API if not found locally
-    const volume = await axios.get(`https://openlibrary.org/works/${id}.json`)
+    const volume = await axios.get(
+      `https://openlibrary.org/works/${openLibraryId}.json`
+    )
     // TODO: handle errors
 
     const { title, covers, authors } = volume.data

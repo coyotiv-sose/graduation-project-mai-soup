@@ -13,23 +13,21 @@ import axios from 'axios'
 export default {
   name: 'BookListItem',
   props: ['book'],
+  data() {
+    return {
+      library: this.$route.params.id
+    }
+},
   methods: {
     async addBook () {
       try {
-        const response = await axios.post('/books', {
-          id: this.book.id
+        await axios.post('/libraries/' + this.library + '/copies', {
+          openLibraryId: this.book.id
         })
 
-        if (response.status === 201) {
-          window.alert('book added successfully')
-          // TODO: handle success case
-        }
+        this.$router.push({ name: 'library', params: { id: this.library } })
       } catch (err) {
-        if (err.response.status === 409) {
-          this.$router.push({ name: 'book', params: { id: this.book.id}})
-        } else {
-          // handle other errors
-        }
+        // TODO: handle error case
       }
     }
   }

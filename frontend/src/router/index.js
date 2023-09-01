@@ -52,11 +52,6 @@ const router = createRouter({
       component: () => import('../views/BooksView.vue')
     },
     {
-      path: '/books/create',
-      name: 'create-book',
-      component: () => import('../views/CreateBookView.vue')
-    },
-    {
       path: '/books/:id',
       name: 'book',
       component: () => import('../views/BookView.vue')
@@ -72,12 +67,7 @@ const router = createRouter({
       component: () => import('../views/OwnedLibraryView.vue')
     },
     {
-      path: '/gb-test',
-      name: 'open-library-books-test',
-      component: () => import('../views/OpenLibraryBooksTest.vue')
-    },
-    {
-      path: '/add-book',
+      path: '/libraries/:id/add-book',
       name: 'add-book',
       component: () => import('../views/AddBookView.vue')
     }

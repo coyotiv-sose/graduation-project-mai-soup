@@ -1,24 +1,24 @@
 <template lang="pug">
-.container 
-  h1 Add Book to Library 
-  // form for query
-  form(@submit.prevent="doSearch")
+.container
+  h1 Add Book to Library
+  // form for query to search for
+  // TODO: refactor to be same as other forms
+  form(v-on:submit.prevent="onSubmit")
     input(type="text" v-model="query")
     button(type="submit") Submit
 
   // if books not null, display a BookListItem component for each
   div(v-if="booksAreLoading" aria-busy="true")
   div(v-if="books")
-    BookListItem(v-for="book in books" :key="book.canonicalVolumeLink" :book="book")
+    BookListItem(v-for="book in books" :key="book.id" :book="book")
 </template>
-
 
 <script>
 import axios from 'axios';
 import BookListItem from '../components/BookListItem.vue';
 
 export default {
-  name: 'AddBook',
+  name: 'AddBookView',
   components: {
     BookListItem
   },
@@ -30,10 +30,12 @@ export default {
     }
   },
   methods: {
-    async doSearch () {
+    async onSubmit () {
       this.booksAreLoading = true;
-      const results = await axios.get('/books', {
-        params: {q: this.query}
+      const results = await axios.get('/open-books', {
+        params: {
+          q: this.query
+        }
       })
 
       this.books = results.data
