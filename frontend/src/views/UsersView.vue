@@ -26,7 +26,7 @@ export default {
 
     h2 Signed up users
     div(v-for="user in users" :key="user.id")
-      RouterLink(:to="{ name: 'user', params: { username: user.username } }") {{ user.username }}
+      RouterLink(:to="{ name: 'profile', params: { username: user.username } }") {{ user.username }}
 </template>
 
 <style lang="scss">
