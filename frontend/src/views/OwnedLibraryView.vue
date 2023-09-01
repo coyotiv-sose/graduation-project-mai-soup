@@ -4,6 +4,8 @@
   div(v-else)
     h1 {{ library.name }}
     p Location: {{ library.latitude }}, {{ library.longitude }}
+    // link to add new book
+    RouterLink(:to="{name: 'add-book', params: {id: this.$route.params.id}}") Add New Book
     h2 Members
     ul
       li(v-for="member in library.members" :key="member._id")
