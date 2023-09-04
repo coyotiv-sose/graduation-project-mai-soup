@@ -5,7 +5,7 @@
     h1 {{ library.name }}
     p Location: {{ library.latitude }}, {{ library.longitude }}
     p Owner:
-      RouterLink(v-if="ownerUsername" :to="{ name: 'user', params: { username: ownerUsername } }") {{ ownerUsername }}
+      RouterLink(v-if="ownerUsername" :to="{ name: 'profile', params: { username: ownerUsername } }") {{ ownerUsername }}
     // if logged in user is not the owner and is not a member, show the join button
     button(v-if="isLoggedIn && ownerUsername !== username && !isUserMember" @click="join") Join
     // if not the owner and is a member, show the leave button
@@ -13,7 +13,7 @@
     h2 Members
     ul
       li(v-for="member in library.members" :key="member._id")
-        RouterLink(:to="{ name: 'user', params: { username: member._id } }") {{ member.username }}
+        RouterLink(:to="{ name: 'profile', params: { username: member.username } }") {{ member.username }}
     h2 Books
     ul
       li(v-for="book in library.books" :key="book._id")

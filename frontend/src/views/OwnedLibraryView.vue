@@ -9,7 +9,7 @@
     h2 Members
     ul
       li(v-for="member in library.members" :key="member._id")
-        RouterLink(:to="{ name: 'user', params: { username: member._id } }") {{ member.username }}
+        RouterLink(:to="{ name: 'profile', params: { username: member.username } }") {{ member.username }}
     h2 Books
     table
       thead
