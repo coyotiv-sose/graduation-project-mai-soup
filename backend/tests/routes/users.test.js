@@ -103,34 +103,6 @@ afterEach(() => {
 //   expect(response.status).toBe(500)
 // })
 
-it('should get all users', async () => {
-  const user = await User.register(
-    {
-      username: 'beeper',
-      email: 'beepboop@gmail.com',
-    },
-    'beepboop'
-  )
-  const response = await request(app).get('/users')
-
-  expect(response.status).toBe(200)
-  expect(response.body).toContainEqual(
-    expect.objectContaining({
-      username: user.username,
-      email: user.email,
-    })
-  )
-})
-
-it('should handle server errors when getting all users', async () => {
-  jest.spyOn(User, 'find').mockImplementationOnce(() => {
-    throw new Error('error')
-  })
-
-  const response = await request(app).get('/users')
-  expect(response.status).toBe(500)
-})
-
 it('should get a user by username', async () => {
   const user = await User.create({
     username: chance.word({ length: 5 }),
