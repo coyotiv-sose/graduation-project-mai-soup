@@ -9,7 +9,7 @@
       // if the difference is less than 3 days, add the .expiring class.
       li(v-for="loan in loans" :key="loan._id" :class="{ expiring: (new Date(loan.returnDate) - new Date()) < 1000 * 60 * 60 * 24 * 3 }")
         div
-          RouterLink(:to="{ name: 'book', params: { isbn: loan.bookInfo.isbn } }") {{ loan.bookInfo.title }}
+          RouterLink(:to="{ name: 'book', params: { id: loan.bookInfo.openLibraryId } }") {{ loan.bookInfo.title }}
           span Borrowed until {{ loan.returnDate }}
           button(@click="doReturn(loan)") Return
           // if the loan is due in 7 days or less, show a button to extend the loan
