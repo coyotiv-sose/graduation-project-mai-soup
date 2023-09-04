@@ -62,7 +62,8 @@ app.use(
 app.use(passport.session())
 
 app.set('trust proxy', 1)
-app.use(logger('dev'))
+const loggerFormat = app.get('env') === 'development' ? 'dev' : 'combined'
+app.use(logger(loggerFormat))
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 app.use(cookieParser())
