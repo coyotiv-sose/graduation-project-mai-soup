@@ -1,0 +1,30 @@
+name: "Check package version on frontend PR"
+
+on:
+  pull_request:
+    paths:
+      - "frontend/**"
+
+jobs:
+  check-run-tests:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./frontend
+    steps:
+      - name: Checkout
+        uses: actions/checkout@master
+      - uses: actions/setup-node@v2
+        with:
+          node-version: "20.3"
+      - name: Install dependencies
+        run: npm install
+      - name: Check npm version bump
+        uses: EndBug/version-check@v2.1.1
+        id: checkVersion
+      - name: Version change not detected
+        if: steps.checkVersion.outputs.changed == 'false'
+          uses: actions/github-script@v3
+          with:
+            script: |
+                core.setFailed('Uh oh, someone forgot to bump the frontend package version!')
