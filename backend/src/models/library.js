@@ -8,7 +8,6 @@ const librarySchema = new mongoose.Schema({
     required: true,
     minlength: 5,
     maxlength: 40,
-    match: /^[a-zA-Z0-9 _-]+$/,
   },
   owner: {
     type: mongoose.Schema.Types.ObjectId,
