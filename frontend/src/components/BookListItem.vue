@@ -21,6 +21,7 @@ export default {
   methods: {
     async addBook () {
       try {
+        console.log(this.book)
         await axios.post('/libraries/' + this.library + '/copies', {
           openLibraryId: this.book.id
         })
