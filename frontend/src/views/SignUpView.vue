@@ -73,6 +73,7 @@ export default {
 <template lang="pug">
 .container
   h1 Sign Up
+  // TODO: prevent form submission altogether if validation fails, not just through button
   form(@submit.prevent="performSignUp")
     div.form-group
       label(for="username") Username
