@@ -1,7 +1,7 @@
 <template lang="pug">
 .container
   h1 Create Library
-  // form to create a new library. libraries have a name, latitude, longitude.
+  // TODO: prevent form submission altogether if validation fails, not just through button
   form(@submit.prevent="doCreateLibrary")
     div.form-group
       label(for="name") Name
