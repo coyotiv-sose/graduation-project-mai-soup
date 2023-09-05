@@ -1,5 +1,6 @@
 <template lang="pug">
-.grid(@click="addBook")
+// TODO: make the spinner prettier, works for now but not great UX
+.grid(@click="addBook" :aria-busy="isReqInProgress")
   div
     h2 {{ book.title }} 
     p by {{ book.authors }}
@@ -15,13 +16,14 @@ export default {
   props: ['book'],
   data() {
     return {
-      library: this.$route.params.id
+      library: this.$route.params.id,
+      isReqInProgress: false
     }
-},
+  },
   methods: {
     async addBook () {
       try {
-        console.log(this.book)
+        this.isReqInProgress = true
         await axios.post('/libraries/' + this.library + '/copies', {
           openLibraryId: this.book.id
         })
@@ -40,6 +42,7 @@ export default {
   padding-top: 1rem;
   padding-bottom: 1rem;
   // TODO: the last one has a border too, it shouldn't?
-  border-bottom: 1px solid rgba(255, 255, 255, 0.6)
+  border-bottom: 1px solid rgba(255, 255, 255, 0.6);
+  cursor: pointer;
 }
 </style>
