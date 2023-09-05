@@ -108,7 +108,7 @@ router.post('/:id/copies', async (req, res, next) => {
     // construct bookInfo
     // TODO: error handling
     book = await BookInfo.create({
-      openLibraryId: id,
+      openLibraryId,
       title,
       authors: [...new Set(authorNames)], // remove duplicate authors
       imageUrl: covers
