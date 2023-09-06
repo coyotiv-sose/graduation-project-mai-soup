@@ -21,6 +21,7 @@ jobs:
         run: npm install
       - name: Check npm version bump
         uses: EndBug/version-check@v2.1.1
+        file-name: ./frontend/package.json
         id: checkVersion
       - name: Version change not detected
         if: steps.checkVersion.outputs.changed == 'false'
