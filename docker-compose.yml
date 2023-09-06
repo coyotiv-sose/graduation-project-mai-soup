@@ -6,8 +6,9 @@ services:
       dockerfile: Dockerfile
     ports:
       - "3000:3000"
-    env_file:
-      - ./backend/.env
+    # uncomment next two lines if using a .env file with custom variables
+    # env_file:
+    #   - ./backend/.env
     environment:
       - MONGO_URI=mongodb://localhost:27017/your_db_name
       - SESSION_SECRET=your_session_secret
@@ -22,8 +23,9 @@ services:
       dockerfile: Dockerfile
     ports:
       - "5173:5173"
-    env_file:
-      - ./frontend/.env
+    # uncomment next two lines if using a .env file with custom variables
+    # env_file:
+    #   - ./frontend/.env
     environment:
       - VITE_API_URL=http://localhost:3000
     volumes:
