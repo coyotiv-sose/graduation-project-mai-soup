@@ -35,7 +35,7 @@ docker compose up api frontend
 
 ### Customising the environment
 
-If you want to configure your containers differently, e.g. using your own MongoDB instance instead of the containerized one, create a `.env` file in the backend and frontend directories with the appropriate values. There is a `.env.example` provided with the default values. If you wish to leave some of the variables at their default values, just omit them from the `.env` file.
+If you want to configure your containers differently, e.g. using your own MongoDB instance instead of the containerized one, create a `.env` file in the backend and frontend directories with the appropriate values. There is a `.env.example` provided with the default values. If you wish to leave some of the variables at their default values, just omit them from the `.env` file. Then, uncomment the relevant lines in `docker-compose.yml`.
 
 If using your own MongoDB instance, there is no need to run the mongo service, so you can run the app with:
 
