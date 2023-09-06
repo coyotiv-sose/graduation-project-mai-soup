@@ -7,36 +7,47 @@
 
 A MEVN stack application to help anyone manage their own little library online - manage inventory, members, loans.
 
-## Getting started
+## Accessing the app online
 
-### Node / JS
+A hosted production version is available at https://porchreads.club/.
+
+## Setting up locally for development
 
 > **Note:**
->
-> - _There is an **index.js** file located under the \*\*\_src_\*\* folder\_
-> - _The **index.js** file, it's already linked with the debugger in your **launch.json**_
+> The guide assumes you have Docker and Docker Compose installed locally. If not, refer to the [Docker documentation](https://docs.docker.com/compose/install/) for installation instructions.
 
-To run the **index.js** file:
+To run the app with default settings (Mongo database as a service in the container):
 
-- with **_node_**, copy and enter one of the following commands on your terminal:
+```bash
+docker compose up
+```
 
-  ```sh
-  npm start
-  ```
+This will start up the necessary Docker containers - the backend Node.js app, the MongoDB database, and the frontend Vue.js app.
 
-  or:
+The backend API will be available at http://localhost:3000 and the frontend at http://localhost:5173.
 
-  ```sh
-  node src/index.js
-  ```
+If you don't care for the Mongo logs (since there's a _lot_ of them), you can run the mongo service in the background first:
 
-- in development mode that restarts every time you save a file:
+```bash
+docker compose up -d mongo
+docker compose up api frontend
+```
 
-  ```sh
-  npm run dev
-  ```
+### Customising the environment
 
----
+If you want to configure your containers differently, e.g. using your own MongoDB instance instead of the containerized one, create a `.env` file in the backend and frontend directories with the appropriate values. There is a `.env.example` provided with the default values. If you wish to leave some of the variables at their default values, just omit them from the `.env` file.
+
+If using your own MongoDB instance, there is no need to run the mongo service, so you can run the app with:
+
+```bash
+docker compose up api frontend
+```
+
+> **Note**: in dev environment, the app uses live reload for changes inside the `src` directory in both the frontend and backend. Any changes to files outside of `src`, e.g. package installations, will require a rebuild of the respective containers.
+
+### OpenAI API key
+
+The app uses OpenAI's API for generating enhanced library descriptions. If you wish to work with the description generation feature, you will need to obtain your own API key from OpenAI and provide it as an environment variable. The default value is just for demo purposes and is not a real, working key.
 
 ## MIT License
 
