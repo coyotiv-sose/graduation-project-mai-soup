@@ -1,13 +1,11 @@
-[![Open in Codespaces](https://classroom.github.com/assets/launch-codespace-7f7980b617ed060a017424585567c406b6ee15c891e84e1186181d67ecf80aa0.svg)](https://classroom.github.com/open-in-codespaces?assignment_repo_id=11440989)
-# Coyotiv School of Software Engineering
-
-## Node & PlantUML Starter Template
-
----
+# Porch Reads Club
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+![Backend tests status](https://img.shields.io/github/actions/workflow/status/mai-soup/porch-reads-club/pr-backend.yml?label=Backend%20tests)
+![Frontend tests status](https://img.shields.io/github/actions/workflow/status/mai-soup/porch-reads-club/pr-frontend.yml?label=Frontend%20tests)
+<!-- TODO: add badges for test coverage -->
 
-Now you can directly work in your browser!
+A MEVN stack application to help anyone manage their own little library online - manage inventory, members, loans.
 
 ## Getting started
 
@@ -38,33 +36,13 @@ To run the **index.js** file:
   npm run dev
   ```
 
-### PlantUML
-
-> **Note:**
->
-> - There is a **class.puml** example file located in the **_architecture_** folder.
-
-To start working **_\*.puml_** files:
-
-- You can continue by editing the **class.puml** file
-- Add additional **_\*.puml_** files on that folder too.
-
-If you what to visualize a preview of the **class.puml** file or another **_\*.puml_** file on the project, please select the file and on your keyboard press the following keys:
-
-- _MacOS_: **Option + D**
-
-- _Linux/Windows_: **Alt + D**
-  The above commands will automatically open your a window and will show you live any updates that you make on the file.
-
----
-
-_Now that we are ready, let's have some coding fun!_
-
 ---
 
 ## MIT License
 
-Copyright (c) 2022 Coyotiv
+Project: Copyright (c) 2023 Maijs Garais
+
+Node template: Copyright (c) 2023 Coyotiv
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
