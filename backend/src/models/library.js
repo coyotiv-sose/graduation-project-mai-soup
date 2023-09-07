@@ -66,10 +66,6 @@ class Library {
     }
   }
 
-  get location() {
-    return [this.longitude, this.latitude]
-  }
-
   async addMember(user) {
     if (this.members.includes(user)) return
 
