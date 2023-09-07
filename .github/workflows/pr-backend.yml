@@ -37,4 +37,5 @@ jobs:
           MONGO_URI: ${{ secrets.MONGO_URI }}
           SESSION_SECRET: ${{ secrets.SESSION_SECRET }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          MAPBOX_TOKEN: ${{ secrets.MAPBOX_TOKEN }}
         run: npm run test
