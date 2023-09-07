@@ -3,7 +3,8 @@
   div(v-if="!library") Loading...
   div(v-else)
     h1 {{ library.name }}
-    p Location: {{ library.latitude }}, {{ library.longitude }}
+    p Location: {{ library.location }}
+    SingleLibraryMap(:coordinates="library.geometry.coordinates", :libraryName="library.name")
     // link to add new book
     RouterLink(:to="{name: 'add-book', params: {id: this.$route.params.id}}") Add New Book
     h2 Members
@@ -32,6 +33,7 @@
 import axios from 'axios'
 import { mapState } from 'pinia'
 import { useAccountStore } from '../stores/account'
+import SingleLibraryMap from '../components/SingleLibraryMap.vue'
 
 export default {
   name: 'OwnedLibraryView',
@@ -39,6 +41,9 @@ export default {
     return {
       library: null // init with null for clearer conditional checks
     }
+  },
+  components: {
+    SingleLibraryMap,
   },
   computed: {
     ...mapState(useAccountStore, ['user'])
