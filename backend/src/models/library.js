@@ -15,17 +15,20 @@ const librarySchema = new mongoose.Schema({
     required: true,
     autopopulate: { maxDepth: 1 },
   },
-  latitude: {
-    type: Number,
+  location: {
+    type: String,
     required: true,
-    min: -90,
-    max: 90,
   },
-  longitude: {
-    type: Number,
-    required: true,
-    min: -180,
-    max: 180,
+  geometry: {
+    type: {
+      type: String,
+      enum: ['Point'],
+      required: true,
+    },
+    coordinates: {
+      type: [Number],
+      required: true,
+    },
   },
   members: [
     {
