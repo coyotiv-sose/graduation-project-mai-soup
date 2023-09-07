@@ -1,6 +1,10 @@
 const express = require('express')
 const createError = require('http-errors')
 const axios = require('axios')
+const mbxGeocoding = require('@mapbox/mapbox-sdk/services/geocoding')
+
+const mbxToken = process.env.MAPBOX_TOKEN
+const geocoder = mbxGeocoding({ accessToken: mbxToken })
 
 const router = express.Router()
 const Library = require('../models/library')
@@ -48,23 +52,37 @@ router.post('/', async (req, res, next) => {
   // only logged in users can create libraries
   if (!owner)
     return next(createError(401, 'You must be logged in to create a library'))
-  const { name, latitude, longitude } = req.body
-  // can't check for !name || !latitude || !longitude because latitude and longitude can be 0
-  if (!name || latitude === undefined || longitude === undefined)
-    return next(createError(400, 'Name, latitude, and longitude are required'))
+  const { name, location } = req.body
+  if (!name || !location)
+    return next(createError(400, 'Name and location are required'))
 
-  const library = await Library.create({
-    name,
-    latitude,
-    longitude,
-    owner,
-  })
+  try {
+    // TODO: error handling for geocoding specifically?
+    const geocoderResponse = await geocoder
+      .forwardGeocode({
+        query: location,
+        limit: 1,
+      })
+      .send()
 
-  owner.ownedLibraries.push(library)
-  owner.memberships.push(library)
-  await owner.save()
+    const { geometry } = geocoderResponse.body.features[0]
 
-  return res.status(201).send(library)
+    const library = await Library.create({
+      name,
+      geometry,
+      location,
+      owner,
+    })
+
+    owner.ownedLibraries.push(library)
+    owner.memberships.push(library)
+    await owner.save()
+
+    return res.status(201).send(library)
+  } catch (err) {
+    console.error(err)
+    return next(createError(500, 'Error creating library'))
+  }
 })
 
 router.post('/test', async (req, res) => {
