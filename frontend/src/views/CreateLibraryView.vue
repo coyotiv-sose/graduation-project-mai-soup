@@ -8,13 +8,8 @@
       input#name(type="text" v-model="name")
       small(v-if="nameError") {{ nameError }}
     div.form-group
-      label(for="latitude") Latitude
-      input#latitude(type="number" v-model="latitude" min="-90" max="90")
-      small(v-if="latitudeError") {{ latitudeError }}
-    div.form-group
-      label(for="longitude") Longitude
-      input#longitude(type="number" v-model="longitude" min="-180" max="180")
-      small(v-if="longitudeError") {{ longitudeError }}
+      label(for="location") Location
+      input#location(type="text" v-model="location")
     button(type="submit" :disabled="shouldDisableSubmit") Create Library
 </template>
 
@@ -28,16 +23,13 @@ export default {
   data() {
     return {
       name: '',
-      latitude: 0,
-      longitude: 0,
+      location: '',
       nameError: null,
-      latitudeError: null,
-      longitudeError: null
     }
   },
   computed: {
     shouldDisableSubmit() {
-      return !this.name || this.nameError || !this.latitude || this.latitudeError || !this.longitude || this.longitudeError
+      return !this.name || this.nameError || !this.location
     }
   },
   methods: {
@@ -45,8 +37,7 @@ export default {
     async doCreateLibrary() {
       const response = await axios.post('/libraries', {
         name: this.name,
-        latitude: this.latitude,
-        longitude: this.longitude
+        location: this.location
       })
       await this.fetchUser()
       this.$router.push({ name: 'library', params: { id: response.data._id } })
@@ -67,36 +58,12 @@ export default {
 
       this.nameError = null
     },
-    validateLatitude(latitude) {
-      if (latitude < -90 || latitude > 90) {
-        this.latitudeError = 'Latitude must be between -90 and 90'
-        return
-      }
-
-      this.latitudeError = null
-    },
-    validateLongitude(longitude) {
-      if(longitude < -180 || longitude > 180) {
-        this.longitudeError = 'Longitude must be between -180 and 180'
-        return
-      }
-
-      this.longitudeError = null
-    },
   },
   watch: {
     name(value) {
       this.name = value
       this.validateName(value)
     },
-    latitude(value) {
-      this.latitude = value
-      this.validateLatitude(value)
-    },
-    longitude(value) {
-      this.longitude = value
-      this.validateLongitude(value)
-    }
   }
 }
 </script>
