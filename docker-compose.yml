@@ -10,7 +10,7 @@ services:
     # env_file:
     #   - ./backend/.env
     environment:
-      - MONGO_URI=mongodb://localhost:27017/your_db_name
+      - MONGO_URI=mongodb://mongo:27017
       - SESSION_SECRET=your_session_secret
       - OPENAI_API_KEY=sk-your_openai_api_key
       - MAPBOX_TOKEN=pk.your_mapbox_token
@@ -29,6 +29,7 @@ services:
     #   - ./frontend/.env
     environment:
       - VITE_API_URL=http://localhost:3000
+      - VITE_MAPBOX_TOKEN=pk.your_mapbox_token
     volumes:
       - ./frontend/src:/app/src
       - ./frontend/public:/app/public
