@@ -20,7 +20,7 @@ jobs:
       - name: Install dependencies
         run: npm install
       - name: Check npm version bump
-        uses: EndBug/version-check@v2.1.1Readmes
+        uses: EndBug/version-check@v2.1.1
         with:
           file-name: ./backend/package.json
         id: checkVersion
