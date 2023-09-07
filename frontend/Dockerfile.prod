@@ -1,8 +1,14 @@
 FROM node:alpine
 
 ENV NODE_ENV=production
-# ENV VITE_API_URL=$VITE_API_URL
-# ENV VITE_MAPBOX_TOKEN=$VITE_MAPBOX_TOKEN
+
+# Declare build arguments
+ARG VITE_API_URL
+ARG VITE_MAPBOX_TOKEN
+
+# Set environment variables using the build arguments
+ENV VITE_API_URL=$VITE_API_URL
+ENV VITE_MAPBOX_TOKEN=$VITE_MAPBOX_TOKEN
 
 RUN echo "the value of VITE_API_URL is ${VITE_API_URL}"
 RUN echo "the value of VITE_MAPBOX_TOKEN is ${VITE_MAPBOX_TOKEN}"
