@@ -244,7 +244,7 @@ router.patch('/:id', async (req, res, next) => {
 
     const updatedLibrary = await library.save()
 
-    res.status(200).json(updatedLibrary)
+    return res.status(200).send(updatedLibrary)
   } catch (err) {
     console.error(err)
     return next(createError(500, err.message))
