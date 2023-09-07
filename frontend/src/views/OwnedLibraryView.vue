@@ -7,6 +7,8 @@
     SingleLibraryMap(:coordinates="library.geometry.coordinates", :libraryName="library.name")
     // link to add new book
     RouterLink(:to="{name: 'add-book', params: {id: this.$route.params.id}}") Add New Book
+    br
+    RouterLink(:to="{name: 'edit-library', params: {id: this.$route.params.id}}") Edit Library
     h2 Members
     ul
       li(v-for="member in library.members" :key="member._id")

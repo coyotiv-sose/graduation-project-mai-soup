@@ -63,6 +63,11 @@ const router = createRouter({
       path: '/libraries/:id/add-book',
       name: 'add-book',
       component: () => import('../views/AddBookView.vue')
+    },
+    {
+      path: '/libraries/:id/edit',
+      name: 'edit-library',
+      component: () => import('../views/EditLibraryView.vue')
     }
   ]
 })
