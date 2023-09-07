@@ -3,7 +3,8 @@
   div(v-if="!library") Loading...
   div(v-else)
     h1 {{ library.name }}
-    p Location: {{ library.latitude }}, {{ library.longitude }}
+    p Location: {{ library.location }}
+    SingleLibraryMap(:coordinates="library.geometry.coordinates", :libraryName="library.name")
     p Owner:
       RouterLink(v-if="ownerUsername" :to="{ name: 'profile', params: { username: ownerUsername } }") {{ ownerUsername }}
     // if logged in user is not the owner and is not a member, show the join button
@@ -28,16 +29,18 @@ import axios from 'axios'
 import { RouterLink } from 'vue-router'
 import { useAccountStore } from '../stores/account'
 import { mapActions, mapState } from 'pinia'
+import SingleLibraryMap from '../components/SingleLibraryMap.vue'
 
 export default {
   name: 'LibraryView',
   data() {
     return {
-      library: null // init with null for clearer conditional checks
+      library: null, // init with null for clearer conditional checks
     }
   },
   components: {
-    RouterLink
+    RouterLink,
+    SingleLibraryMap
   },
   computed: {
     ownerUsername() {
@@ -84,8 +87,8 @@ export default {
       const response = await axios.get(`/libraries/${this.$route.params.id}`)
       this.library = response.data
       this.fetchUser()
-    }
-  }
+    },
+  },
 }
 </script>
 
