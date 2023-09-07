@@ -215,4 +215,40 @@ router.patch('/:id/members', async (req, res, next) => {
   }
 })
 
+router.patch('/:id', async (req, res, next) => {
+  try {
+    const libraryId = req.params.id
+    const { name, location } = req.body
+
+    const library = await Library.findById(libraryId)
+    if (!library) next(createError(404, 'Library not found'))
+
+    // update only the fields that have changed
+    if (library.name !== name) library.name = name
+
+    if (library.location !== location) {
+      library.location = location
+
+      const geocoderResponse = await geocoder
+        .forwardGeocode({
+          query: location,
+          limit: 1,
+        })
+        .send()
+
+      const { geometry } = geocoderResponse.body.features[0]
+
+      // update geometry
+      library.geometry = geometry
+    }
+
+    const updatedLibrary = await library.save()
+
+    res.status(200).json(updatedLibrary)
+  } catch (err) {
+    console.error(err)
+    return next(createError(500, err.message))
+  }
+})
+
 module.exports = router
