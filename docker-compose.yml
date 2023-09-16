@@ -6,14 +6,11 @@ services:
       dockerfile: Dockerfile
     ports:
       - "3000:3000"
-    # uncomment next two lines if using a .env file with custom variables
-    # env_file:
-    #   - ./backend/.env
+    env_file:
+      - ./backend/.env
     environment:
       - MONGO_URI=mongodb://mongo:27017
       - SESSION_SECRET=your_session_secret
-      - OPENAI_API_KEY=sk-your_openai_api_key
-      - MAPBOX_TOKEN=pk.your_mapbox_token
     volumes:
       - ./backend/src:/app/src
 
@@ -24,12 +21,10 @@ services:
       dockerfile: Dockerfile
     ports:
       - "5173:5173"
-    # uncomment next two lines if using a .env file with custom variables
-    # env_file:
-    #   - ./frontend/.env
+    env_file:
+      - ./frontend/.env
     environment:
       - VITE_API_URL=http://localhost:3000
-      - VITE_MAPBOX_TOKEN=pk.your_mapbox_token
     volumes:
       - ./frontend/src:/app/src
       - ./frontend/public:/app/public
