@@ -16,38 +16,32 @@ A hosted production version is available at https://porchreads.club/.
 > **Note:**
 > The guide assumes you have Docker and Docker Compose installed locally. If not, refer to the [Docker documentation](https://docs.docker.com/compose/install/) for installation instructions.
 
-To run the app with default settings (Mongo database as a service in the container):
+You will need API keys for the following services:
+- [MapBox](https://www.mapbox.com/) for geocoding and map rendering
+- [OpenAI](https://openai.com/) for text generation
 
-```bash
-docker compose up
-```
+Create `.env` files in the frontend and backend directories with contents similar to the `.env.example` files.
 
-This will start up the necessary Docker containers - the backend Node.js app, the MongoDB database, and the frontend Vue.js app.
-
-The backend API will be available at http://localhost:3000 and the frontend at http://localhost:5173.
-
-If you don't care for the Mongo logs (since there's a _lot_ of them), you can run the mongo service in the background first:
+Then, run the app with the following:
 
 ```bash
 docker compose up -d mongo
 docker compose up api frontend
 ```
 
+This will start up the necessary Docker containers - the backend Node.js app, the MongoDB database, and the frontend Vue.js app. The Mongo container will be started in the background, so you don't get the tons of output from it.
+
+The backend API will be available at http://localhost:3000 and the frontend at http://localhost:5173.
+
+> **Note**: in dev environment, the app uses live reload for changes inside the `src` directory in both the frontend and backend. Any changes to files outside of `src`, e.g. package installations, will require a rebuild of the respective containers.
+
 ### Customising the environment
 
-If you want to configure your containers differently, e.g. using your own MongoDB instance instead of the containerized one, create a `.env` file in the backend and frontend directories with the appropriate values. There is a `.env.example` provided with the default values. If you wish to leave some of the variables at their default values, just omit them from the `.env` file. Then, uncomment the relevant lines in `docker-compose.yml`.
-
-If using your own MongoDB instance, there is no need to run the mongo service, so you can run the app with:
+If using your own MongoDB instance, there is no need to run the mongo service, so after modifying `backend/.env` accordingly you can just run the app with:
 
 ```bash
 docker compose up api frontend
 ```
-
-> **Note**: in dev environment, the app uses live reload for changes inside the `src` directory in both the frontend and backend. Any changes to files outside of `src`, e.g. package installations, will require a rebuild of the respective containers.
-
-### OpenAI API key
-
-The app uses OpenAI's API for generating enhanced library descriptions. If you wish to work with the description generation feature, you will need to obtain your own API key from OpenAI and provide it as an environment variable. The default value is just for demo purposes and is not a real, working key.
 
 ## MIT License
 
