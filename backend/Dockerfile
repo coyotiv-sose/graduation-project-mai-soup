@@ -15,5 +15,8 @@ RUN npm install
 # Add the rest of the files
 ADD bin ./bin
 
+# Add execute permissions for entrypoint
+RUN chmod +x ./bin/validate-env-vars.sh
+
 # Run the app
-CMD ["npm", "run", "dev"]
+ENTRYPOINT ["./bin/validate-env-vars.sh"]
