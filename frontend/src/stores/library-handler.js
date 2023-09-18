@@ -50,12 +50,22 @@ export const useLibraryHandler = defineStore('library-handler', {
       }
     },
     async joinLibrary(libraryId) {
-      await axios.post(`/libraries/${libraryId}/members`)
+      try {
+        await axios.post(`/libraries/${libraryId}/members`)
+      } catch (error) {
+        // TODO: handle error
+        console.error(error)
+      }
     },
     async leaveLibrary(libraryId) {
-      await axios.patch(`/libraries/${libraryId}/members`, {
-        remove: true
-      })
+      try {
+        await axios.patch(`/libraries/${libraryId}/members`, {
+          remove: true
+        })
+      } catch (error) {
+        // TODO: handle error
+        console.error(error)
+      }
     }
   }
 })
