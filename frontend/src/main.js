@@ -17,6 +17,11 @@ pinia.use(({ store }) => {
 })
 app.use(pinia)
 
+import { useAccountStore } from './stores/account'
+
+const accountStore = useAccountStore()
+await accountStore.fetchUser()
+
 app.use(router)
 
 app.mount('#app')
