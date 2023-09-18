@@ -5,9 +5,10 @@ const Fuse = require('fuse.js')
 
 const router = express.Router()
 const createError = require('http-errors')
+const mustLogin = require('../middleware/must-login')
 const BookInfo = require('../models/book-info')
 
-router.get('/:openLibraryId', async (req, res, next) => {
+router.get('/:openLibraryId', mustLogin, async (req, res, next) => {
   const { openLibraryId } = req.params
 
   try {
@@ -26,7 +27,7 @@ router.get('/:openLibraryId', async (req, res, next) => {
   }
 })
 
-router.post('/', async (req, res, next) => {
+router.post('/', mustLogin, async (req, res, next) => {
   const { id } = req.body
 
   if (!id) return next(createError(400, 'Missing parameters'))
@@ -71,7 +72,7 @@ router.post('/', async (req, res, next) => {
   }
 })
 
-router.get('/', async (req, res, next) => {
+router.get('/', mustLogin, async (req, res, next) => {
   const query = req.query.q
 
   try {
