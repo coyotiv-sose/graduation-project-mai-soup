@@ -20,6 +20,17 @@ export const useLibraryHandler = defineStore('library-handler', {
         // TODO: handle error
         console.error(error)
       }
+    },
+    async removeCopy(libraryId, bookCopyId) {
+      try {
+        const response = await axios.delete(
+          `/libraries/${libraryId}/copies/${bookCopyId}`
+        )
+        return response.data
+      } catch (error) {
+        // TODO: handle error
+        console.error(error)
+      }
     }
   }
 })
