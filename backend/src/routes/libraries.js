@@ -50,9 +50,6 @@ router.get('/', async (req, res, next) => {
 router.post('/', mustLogin, async (req, res, next) => {
   const owner = req.user
 
-  // only logged in users can create libraries
-  if (!owner)
-    return next(createError(401, 'You must be logged in to create a library'))
   const { name, location } = req.body
   if (!name || !location)
     return next(createError(400, 'Name and location are required'))
@@ -103,6 +100,13 @@ router.post('/:id/copies', mustLogin, async (req, res, next) => {
 
   const library = await Library.findById(id)
   if (!library) return next(createError(404, 'Library not found'))
+
+  // only library owner can add copies
+  const { user } = req
+  console.log('user id', user.id)
+  console.log('library owner id', library.owner.id)
+  if (user.id !== library.owner.id)
+    return next(createError(403, 'You are not the owner of this library'))
 
   let book = await BookInfo.findOne({ openLibraryId })
   if (!book) {
