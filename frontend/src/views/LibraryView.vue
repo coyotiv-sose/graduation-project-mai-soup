@@ -28,6 +28,7 @@
 import axios from 'axios'
 import { RouterLink } from 'vue-router'
 import { useAccountStore } from '../stores/account'
+import { useLibraryHandler } from '../stores/library-handler'
 import { mapActions, mapState } from 'pinia'
 import SingleLibraryMap from '../components/SingleLibraryMap.vue'
 
@@ -55,11 +56,11 @@ export default {
     }
   },
   async mounted() {
-    const response = await axios.get(`/libraries/${this.$route.params.id}`)
-    this.library = response.data
+    this.library = await this.fetchLibrary(this.$route.params.id)
   },
   methods: {
     ...mapActions(useAccountStore, ['fetchUser']),
+    ...mapActions(useLibraryHandler, ['fetchLibrary']),
     async join() {
       await axios.post(`/libraries/${this.$route.params.id}/members`)
       this.library.members.push({ _id: this.username, username: this.username })
@@ -84,8 +85,7 @@ export default {
           action: 'borrow'
         })
       }
-      const response = await axios.get(`/libraries/${this.$route.params.id}`)
-      this.library = response.data
+      this.library = await this.fetchLibrary(this.$route.params.id)
       this.fetchUser()
     },
   },
