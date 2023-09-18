@@ -7,6 +7,7 @@ const mbxToken = process.env.MAPBOX_TOKEN
 const geocoder = mbxGeocoding({ accessToken: mbxToken })
 
 const router = express.Router()
+const mustLogin = require('../middleware/must-login')
 const Library = require('../models/library')
 const BookInfo = require('../models/book-info')
 const BookCopy = require('../models/book-copy')
@@ -46,7 +47,7 @@ router.get('/', async (req, res, next) => {
   }
 })
 
-router.post('/', async (req, res, next) => {
+router.post('/', mustLogin, async (req, res, next) => {
   const owner = req.user
 
   // only logged in users can create libraries
@@ -96,7 +97,7 @@ router.post('/test', async (req, res) => {
   return res.send(enhancedDescription)
 })
 
-router.post('/:id/copies', async (req, res, next) => {
+router.post('/:id/copies', mustLogin, async (req, res, next) => {
   const { id } = req.params
   const { openLibraryId } = req.body
 
@@ -143,7 +144,7 @@ router.post('/:id/copies', async (req, res, next) => {
   }
 })
 
-router.delete('/:id/books/:bookId', async (req, res, next) => {
+router.delete('/:id/books/:bookId', mustLogin, async (req, res, next) => {
   const { id, bookId } = req.params
 
   const library = await Library.findById(id)
@@ -160,7 +161,7 @@ router.delete('/:id/books/:bookId', async (req, res, next) => {
   }
 })
 
-router.get('/:id/members', async (req, res, next) => {
+router.get('/:id/members', mustLogin, async (req, res, next) => {
   const { id } = req.params
 
   const library = await Library.findById(id)
@@ -174,7 +175,7 @@ router.get('/:id/members', async (req, res, next) => {
   }
 })
 
-router.post('/:id/members', async (req, res, next) => {
+router.post('/:id/members', mustLogin, async (req, res, next) => {
   const { id } = req.params
   const { user } = req
 
@@ -192,7 +193,7 @@ router.post('/:id/members', async (req, res, next) => {
   }
 })
 
-router.patch('/:id/members', async (req, res, next) => {
+router.patch('/:id/members', mustLogin, async (req, res, next) => {
   const { id } = req.params
   const { user } = req
 
@@ -215,7 +216,7 @@ router.patch('/:id/members', async (req, res, next) => {
   }
 })
 
-router.patch('/:id', async (req, res, next) => {
+router.patch('/:id', mustLogin, async (req, res, next) => {
   try {
     const libraryId = req.params.id
     const { name, location } = req.body
