@@ -83,6 +83,8 @@ router.post('/', mustLogin, async (req, res, next) => {
   }
 })
 
+// TODO: this is a temporary route for testing the description enhancer
+// refactor this into proper route when description enhancer is complete
 router.post('/test', async (req, res) => {
   const { description } = req.body
   if (!description) {
