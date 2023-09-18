@@ -19,7 +19,7 @@
     ul
       li(v-for="book in library.books" :key="book._id")
         div.grid
-          RouterLink(:to="{ name: 'book', params: { isbn: book.bookInfo.isbn } }" :class="book.status === 'available' ? 'available' : 'unavailable'") {{ book.bookInfo.title }}
+          RouterLink(:to="{ name: 'book', params: { id: book.bookInfo.openLibraryId } }" :class="book.status === 'available' ? 'available' : 'unavailable'") {{ book.bookInfo.title }}
           button(v-if="isUserMember && book.status === 'available'" @click="doBorrowOrReturn(book)") Borrow
           button(v-if="isUserMember && book.status === 'borrowed' && book.borrower.username === this.username" @click="doBorrowOrReturn(book)") Return
 </template>
