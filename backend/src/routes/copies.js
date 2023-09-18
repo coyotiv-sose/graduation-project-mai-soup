@@ -2,11 +2,12 @@ const express = require('express')
 
 const router = express.Router()
 const createError = require('http-errors')
+const mustLogin = require('../middleware/must-login')
 const Library = require('../models/library')
 const BookInfo = require('../models/book-info')
 const BookCopy = require('../models/book-copy')
 
-router.get('/:id', async (req, res, next) => {
+router.get('/:id', mustLogin, async (req, res, next) => {
   const { id } = req.params
 
   try {
@@ -22,7 +23,7 @@ router.get('/:id', async (req, res, next) => {
   }
 })
 
-router.post('/:isbn', async (req, res, next) => {
+router.post('/:isbn', mustLogin, async (req, res, next) => {
   const { isbn } = req.params
   const { libraryId } = req.body
   let bookInfo
@@ -74,7 +75,7 @@ router.post('/:isbn', async (req, res, next) => {
   }
 })
 
-router.patch('/:id', async (req, res, next) => {
+router.patch('/:id', mustLogin, async (req, res, next) => {
   const { id } = req.params
   const { action } = req.body
   const { user } = req
@@ -117,7 +118,7 @@ router.patch('/:id', async (req, res, next) => {
   }
 })
 
-router.delete('/:id', async (req, res, next) => {
+router.delete('/:id', mustLogin, async (req, res, next) => {
   const { id } = req.params
 
   try {
