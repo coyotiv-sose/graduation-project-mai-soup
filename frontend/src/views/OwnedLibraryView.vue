@@ -55,7 +55,7 @@ export default {
     this.library = await this.fetchLibrary(this.$route.params.id)
   },
   methods: {
-    ...mapActions(useLibraryHandler, ['removeBook']),
+    ...mapActions(useLibraryHandler, ['fetchLibrary']),
     async doRemoveBook(book) {
       await axios.delete(
         `/libraries/${this.$route.params.id}/books/${book._id}`
