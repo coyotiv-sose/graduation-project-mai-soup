@@ -19,7 +19,6 @@
 </template>
 
 <script>
-import axios from 'axios'
 import { RouterLink } from 'vue-router'
 import { mapActions, mapState } from 'pinia'
 import { useAccountStore } from '../stores/account'
