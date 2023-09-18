@@ -60,7 +60,7 @@ export default {
   },
   methods: {
     ...mapActions(useAccountStore, ['fetchUser']),
-    ...mapActions(useLibraryHandler, ['fetchLibrary']),
+    ...mapActions(useLibraryHandler, ['fetchLibrary', 'borrowCopy', 'returnCopy']),
     async join() {
       await axios.post(`/libraries/${this.$route.params.id}/members`)
       this.library.members.push({ _id: this.username, username: this.username })
@@ -77,13 +77,9 @@ export default {
     },
     async doBorrowOrReturn(book) {
       if (book.status === 'borrowed') {
-        await axios.patch(`/copies/${book._id}`, {
-          action: 'return'
-        })
+        await this.returnCopy(this.library._id, book._id)
       } else {
-        await axios.patch(`/copies/${book._id}`, {
-          action: 'borrow'
-        })
+        await this.borrowCopy(this.library._id, book._id)
       }
       this.library = await this.fetchLibrary(this.$route.params.id)
       this.fetchUser()

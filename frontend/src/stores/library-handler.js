@@ -31,6 +31,34 @@ export const useLibraryHandler = defineStore('library-handler', {
         // TODO: handle error
         console.error(error)
       }
+    },
+    async borrowCopy(libraryId, bookCopyId) {
+      try {
+        const response = await axios.patch(
+          `/libraries/${libraryId}/copies/${bookCopyId}`,
+          {
+            action: 'borrow'
+          }
+        )
+        return response.data
+      } catch (error) {
+        // TODO: handle error
+        console.error(error)
+      }
+    },
+    async returnCopy(libraryId, bookCopyId) {
+      try {
+        const response = await axios.patch(
+          `/libraries/${libraryId}/copies/${bookCopyId}`,
+          {
+            action: 'return'
+          }
+        )
+        return response.data
+      } catch (error) {
+        // TODO: handle error
+        console.error(error)
+      }
     }
   }
 })
