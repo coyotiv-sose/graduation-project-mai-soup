@@ -156,6 +156,14 @@ router.delete('/:id/books/:bookId', mustLogin, async (req, res, next) => {
   const library = await Library.findById(id)
   if (!library) return next(createError(404, 'Library not found'))
 
+  // only library owner can remove copies
+  // TODO: refactor to middleware
+  const { user } = req
+  console.log('user id', user.id)
+  console.log('library owner id', library.owner.id)
+  if (user.id !== library.owner.id)
+    return next(createError(403, 'You are not the owner of this library'))
+
   const book = await BookCopy.findById(bookId)
   if (!book) return next(createError(404, 'Book not found'))
 
@@ -229,6 +237,13 @@ router.patch('/:id', mustLogin, async (req, res, next) => {
 
     const library = await Library.findById(libraryId)
     if (!library) next(createError(404, 'Library not found'))
+
+    // only library owner can edit library
+    const { user } = req
+    console.log('user id', user.id)
+    console.log('library owner id', library.owner.id)
+    if (user.id !== library.owner.id)
+      return next(createError(403, 'You are not the owner of this library'))
 
     // update only the fields that have changed
     if (library.name !== name) library.name = name
