@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import { useAccountStore } from '../stores/account'
 import HomeView from '../views/HomeView.vue'
 
 const router = createRouter({
@@ -69,7 +70,12 @@ const router = createRouter({
       name: 'edit-library',
       component: () => import('../views/EditLibraryView.vue')
     }
-  ]
+  ],
+  beforeEach: (to) => {
+    const store = useAccountStore()
+
+    if (to.meta.requiresAuth && !store.isLoggedIn) return { name: 'login' }
+  }
 })
 
 export default router
