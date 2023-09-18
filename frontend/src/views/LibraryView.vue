@@ -25,7 +25,6 @@
 </template>
 
 <script>
-import axios from 'axios'
 import { RouterLink } from 'vue-router'
 import { useAccountStore } from '../stores/account'
 import { useLibraryHandler } from '../stores/library-handler'
@@ -60,16 +59,15 @@ export default {
   },
   methods: {
     ...mapActions(useAccountStore, ['fetchUser']),
-    ...mapActions(useLibraryHandler, ['fetchLibrary', 'borrowCopy', 'returnCopy']),
+    ...mapActions(useLibraryHandler, ['fetchLibrary', 'borrowCopy', 'returnCopy',
+      'joinLibrary', 'leaveLibrary']),
     async join() {
-      await axios.post(`/libraries/${this.$route.params.id}/members`)
+      await this.joinLibrary(this.$route.params.id)
       this.library.members.push({ _id: this.username, username: this.username })
       this.fetchUser()
     },
     async leave() {
-      await axios.patch(`/libraries/${this.$route.params.id}/members`, {
-        remove: true
-      })
+      await this.leaveLibrary(this.$route.params.id)
       this.library.members = this.library.members.filter(
         (member) => member.username !== this.username
       )
