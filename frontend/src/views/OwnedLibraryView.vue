@@ -33,8 +33,9 @@
 
 <script>
 import axios from 'axios'
-import { mapState } from 'pinia'
+import { mapState, mapActions } from 'pinia'
 import { useAccountStore } from '../stores/account'
+import { useLibraryHandler } from '../stores/library-handler'
 import SingleLibraryMap from '../components/SingleLibraryMap.vue'
 
 export default {
@@ -51,10 +52,10 @@ export default {
     ...mapState(useAccountStore, ['user'])
   },
   async mounted() {
-    const response = await axios.get(`/libraries/${this.$route.params.id}`)
-    this.library = response.data
+    this.library = await this.fetchLibrary(this.$route.params.id)
   },
   methods: {
+    ...mapActions(useLibraryHandler, ['removeBook']),
     async doRemoveBook(book) {
       await axios.delete(
         `/libraries/${this.$route.params.id}/books/${book._id}`

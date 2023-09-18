@@ -11,6 +11,15 @@ export const useLibraryHandler = defineStore('library-handler', {
         // TODO: handle error
         console.error(error)
       }
+    },
+    async fetchLibrary(libraryId) {
+      try {
+        const response = await axios.get(`/libraries/${libraryId}`)
+        return response.data
+      } catch (error) {
+        // TODO: handle error
+        console.error(error)
+      }
     }
   }
 })
