@@ -14,9 +14,9 @@
       </header>
       <main>
         <h1>Porch Reads Club</h1>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
-        <p>Quisquam, voluptatum. Quisquam, voluptatum. Quisquam, voluptatum.</p>
-        <p>Sed suscipit arcu id nunc fringilla rutrum.</p>
+        <p>Welcome to your online library hub!</p>
+        <p>Simplify book management, connect with members,<br />and enhance your book lending experience.</p>
+        <p>Dive in and explore libraries now!</p>
         <RouterLink to="/libraries" class="action-btn"
           >View Libraries</RouterLink
         >
