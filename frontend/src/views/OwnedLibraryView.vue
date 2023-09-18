@@ -56,10 +56,12 @@ export default {
   },
   methods: {
     async doRemoveBook(book) {
-      const response = await axios.delete(
+      await axios.delete(
         `/libraries/${this.$route.params.id}/books/${book._id}`
       )
-      this.library = response.data
+      this.library.books = this.library.books.filter(
+        (b) => b._id!== book._id
+        )
     }
   }
 }
