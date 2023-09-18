@@ -6,7 +6,7 @@
         <nav>
           <RouterLink to="/" class="active">Home</RouterLink>
           <RouterLink to="/libraries">Libraries</RouterLink>
-          <RouterLink to="/books">Books</RouterLink>
+          <RouterLink v-if="isLoggedIn" to="/books">Books</RouterLink>
           <RouterLink v-if="!isLoggedIn" to="/login">Login</RouterLink>
           <RouterLink v-if="!isLoggedIn" to="/signup">Sign Up</RouterLink>
           <a v-if="isLoggedIn" @click="doLogout">Logout</a>
