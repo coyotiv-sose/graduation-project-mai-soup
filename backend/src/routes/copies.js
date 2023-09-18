@@ -5,6 +5,8 @@ const createError = require('http-errors')
 const mustLogin = require('../middleware/must-login')
 const BookCopy = require('../models/book-copy')
 
+// TODO: refactor routes to libraries routes, as book copies
+// should not exist without a library
 router.get('/:id', mustLogin, async (req, res, next) => {
   const { id } = req.params
 
