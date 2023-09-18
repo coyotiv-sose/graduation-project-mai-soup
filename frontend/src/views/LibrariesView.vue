@@ -21,8 +21,9 @@
 <script>
 import axios from 'axios'
 import { RouterLink } from 'vue-router'
-import { mapState } from 'pinia'
+import { mapActions, mapState } from 'pinia'
 import { useAccountStore } from '../stores/account'
+import { useLibraryHandler } from '../stores/library-handler'
 
 export default {
   name: 'LibrariesView',
@@ -38,8 +39,10 @@ export default {
     RouterLink
   },
   async mounted() {
-    const response = await axios.get('/libraries')
-    this.libraries = response.data
+    this.libraries = (await this.fetchAllLibraries())
+  },
+  methods: {
+    ...mapActions(useLibraryHandler, ['fetchAllLibraries'])
   }
 }
 </script>
