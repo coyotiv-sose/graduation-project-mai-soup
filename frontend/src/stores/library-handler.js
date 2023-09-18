@@ -23,10 +23,7 @@ export const useLibraryHandler = defineStore('library-handler', {
     },
     async removeCopy(libraryId, bookCopyId) {
       try {
-        const response = await axios.delete(
-          `/libraries/${libraryId}/copies/${bookCopyId}`
-        )
-        return response.data
+        await axios.delete(`/libraries/${libraryId}/copies/${bookCopyId}`)
       } catch (error) {
         // TODO: handle error
         console.error(error)
@@ -34,13 +31,9 @@ export const useLibraryHandler = defineStore('library-handler', {
     },
     async borrowCopy(libraryId, bookCopyId) {
       try {
-        const response = await axios.patch(
-          `/libraries/${libraryId}/copies/${bookCopyId}`,
-          {
-            action: 'borrow'
-          }
-        )
-        return response.data
+        await axios.patch(`/libraries/${libraryId}/copies/${bookCopyId}`, {
+          action: 'borrow'
+        })
       } catch (error) {
         // TODO: handle error
         console.error(error)
@@ -48,17 +41,21 @@ export const useLibraryHandler = defineStore('library-handler', {
     },
     async returnCopy(libraryId, bookCopyId) {
       try {
-        const response = await axios.patch(
-          `/libraries/${libraryId}/copies/${bookCopyId}`,
-          {
-            action: 'return'
-          }
-        )
-        return response.data
+        await axios.patch(`/libraries/${libraryId}/copies/${bookCopyId}`, {
+          action: 'return'
+        })
       } catch (error) {
         // TODO: handle error
         console.error(error)
       }
+    },
+    async joinLibrary(libraryId) {
+      await axios.post(`/libraries/${libraryId}/members`)
+    },
+    async leaveLibrary(libraryId) {
+      await axios.patch(`/libraries/${libraryId}/members`, {
+        remove: true
+      })
     }
   }
 })
