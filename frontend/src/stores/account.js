@@ -21,6 +21,11 @@ export const useAccountStore = defineStore('account', {
     async logout() {
       await axios.delete('/accounts/session')
       this.user = null
+
+      if (this.$router.currentRoute.value.meta.requiresAuth) {
+        // if current route requires auth, redirect to login
+        this.$router.push('/login')
+      }
     },
     async signUp({ username, email, password }) {
       await axios.post('/accounts', { username, email, password })
