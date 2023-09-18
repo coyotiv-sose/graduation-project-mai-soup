@@ -1,10 +1,11 @@
 const express = require('express')
 const axios = require('axios')
 const createError = require('http-errors')
+const mustLogin = require('../middleware/must-login')
 
 const router = express.Router()
 
-router.get('/', async (req, res, next) => {
+router.get('/', mustLogin, async (req, res, next) => {
   const query = req.query.q
 
   if (!query) return next(createError(400, 'Missing query'))
