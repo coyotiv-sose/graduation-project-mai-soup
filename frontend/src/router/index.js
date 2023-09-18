@@ -8,73 +8,89 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
-      component: HomeView
+      component: HomeView,
+      meta: { requiresAuth: false }
     },
     {
       path: '/users/:username',
       name: 'profile',
-      component: () => import('../views/ProfileView.vue')
+      component: () => import('../views/ProfileView.vue'),
+      meta: { requiresAuth: false }
     },
     {
       path: '/login',
       name: 'login',
-      component: () => import('../views/LogInView.vue')
+      component: () => import('../views/LogInView.vue'),
+      meta: { requiresAuth: false }
     },
     {
       path: '/signup',
       name: 'signup',
-      component: () => import('../views/SignUpView.vue')
+      component: () => import('../views/SignUpView.vue'),
+      meta: { requiresAuth: false }
     },
     {
       path: '/libraries',
       name: 'libraries',
-      component: () => import('../views/LibrariesView.vue')
+      component: () => import('../views/LibrariesView.vue'),
+      meta: { requiresAuth: false }
     },
     {
       path: '/libraries/create',
       name: 'create-library',
-      component: () => import('../views/CreateLibraryView.vue')
+      component: () => import('../views/CreateLibraryView.vue'),
+      meta: { requiresAuth: true }
     },
     {
       path: '/libraries/:id',
       name: 'library',
-      component: () => import('../views/LibraryView.vue')
+      component: () => import('../views/LibraryView.vue'),
+      meta: { requiresAuth: false }
     },
     {
       path: '/books',
       name: 'books',
-      component: () => import('../views/BooksView.vue')
+      component: () => import('../views/BooksView.vue'),
+      meta: { requiresAuth: true }
     },
     {
       path: '/books/:id',
       name: 'book',
-      component: () => import('../views/BookView.vue')
+      component: () => import('../views/BookView.vue'),
+      meta: { requiresAuth: true }
     },
     {
       path: '/loans',
       name: 'loans',
-      component: () => import('../views/LoansView.vue')
+      component: () => import('../views/LoansView.vue'),
+      meta: { requiresAuth: true }
     },
     {
       path: '/libraries/owned/:id',
       name: 'owned-library',
-      component: () => import('../views/OwnedLibraryView.vue')
+      component: () => import('../views/OwnedLibraryView.vue'),
+      meta: { requiresAuth: true }
     },
     {
       path: '/libraries/:id/add-book',
       name: 'add-book',
-      component: () => import('../views/AddBookView.vue')
+      component: () => import('../views/AddBookView.vue'),
+      meta: { requiresAuth: true }
     },
     {
       path: '/libraries/:id/edit',
       name: 'edit-library',
-      component: () => import('../views/EditLibraryView.vue')
+      component: () => import('../views/EditLibraryView.vue'),
+      meta: { requiresAuth: true }
     }
-  ],
-  beforeEach: (to) => {
-    const store = useAccountStore()
+  ]
+})
 
-    if (to.meta.requiresAuth && !store.isLoggedIn) return { name: 'login' }
+router.beforeEach(async (to) => {
+  const store = useAccountStore()
+
+  if (to.meta.requiresAuth && !store.isLoggedIn) {
+    return { name: 'login' }
   }
 })
 
