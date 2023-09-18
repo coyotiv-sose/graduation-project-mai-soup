@@ -105,8 +105,6 @@ router.post('/:id/copies', mustLogin, async (req, res, next) => {
 
   // only library owner can add copies
   const { user } = req
-  console.log('user id', user.id)
-  console.log('library owner id', library.owner.id)
   if (user.id !== library.owner.id)
     return next(createError(403, 'You are not the owner of this library'))
 
@@ -150,7 +148,7 @@ router.post('/:id/copies', mustLogin, async (req, res, next) => {
   }
 })
 
-router.delete('/:id/books/:bookId', mustLogin, async (req, res, next) => {
+router.delete('/:id/copies/:bookId', mustLogin, async (req, res, next) => {
   const { id, bookId } = req.params
 
   const library = await Library.findById(id)
@@ -159,8 +157,6 @@ router.delete('/:id/books/:bookId', mustLogin, async (req, res, next) => {
   // only library owner can remove copies
   // TODO: refactor to middleware
   const { user } = req
-  console.log('user id', user.id)
-  console.log('library owner id', library.owner.id)
   if (user.id !== library.owner.id)
     return next(createError(403, 'You are not the owner of this library'))
 
@@ -240,8 +236,6 @@ router.patch('/:id', mustLogin, async (req, res, next) => {
 
     // only library owner can edit library
     const { user } = req
-    console.log('user id', user.id)
-    console.log('library owner id', library.owner.id)
     if (user.id !== library.owner.id)
       return next(createError(403, 'You are not the owner of this library'))
 

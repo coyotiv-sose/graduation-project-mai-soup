@@ -32,7 +32,6 @@
 </template>
 
 <script>
-import axios from 'axios'
 import { mapState, mapActions } from 'pinia'
 import { useAccountStore } from '../stores/account'
 import { useLibraryHandler } from '../stores/library-handler'
@@ -55,11 +54,10 @@ export default {
     this.library = await this.fetchLibrary(this.$route.params.id)
   },
   methods: {
-    ...mapActions(useLibraryHandler, ['fetchLibrary']),
+    ...mapActions(useLibraryHandler, ['fetchLibrary', 'removeCopy']),
     async doRemoveBook(book) {
-      await axios.delete(
-        `/libraries/${this.$route.params.id}/books/${book._id}`
-      )
+      await this.removeCopy(this.$route.params.id, book._id)
+
       this.library.books = this.library.books.filter(
         (b) => b._id!== book._id
         )
