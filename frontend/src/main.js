@@ -20,8 +20,7 @@ app.use(pinia)
 import { useAccountStore } from './stores/account'
 
 const accountStore = useAccountStore()
-await accountStore.fetchUser()
-
-app.use(router)
-
-app.mount('#app')
+accountStore.fetchUser().then(() => {
+  app.use(router)
+  app.mount('#app')
+})
