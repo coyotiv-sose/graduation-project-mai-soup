@@ -66,12 +66,6 @@ const router = createRouter({
       meta: { requiresAuth: true }
     },
     {
-      path: '/libraries/owned/:id',
-      name: 'owned-library',
-      component: () => import('../views/OwnedLibraryView.vue'),
-      meta: { requiresAuth: true }
-    },
-    {
       path: '/libraries/:id/add-book',
       name: 'add-book',
       component: () => import('../views/AddBookView.vue'),
