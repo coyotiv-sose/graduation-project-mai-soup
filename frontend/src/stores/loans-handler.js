@@ -23,7 +23,15 @@ export const useLoansHandler = defineStore('loans-handler', {
         console.error(error)
       }
     },
-    async extendLoan(libraryId, bookCopyId) {},
-    async fetchUsersLoans() {}
+    async extendLoan(libraryId, bookCopyId) {
+      try {
+        await axios.patch(`/libraries/${libraryId}/copies/${bookCopyId}`, {
+          action: 'extend'
+        })
+      } catch (error) {
+        // TODO: handle error
+        console.error(error)
+      }
+    }
   }
 })
