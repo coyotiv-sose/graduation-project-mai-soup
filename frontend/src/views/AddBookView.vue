@@ -17,8 +17,9 @@
 </template>
 
 <script>
-import axios from 'axios';
-import BookListItem from '../components/BookListItem.vue';
+import { useBooksHandler } from '../stores/books-handler'
+import { mapActions } from 'pinia'
+import BookListItem from '../components/BookListItem.vue'
 
 export default {
   name: 'AddBookView',
@@ -40,18 +41,14 @@ export default {
     }
   },
   methods: {
+    ...mapActions(useBooksHandler, ['fetchOpenBooks']),
     async onSubmit () {
       if (this.shouldPreventSubmission) return
 
       this.booksLoaded = false
       this.booksAreLoading = true
-      const results = await axios.get('/open-books', {
-        params: {
-          q: this.query
-        }
-      })
 
-      this.books = results.data
+      this.books = await this.fetchOpenBooks(this.query)
       this.booksAreLoading = false
       this.booksLoaded = true
     },
