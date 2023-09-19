@@ -28,7 +28,7 @@ export default {
         email: this.email,
         password: this.password
       })
-      this.$router.push('/login')
+      this.$router.push({ name: 'login' })
     },
     validateUsername(username) {
       if (username.length < 3) {
