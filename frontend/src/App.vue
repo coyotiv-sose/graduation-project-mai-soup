@@ -36,14 +36,11 @@ export default {
     RouterView
   },
   methods: {
-    ...mapActions(useAccountStore, ['logout', 'fetchUser']),
+    ...mapActions(useAccountStore, ['logout']),
     async doLogout() {
       await this.logout()
     }
   },
-  mounted() {
-    this.fetchUser()
-  }
 }
 </script>
 
