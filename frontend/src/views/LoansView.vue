@@ -20,9 +20,9 @@
 </template>
 
 <script>
-import axios from 'axios'
 import { RouterLink } from 'vue-router'
 import { useAccountStore } from '../stores/account'
+import { useLoansHandler } from '../stores/loans-handler'
 import { mapActions, mapState } from 'pinia'
 
 export default {
@@ -38,12 +38,13 @@ export default {
   },
   methods: {
     ...mapActions(useAccountStore, ['fetchUser']),
+    ...mapActions(useLoansHandler, ['returnBook', 'extendLoan']),
     async doReturn(loan) {
-      await axios.patch(`/copies/${loan._id}`, { action: 'return' })
+      await this.returnBook(loan.library._id, loan._id)
       this.fetchUser()
     },
     async doExtend(loan) {
-      await axios.patch(`/copies/${loan._id}`, { action: 'extend' })
+      await this.extendLoan(loan.library._id, loan._id)
       this.fetchUser()
     }
   }
