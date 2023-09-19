@@ -31,7 +31,7 @@ export const useAccountStore = defineStore('account', {
       await axios.post('/accounts', { username, email, password })
     },
     isOwnerOfLibrary(libraryId) {
-      return this.user.ownedLibraries.some(
+      return this.user?.ownedLibraries.some(
         (library) => library._id === libraryId
       )
     }
