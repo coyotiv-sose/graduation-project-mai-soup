@@ -1,4 +1,5 @@
-FROM node:alpine
+# Build part
+FROM node:alpine AS build
 
 ENV NODE_ENV=production
 
@@ -9,9 +10,6 @@ ARG VITE_MAPBOX_TOKEN
 # Set environment variables using the build arguments
 ENV VITE_API_URL=$VITE_API_URL
 ENV VITE_MAPBOX_TOKEN=$VITE_MAPBOX_TOKEN
-
-RUN echo "the value of VITE_API_URL is ${VITE_API_URL}"
-RUN echo "the value of VITE_MAPBOX_TOKEN is ${VITE_MAPBOX_TOKEN}"
 
 WORKDIR /app
 
@@ -26,12 +24,14 @@ ADD vite.config.js /app/vite.config.js
 ADD vitest.config.js /app/vitest.config.js
 ADD public /app/public
 ADD src /app/src
+ADD nginx.config /app/nginx.config
 
 # Build the app for production
 RUN npm run build
 
-# Install http-server globally
-RUN npm install -g http-server
+# Deploy part 
+FROM nginx
 
-# Use shell interpolation to substitute the $PORT environment variable
-CMD ["sh", "-c", "http-server dist -p $PORT"]
+# Copy needed files
+COPY --from=build /app/nginx.config /etc/nginx/conf.d/default.conf
+COPY --from=build /app/dist /usr/share/nginx/html
