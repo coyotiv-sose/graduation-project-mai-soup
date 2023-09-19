@@ -8,8 +8,10 @@
       li(v-for="library in user.memberships" :key="library._id")
         RouterLink(:to="{ name: 'library', params: { id: library._id } }") {{ library.name }}
 </template>
+
 <script>
-import axios from 'axios'
+import { useProfileHandler } from '../stores/profile-handler'
+import { mapActions } from 'pinia'
 
 export default {
   name: 'ProfileView',
@@ -18,8 +20,11 @@ export default {
       user: null
     }
   },
+  methods: {
+    ...mapActions(useProfileHandler, ['fetchProfile']),
+  },
   async mounted() {
-    this.user = (await axios.get(`/users/${this.$route.params.username}`)).data
+    this.user = await this.fetchProfile(this.$route.params.username)
   },
 }
 </script>
