@@ -13,7 +13,8 @@
 </template>
 
 <script>
-import axios from 'axios'
+import { useBooksHandler } from '../stores/books-handler'
+import { mapActions } from 'pinia'
 
 export default {
   name: 'BookView',
@@ -22,10 +23,11 @@ export default {
       book: null,
     }
   },
-  created() {
-    axios.get(`/books/${this.$route.params.id}`).then((response) => {
-      this.book = response.data
-    })
+  methods: {
+    ...mapActions(useBooksHandler, ['fetchBook']),
+  },
+  async mounted() {
+    this.book = await this.fetchBook(this.$route.params.id)
   },
 }
 </script>
