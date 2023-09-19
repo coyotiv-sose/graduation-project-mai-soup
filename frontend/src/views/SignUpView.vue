@@ -1,3 +1,23 @@
+<template lang="pug">
+.container
+  h1 Sign Up
+  // TODO: prevent form submission altogether if validation fails, not just through button
+  form(@submit.prevent="performSignUp")
+    div.form-group
+      label(for="username") Username
+      input.form-control(type="text" id="username" v-model="username" minlength="3" maxlength="24" pattern="^[a-zA-Z0-9_-]+$" required)
+      small(v-if="usernameError") {{ usernameError }}
+    div.form-group
+      label(for="email") Email
+      input.form-control(type="email" id="email" v-model="email" required)
+      small(v-if="emailError") {{ emailError }}
+    div.form-group
+      label(for="password") Password
+      input.form-control(type="password" id="password" v-model="password" required)
+    div.form-group
+      button.btn.btn-primary(type="submit" :disabled="shouldDisableSubmit") Sign Up
+</template>
+
 <script>
 import { mapActions } from 'pinia'
 import { useAccountStore } from '../stores/account'
@@ -69,23 +89,3 @@ export default {
   }
 }
 </script>
-
-<template lang="pug">
-.container
-  h1 Sign Up
-  // TODO: prevent form submission altogether if validation fails, not just through button
-  form(@submit.prevent="performSignUp")
-    div.form-group
-      label(for="username") Username
-      input.form-control(type="text" id="username" v-model="username" minlength="3" maxlength="24" pattern="^[a-zA-Z0-9_-]+$" required)
-      small(v-if="usernameError") {{ usernameError }}
-    div.form-group
-      label(for="email") Email
-      input.form-control(type="email" id="email" v-model="email" required)
-      small(v-if="emailError") {{ emailError }}
-    div.form-group
-      label(for="password") Password
-      input.form-control(type="password" id="password" v-model="password" required)
-    div.form-group
-      button.btn.btn-primary(type="submit" :disabled="shouldDisableSubmit") Sign Up
-</template>

@@ -1,3 +1,12 @@
+<template lang="pug">
+.container
+  h1 Log In
+  form(@submit.prevent="performLogin")
+    input(type="text" placeholder="Username or email" v-model="identifier")
+    input(type="password" placeholder="Password" v-model="password")
+    button(type="submit") Log In
+</template>
+
 <script>
 import { useAccountStore } from '../stores/account'
 import { mapActions } from 'pinia'
@@ -23,12 +32,3 @@ export default {
   }
 }
 </script>
-
-<template lang="pug">
-.container
-  h1 Log In
-  form(@submit.prevent="performLogin")
-    input(type="text" placeholder="Username or email" v-model="identifier")
-    input(type="password" placeholder="Password" v-model="password")
-    button(type="submit") Log In
-</template>

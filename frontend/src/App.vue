@@ -1,3 +1,25 @@
+<template>
+  <div v-if="!isInHomeRoute">
+    <header class="navbar">
+      <nav class="nav-items">
+        <RouterLink to="/">Home</RouterLink>
+        <RouterLink to="/libraries">Libraries</RouterLink>
+        <RouterLink v-if="isLoggedIn" to="/books">Books</RouterLink>
+        <RouterLink v-if="isLoggedIn" to="/loans">Loans</RouterLink>
+        <RouterLink v-if="!isLoggedIn" to="/login">Login</RouterLink>
+        <RouterLink v-if="!isLoggedIn" to="/signup">Sign Up</RouterLink>
+      </nav>
+
+      <div v-if="isLoggedIn" class="user-info">
+        <span>Hello, {{ username }}!</span>
+        <button @click="doLogout">Logout</button>
+      </div>
+    </header>
+  </div>
+
+  <RouterView />
+</template>
+
 <script>
 import { RouterLink, RouterView } from 'vue-router'
 import { useAccountStore } from './stores/account'
@@ -30,28 +52,6 @@ export default {
   }
 }
 </script>
-
-<template>
-  <div v-if="!isInHomeRoute">
-    <header class="navbar">
-      <nav class="nav-items">
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/libraries">Libraries</RouterLink>
-        <RouterLink v-if="isLoggedIn" to="/books">Books</RouterLink>
-        <RouterLink v-if="isLoggedIn" to="/loans">Loans</RouterLink>
-        <RouterLink v-if="!isLoggedIn" to="/login">Login</RouterLink>
-        <RouterLink v-if="!isLoggedIn" to="/signup">Sign Up</RouterLink>
-      </nav>
-
-      <div v-if="isLoggedIn" class="user-info">
-        <span>Hello, {{ username }}!</span>
-        <button @click="doLogout">Logout</button>
-      </div>
-    </header>
-  </div>
-
-  <RouterView />
-</template>
 
 <style scoped lang="scss">
 /* TODO: add proper styles */
