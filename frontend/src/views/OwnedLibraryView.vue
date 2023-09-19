@@ -35,6 +35,7 @@
 import { mapState, mapActions } from 'pinia'
 import { useAccountStore } from '../stores/account'
 import { useLibraryHandler } from '../stores/library-handler'
+import { useLibrarianHandler } from '../stores/librarian-handler'
 import SingleLibraryMap from '../components/SingleLibraryMap.vue'
 
 export default {
@@ -54,7 +55,8 @@ export default {
     this.library = await this.fetchLibrary(this.$route.params.id)
   },
   methods: {
-    ...mapActions(useLibraryHandler, ['fetchLibrary', 'removeCopy']),
+    ...mapActions(useLibraryHandler, ['fetchLibrary']),
+    ...mapActions(useLibrarianHandler, ['removeCopy']),
     async doRemoveBook(book) {
       await this.removeCopy(this.$route.params.id, book._id)
 

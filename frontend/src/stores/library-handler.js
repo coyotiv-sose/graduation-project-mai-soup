@@ -21,14 +21,6 @@ export const useLibraryHandler = defineStore('library-handler', {
         console.error(error)
       }
     },
-    async removeCopy(libraryId, bookCopyId) {
-      try {
-        await axios.delete(`/libraries/${libraryId}/copies/${bookCopyId}`)
-      } catch (error) {
-        // TODO: handle error
-        console.error(error)
-      }
-    },
     async joinLibrary(libraryId) {
       try {
         await axios.post(`/libraries/${libraryId}/members`)
