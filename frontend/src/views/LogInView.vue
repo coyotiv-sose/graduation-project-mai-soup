@@ -15,7 +15,7 @@ export default {
     async performLogin() {
       try {
         await this.login({ username: this.identifier, password: this.password })
-        this.$router.push('/')
+        this.$router.push({ name: 'home'})
       } catch (err) {
         console.error(err)
       }

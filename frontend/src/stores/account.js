@@ -24,7 +24,7 @@ export const useAccountStore = defineStore('account', {
 
       if (this.$router.currentRoute.value.meta.requiresAuth) {
         // if current route requires auth, redirect to login
-        this.$router.push('/login')
+        this.$router.push({ name: 'login' })
       }
     },
     async signUp({ username, email, password }) {
