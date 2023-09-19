@@ -28,6 +28,7 @@
 import { RouterLink } from 'vue-router'
 import { useAccountStore } from '../stores/account'
 import { useLibraryHandler } from '../stores/library-handler'
+import { useLoansHandler } from '../stores/loans-handler'
 import { mapActions, mapState } from 'pinia'
 import SingleLibraryMap from '../components/SingleLibraryMap.vue'
 
@@ -59,8 +60,8 @@ export default {
   },
   methods: {
     ...mapActions(useAccountStore, ['fetchUser']),
-    ...mapActions(useLibraryHandler, ['fetchLibrary', 'borrowCopy', 'returnCopy',
-      'joinLibrary', 'leaveLibrary']),
+    ...mapActions(useLibraryHandler, ['fetchLibrary', 'joinLibrary', 'leaveLibrary']),
+    ...mapActions(useLoansHandler, ['borrowBook','returnBook']),
     async join() {
       await this.joinLibrary(this.$route.params.id)
       this.library.members.push({ _id: this.username, username: this.username })
@@ -75,9 +76,9 @@ export default {
     },
     async doBorrowOrReturn(book) {
       if (book.status === 'borrowed') {
-        await this.returnCopy(this.library._id, book._id)
+        await this.returnBook(this.library._id, book._id)
       } else {
-        await this.borrowCopy(this.library._id, book._id)
+        await this.borrowBook(this.library._id, book._id)
       }
       this.library = await this.fetchLibrary(this.$route.params.id)
       this.fetchUser()
