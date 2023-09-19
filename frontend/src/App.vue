@@ -1,23 +1,17 @@
-<template>
-  <div v-if="!isInHomeRoute">
-    <header class="navbar">
-      <nav class="nav-items">
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/libraries">Libraries</RouterLink>
-        <RouterLink v-if="isLoggedIn" to="/books">Books</RouterLink>
-        <RouterLink v-if="isLoggedIn" to="/loans">Loans</RouterLink>
-        <RouterLink v-if="!isLoggedIn" to="/login">Login</RouterLink>
-        <RouterLink v-if="!isLoggedIn" to="/signup">Sign Up</RouterLink>
-      </nav>
-
-      <div v-if="isLoggedIn" class="user-info">
-        <span>Hello, {{ username }}!</span>
-        <button @click="doLogout">Logout</button>
-      </div>
-    </header>
-  </div>
-
-  <RouterView />
+<template lang="pug">
+div(v-if='!isInHomeRoute')
+  header.navbar
+    nav.nav-items
+      RouterLink(to='/') Home
+      RouterLink(to='/libraries') Libraries
+      RouterLink(v-if='isLoggedIn' to='/books') Books
+      RouterLink(v-if='isLoggedIn' to='/loans') Loans
+      RouterLink(v-if='!isLoggedIn' to='/login') Login
+      RouterLink(v-if='!isLoggedIn' to='/signup') Sign Up
+    .user-info(v-if='isLoggedIn')
+      span Hello, {{ username }}!
+      button(@click='doLogout') Logout
+RouterView
 </template>
 
 <script>

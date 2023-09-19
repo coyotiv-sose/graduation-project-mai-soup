@@ -1,29 +1,25 @@
-<template>
-  <div class="bg">
-    <div class="container">
-      <header>
-        <span class="title">Porch Reads Club</span>
-        <nav>
-          <RouterLink to="/" class="active">Home</RouterLink>
-          <RouterLink to="/libraries">Libraries</RouterLink>
-          <RouterLink v-if="isLoggedIn" to="/books">Books</RouterLink>
-          <RouterLink v-if="!isLoggedIn" to="/login">Login</RouterLink>
-          <RouterLink v-if="!isLoggedIn" to="/signup">Sign Up</RouterLink>
-          <a v-if="isLoggedIn" @click="doLogout">Logout</a>
-        </nav>
-      </header>
-      <main>
-        <h1>Porch Reads Club</h1>
-        <p>Welcome to your online library hub!</p>
-        <p>Simplify book management, connect with members,<br />and enhance your book lending experience.</p>
-        <p>Dive in and explore libraries now!</p>
-        <RouterLink to="/libraries" class="action-btn"
-          >View Libraries</RouterLink
-        >
-      </main>
-      <footer>Maijs Garais, 2023</footer>
-    </div>
-  </div>
+<template lang="pug">
+.bg
+  .container
+    header
+      span.title Porch Reads Club
+      nav
+        RouterLink.active(to='/') Home
+        RouterLink(to='/libraries') Libraries
+        RouterLink(v-if='isLoggedIn' to='/books') Books
+        RouterLink(v-if='!isLoggedIn' to='/login') Login
+        RouterLink(v-if='!isLoggedIn' to='/signup') Sign Up
+        a(v-if='isLoggedIn' @click='doLogout') Logout
+    main
+      h1 Porch Reads Club
+      p Welcome to your online library hub!
+      p
+        | Simplify book management, connect with members,
+        br
+        | and enhance your book lending experience.
+      p Dive in and explore libraries now!
+      RouterLink.action-btn(to='/libraries') View Libraries
+    footer Maijs Garais, 2023
 </template>
 
 <script>
