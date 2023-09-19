@@ -28,7 +28,7 @@ export default {
         this.isReqInProgress = true
         await this.addCopy(this.library, this.book.id)
 
-        this.$router.push({ name: 'owned-library', params: { id: this.library } })
+        this.$router.push({ name: 'library', params: { id: this.library } })
       } catch (err) {
         // TODO: handle error case
       }
