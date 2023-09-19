@@ -21,8 +21,9 @@
 </template>
 
 <script>
-import axios from 'axios'
 import { RouterLink } from 'vue-router'
+import { useBooksHandler } from '../stores/books-handler'
+import { mapActions } from 'pinia'
 
 export default {
   name: 'BooksView',
@@ -34,10 +35,11 @@ export default {
       books: null
     }
   },
-  created() {
-    axios.get('/books').then((response) => {
-      this.books = response.data
-    })
+  methods: {
+    ...mapActions(useBooksHandler, ['fetchAllBooks']),
+  },
+  async mounted() {
+    this.books = await this.fetchAllBooks()
   }
 }
 </script>
