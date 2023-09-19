@@ -9,7 +9,8 @@
 </template>
 
 <script>
-import axios from 'axios'
+import { useLibrarianHandler } from '../stores/librarian-handler'
+import { mapActions } from 'pinia'
 
 export default {
   name: 'BookListItem',
@@ -21,12 +22,11 @@ export default {
     }
   },
   methods: {
+    ...mapActions(useLibrarianHandler, ['addCopy']),
     async addBook () {
       try {
         this.isReqInProgress = true
-        await axios.post('/libraries/' + this.library + '/copies', {
-          openLibraryId: this.book.id
-        })
+        await this.addCopy(this.library, this.book.id)
 
         this.$router.push({ name: 'owned-library', params: { id: this.library } })
       } catch (err) {

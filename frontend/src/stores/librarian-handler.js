@@ -10,6 +10,16 @@ export const useLibrarianHandler = defineStore('librarian-handler', {
         // TODO: handle error
         console.error(error)
       }
+    },
+    async addCopy(libraryId, bookId) {
+      try {
+        await axios.post(`/libraries/${libraryId}/copies`, {
+          openLibraryId: bookId
+        })
+      } catch (error) {
+        // TODO: handle error
+        console.error(error)
+      }
     }
   }
 })
