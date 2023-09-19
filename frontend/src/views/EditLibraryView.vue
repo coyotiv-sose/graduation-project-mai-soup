@@ -18,6 +18,7 @@
   <script>
   import axios from 'axios'
   import { useAccountStore } from '../stores/account'
+  import { useLibrarianHandler } from '../stores/librarian-handler'
   import { mapActions } from 'pinia'
   
   export default {
@@ -37,13 +38,11 @@
     },
     methods: {
       ...mapActions(useAccountStore, ['fetchUser']),
+      ...mapActions(useLibrarianHandler, ['updateLibrary']),
       async doEditLibrary() {
-        const response = await axios.patch(`/libraries/${this.$route.params.id}`, {
-          name: this.name,
-          location: this.location
-        })
+        await this.updateLibrary(this.$route.params.id, this.name, this.location )
         await this.fetchUser()
-        this.$router.push({ name: 'library', params: { id: response.data._id } })
+        this.$router.push({ name: 'library', params: { id: this.$route.params.id } })
       },
       validateName(name) {
         if (!name) {

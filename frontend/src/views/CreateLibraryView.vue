@@ -14,8 +14,8 @@
 </template>
 
 <script>
-import axios from 'axios'
 import { useAccountStore } from '../stores/account'
+import { useLibrarianHandler } from '../stores/librarian-handler'
 import { mapActions } from 'pinia'
 
 export default {
@@ -34,13 +34,11 @@ export default {
   },
   methods: {
     ...mapActions(useAccountStore, ['fetchUser']),
+    ...mapActions(useLibrarianHandler, ['createLibrary']),
     async doCreateLibrary() {
-      const response = await axios.post('/libraries', {
-        name: this.name,
-        location: this.location
-      })
+      const { _id } = await this.createLibrary(this.name, this.location)
       await this.fetchUser()
-      this.$router.push({ name: 'library', params: { id: response.data._id } })
+      this.$router.push({ name: 'library', params: { id: _id } })
     },
     validateName(name) {
       if (!name) {
