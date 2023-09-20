@@ -3,6 +3,7 @@
   h1 Libraries
     // link to create a new library
     RouterLink(to="/libraries/create") Create New Library
+    AllLibrariesMap(v-if="this.longitude && this.latitude" :libraries="this.libraries" :longitude="this.longitude" :latitude="this.latitude")
     div(v-if="this.user")
       h2 Owned Libraries
       ul
@@ -20,6 +21,7 @@
 
 <script>
 import { RouterLink } from 'vue-router'
+import AllLibrariesMap from '../components/AllLibrariesMap.vue'
 import { mapActions, mapState } from 'pinia'
 import { useAccountStore } from '../stores/account'
 import { useLibraryHandler } from '../stores/library-handler'
@@ -28,17 +30,34 @@ export default {
   name: 'LibrariesView',
   data() {
     return {
-      libraries: []
+      libraries: [],
+      longitude: null,
+      latitude: null,
     }
   },
   computed: {
     ...mapState(useAccountStore, ['user'])
   },
   components: {
-    RouterLink
+    RouterLink,
+    AllLibrariesMap
   },
   async mounted() {
     this.libraries = (await this.fetchAllLibraries())
+
+    const onGeoSuccess = (position) => {
+      this.latitude  = position.coords.latitude
+      this.longitude = position.coords.longitude
+    }
+
+    const onGeoFailure = () => {
+      // set to middle of germany because why not
+      this.longitude = 10.4515
+      this.latitude = 51.1657
+    }
+
+    // open perms popup
+    navigator.geolocation.getCurrentPosition(onGeoSuccess, onGeoFailure)
   },
   methods: {
     ...mapActions(useLibraryHandler, ['fetchAllLibraries'])
