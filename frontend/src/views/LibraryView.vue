@@ -26,7 +26,7 @@
         tr
           th Title
           th Status
-          th(v-if="isLoggedIn") Action
+          th(v-if="isLoggedIn && isUserMember") Action
       tbody
         tr(v-for="book in library.books" :key="book._id")
           td
@@ -34,10 +34,10 @@
           td
             span(v-if="book.status === 'borrowed'") Borrowed by {{ book.borrower.username }} until {{ book.returnDate }}
             span(v-else) {{ book.status }}
-          td(v-if="isLoggedIn")
+          td(v-if="isLoggedIn && isUserMember")
             div
-              button(v-if="isUserMember && book.status === 'available'" @click="doBorrowOrReturn(book)") Borrow
-              button(v-if="isUserMember && book.status === 'borrowed' && book.borrower.username === this.username" @click="doBorrowOrReturn(book)") Return
+              button(v-if="book.status === 'available'" @click="doBorrowOrReturn(book)") Borrow
+              button(v-if="book.status === 'borrowed' && book.borrower.username === this.username" @click="doBorrowOrReturn(book)") Return
               button(v-if="isOwner" @click="doRemoveBook(book)") Remove from library
 </template>
 
