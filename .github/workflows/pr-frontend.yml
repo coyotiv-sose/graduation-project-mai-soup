@@ -1,4 +1,4 @@
-name: "Check package version on frontend PR"
+name: "Check package version and build status on frontend PR"
 
 on:
   pull_request:
