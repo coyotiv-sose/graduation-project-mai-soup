@@ -26,7 +26,7 @@
         tr
           th Title
           th Status
-          th Action
+          th(v-if="isLoggedIn") Action
       tbody
         tr(v-for="book in library.books" :key="book._id")
           td
@@ -34,7 +34,7 @@
           td
             span(v-if="book.status === 'borrowed'") Borrowed by {{ book.borrower.username }} until {{ book.returnDate }}
             span(v-else) {{ book.status }}
-          td
+          td(v-if="isLoggedIn")
             div
               button(v-if="isUserMember && book.status === 'available'" @click="doBorrowOrReturn(book)") Borrow
               button(v-if="isUserMember && book.status === 'borrowed' && book.borrower.username === this.username" @click="doBorrowOrReturn(book)") Return
@@ -62,6 +62,7 @@ export default {
     SingleLibraryMap
   },
   computed: {
+    ...mapState(useAccountStore, ['isLoggedIn']),
     ownerUsername() {
       return this.library.owner ? this.library.owner.username : null
     },
