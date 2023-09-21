@@ -26,3 +26,4 @@ node_modules/
 data/
 
 coverage/
+backend/src/config/keys.json
