@@ -77,6 +77,7 @@ const multerMiddleware = multer({
   },
 })
 
+// TODO for tomorrow: don't use multer for all routes, this was just for testing
 app.use(multerMiddleware.single('file'))
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
