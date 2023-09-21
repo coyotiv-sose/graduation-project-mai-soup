@@ -31,8 +31,14 @@ const bookInfoSchema = new mongoose.Schema({
 
 class BookInfo {
   async addToLibrary(library) {
-    this.librariesFoundIn.push(library)
-    await this.save()
+    const libraryWithId = this.librariesFoundIn.find(
+      l => l._id.toString() === library._id.toString()
+    )
+
+    if (!libraryWithId) {
+      this.librariesFoundIn.push(library)
+      await this.save()
+    }
   }
 
   async removeFromLibrary(library) {

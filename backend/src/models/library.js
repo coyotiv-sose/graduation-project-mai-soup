@@ -1,6 +1,7 @@
 const mongoose = require('mongoose')
 const autopopulate = require('mongoose-autopopulate')
 const BookCopy = require('./book-copy')
+const BookInfo = require('./book-info')
 
 const librarySchema = new mongoose.Schema({
   name: {
@@ -102,6 +103,15 @@ class Library {
     if (index === -1) {
       throw new Error('copy is not in this library')
     }
+    const copiesLeft = this.books.filter(
+      b => b.bookInfo.openLibraryId === bookCopy.bookInfo.openLibraryId
+    )
+
+    if (copiesLeft.length === 1) {
+      const bookInfo = await BookInfo.findById(bookCopy.bookInfo._id)
+      await bookInfo.removeFromLibrary(this)
+    }
+
     await BookCopy.findByIdAndDelete(bookCopy._id)
     this.books.splice(index, 1)
     await this.save()
