@@ -13,6 +13,7 @@ const BookInfo = require('../models/book-info')
 const BookCopy = require('../models/book-copy')
 const User = require('../models/user')
 const descriptionEnhancer = require('../lib/description-enhancer')
+const { uploadImage } = require('../lib/google-cloud-storage')
 
 router.get('/:id', async (req, res, next) => {
   const { id } = req.params
@@ -303,6 +304,19 @@ router.patch('/:id/copies/:copyId', mustLogin, async (req, res, next) => {
         'An error occurred while updating the book copy. Please try again later.'
       )
     )
+  }
+})
+
+router.put('/test-uploads', async (req, res, next) => {
+  try {
+    const myFile = req.file
+    const { publicUrl } = await uploadImage(myFile)
+    return res.status(200).json({
+      message: 'Upload was successful',
+      data: publicUrl,
+    })
+  } catch (error) {
+    return next(createError(500, error.message))
   }
 })
 
