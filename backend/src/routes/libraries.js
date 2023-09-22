@@ -13,7 +13,7 @@ const BookInfo = require('../models/book-info')
 const BookCopy = require('../models/book-copy')
 const User = require('../models/user')
 const descriptionEnhancer = require('../lib/description-enhancer')
-const { uploadImage } = require('../lib/google-cloud-storage')
+const { uploadImage, deleteImage } = require('../lib/google-cloud-storage')
 const { singleFile } = require('../middleware/multer')
 
 router.get('/:id', async (req, res, next) => {
@@ -311,10 +311,25 @@ router.patch('/:id/copies/:copyId', mustLogin, async (req, res, next) => {
 router.put('/test-uploads', singleFile, async (req, res, next) => {
   try {
     const myFile = req.file
-    const { publicUrl } = await uploadImage(myFile)
+    const { publicUrl, name } = await uploadImage(myFile)
     return res.status(200).json({
       message: 'Upload was successful',
-      data: publicUrl,
+      data: {
+        publicUrl,
+        name,
+      },
+    })
+  } catch (error) {
+    return next(createError(500, error.message))
+  }
+})
+
+router.delete('/uploads/:filename', async (req, res, next) => {
+  const { filename } = req.params
+  try {
+    await deleteImage(filename)
+    return res.status(200).json({
+      message: 'File deleted successfully',
     })
   } catch (error) {
     return next(createError(500, error.message))
