@@ -54,4 +54,18 @@ const uploadImage = file =>
       .end(buffer)
   })
 
-module.exports = { uploadImage, getSignedReadUrl }
+const deleteImage = filename =>
+  new Promise((resolve, reject) => {
+    const blob = bucket.file(filename)
+    blob
+      .delete()
+      .then(() => {
+        resolve({ name: blob.name })
+      })
+      .catch(err => {
+        console.error(err)
+        reject(new Error('Unable to delete image, something went wrong'))
+      })
+  })
+
+module.exports = { uploadImage, deleteImage, getSignedReadUrl }
