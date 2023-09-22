@@ -1,7 +1,6 @@
 const express = require('express')
 const createError = require('http-errors')
 const axios = require('axios')
-const multer = require('multer')
 const mbxGeocoding = require('@mapbox/mapbox-sdk/services/geocoding')
 
 const mbxToken = process.env.MAPBOX_TOKEN
@@ -309,33 +308,20 @@ router.patch('/:id/copies/:copyId', mustLogin, async (req, res, next) => {
   }
 })
 
-router.put('/test-uploads', async (req, res, next) => {
-  singleFile(req, res, async err => {
-    console.error(err)
-    if (err instanceof multer.MulterError && err.code === 'LIMIT_FILE_SIZE') {
-      // if file too large, return 413 error
-      return next(createError(413, 'File too large'))
-    }
-
-    // other errors
-    if (err) {
-      return next(createError(500, err.message))
-    }
-    // all good
-    try {
-      const myFile = req.file
-      const { publicUrl, name } = await uploadImage(myFile)
-      return res.status(200).json({
-        message: 'Upload was successful',
-        data: {
-          publicUrl,
-          name,
-        },
-      })
-    } catch (error) {
-      return next(createError(500, error.message))
-    }
-  })
+router.put('/test-uploads', singleFile, async (req, res, next) => {
+  try {
+    const myFile = req.file
+    const { publicUrl, name } = await uploadImage(myFile)
+    return res.status(200).json({
+      message: 'Upload was successful',
+      data: {
+        publicUrl,
+        name,
+      },
+    })
+  } catch (error) {
+    return next(createError(500, error.message))
+  }
 })
 
 router.delete('/uploads/:filename', async (req, res, next) => {
