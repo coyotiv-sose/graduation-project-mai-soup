@@ -14,6 +14,7 @@ const BookCopy = require('../models/book-copy')
 const User = require('../models/user')
 const descriptionEnhancer = require('../lib/description-enhancer')
 const { uploadImage } = require('../lib/google-cloud-storage')
+const { singleFile } = require('../middleware/multer')
 
 router.get('/:id', async (req, res, next) => {
   const { id } = req.params
@@ -307,7 +308,7 @@ router.patch('/:id/copies/:copyId', mustLogin, async (req, res, next) => {
   }
 })
 
-router.put('/test-uploads', async (req, res, next) => {
+router.put('/test-uploads', singleFile, async (req, res, next) => {
   try {
     const myFile = req.file
     const { publicUrl } = await uploadImage(myFile)

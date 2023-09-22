@@ -9,7 +9,6 @@ const MongoStore = require('connect-mongo')
 const mongoose = require('mongoose')
 const passport = require('passport')
 const bodyParser = require('body-parser')
-const multer = require('multer')
 const User = require('./models/user')
 
 require('./database-connection')
@@ -70,15 +69,6 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 app.use(cookieParser())
 
-const multerMiddleware = multer({
-  storage: multer.memoryStorage(),
-  limits: {
-    fileSize: 2 * 1024 * 1024, // 2MB
-  },
-})
-
-// TODO for tomorrow: don't use multer for all routes, this was just for testing
-app.use(multerMiddleware.single('file'))
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
 
