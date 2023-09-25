@@ -1,0 +1,23 @@
+services:
+  api:
+    image: api/test
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.test
+    ports:
+      - "3000:3000"
+    env_file:
+      - ./backend/.env
+    environment:
+      - MONGO_URI=mongodb://mongo:27017
+      - SESSION_SECRET=your_session_secret
+    # volumes:
+    #   - ./backend/src:/app/src
+
+  mongo:
+    image: mongo
+    command: mongod --quiet --logpath /dev/null
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./data/db:/data/db

@@ -11,7 +11,8 @@
     "eslint:check": "npx eslint .",
     "eslint:fix": "npx eslint --fix .",
     "test": "jest --forceExit --silent",
-    "test:watch": "jest --watchAll --coverage --silent"
+    "test:watch": "jest --watchAll --coverage --silent",
+    "test:coverage": "jest --coverage --colors"
   },
   "devDependencies": {
     "eslint": "^8.19.0",
