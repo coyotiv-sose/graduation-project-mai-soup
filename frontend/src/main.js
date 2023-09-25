@@ -20,6 +20,8 @@ app.use(pinia)
 import { useAccountStore } from './stores/account'
 
 const accountStore = useAccountStore()
+// has to be a promise to avoid top-level async/await, which is not
+// supported by older browsers
 accountStore.fetchUser().then(() => {
   app.use(router)
   app.mount('#app')
