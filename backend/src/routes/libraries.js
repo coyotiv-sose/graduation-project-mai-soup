@@ -13,8 +13,6 @@ const BookInfo = require('../models/book-info')
 const BookCopy = require('../models/book-copy')
 const User = require('../models/user')
 const descriptionEnhancer = require('../lib/description-enhancer')
-const { singleFile } = require('../middleware/multer')
-const { uploadImage, deleteImage } = require('../controllers/libraries')
 
 router.get('/:id', async (req, res, next) => {
   const { id } = req.params
@@ -307,9 +305,5 @@ router.patch('/:id/copies/:copyId', mustLogin, async (req, res, next) => {
     )
   }
 })
-
-router.put('/test-uploads', singleFile, uploadImage)
-
-router.delete('/uploads/:filename', deleteImage)
 
 module.exports = router
