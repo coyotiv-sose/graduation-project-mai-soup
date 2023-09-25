@@ -17,7 +17,7 @@ import { useBooksHandler } from '../stores/books-handler'
 import { mapActions } from 'pinia'
 
 export default {
-  name: 'BookView',
+  name: 'SingleBookView',
   data() {
     return {
       book: null,
