@@ -6,7 +6,7 @@
     h2 Memberships
     ul
       li(v-for="library in user.memberships" :key="library._id")
-        RouterLink(:to="{ name: 'library', params: { id: library._id } }") {{ library.name }}
+        RouterLink(:to="{ name: 'single-library', params: { id: library._id } }") {{ library.name }}
 </template>
 
 <script>

@@ -31,8 +31,8 @@ const router = createRouter({
     },
     {
       path: '/libraries',
-      name: 'libraries',
-      component: () => import('../views/LibrariesView.vue'),
+      name: 'all-libraries',
+      component: () => import('../views/AllLibrariesView.vue'),
       meta: { requiresAuth: false }
     },
     {
@@ -43,8 +43,8 @@ const router = createRouter({
     },
     {
       path: '/libraries/:id',
-      name: 'library',
-      component: () => import('../views/LibraryView.vue'),
+      name: 'single-library',
+      component: () => import('../views/SingleLibraryView.vue'),
       meta: { requiresAuth: false }
     },
     {

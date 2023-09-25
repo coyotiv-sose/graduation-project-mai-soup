@@ -8,15 +8,15 @@
       h2 Owned Libraries
       ul
         li(v-for="library in this.user.ownedLibraries" :key="library.id")
-          RouterLink(:to="{ name: 'library', params: { id: library._id } }") {{ library.name }}
+          RouterLink(:to="{ name: 'single-library', params: { id: library._id } }") {{ library.name }}
       h2 Memberships
       ul
         li(v-for="library in this.user.memberships" :key="library.id")
-          RouterLink(:to="{ name: 'library', params: { id: library._id } }") {{ library.name }}
+          RouterLink(:to="{ name: 'single-library', params: { id: library._id } }") {{ library.name }}
     h2 All Libraries
     ul
       li(v-for="library in libraries" :key="library.id")
-        RouterLink(:to="{ name: 'library', params: { id: library._id } }") {{ library.name }}
+        RouterLink(:to="{ name: 'single-library', params: { id: library._id } }") {{ library.name }}
 </template>
 
 <script>
@@ -27,7 +27,7 @@ import { useAccountStore } from '../stores/account'
 import { useLibraryHandler } from '../stores/library-handler'
 
 export default {
-  name: 'LibrariesView',
+  name: 'AllLibrariesView',
   data() {
     return {
       libraries: [],

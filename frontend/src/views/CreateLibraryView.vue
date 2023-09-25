@@ -38,7 +38,7 @@ export default {
     async doCreateLibrary() {
       const { _id } = await this.createLibrary(this.name, this.location)
       await this.fetchUser()
-      this.$router.push({ name: 'library', params: { id: _id } })
+      this.$router.push({ name: 'single-library', params: { id: _id } })
     },
     validateName(name) {
       if (!name) {

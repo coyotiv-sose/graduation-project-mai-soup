@@ -8,7 +8,7 @@
     h2 Libraries
       ul
         li(v-for="library in book.librariesFoundIn" :key="library._id")
-          RouterLink(:to="{ name: 'library', params: { id: library._id } }") {{ library.name }}
+          RouterLink(:to="{ name: 'single-library', params: { id: library._id } }") {{ library.name }}
   div(v-else) Loading...
 </template>
 
