@@ -11,8 +11,6 @@ services:
     environment:
       - MONGO_URI=mongodb://mongo:27017
       - SESSION_SECRET=your_session_secret
-    # volumes:
-    #   - ./backend/src:/app/src
 
   mongo:
     image: mongo
