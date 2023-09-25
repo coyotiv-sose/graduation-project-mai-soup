@@ -34,39 +34,44 @@ const getSignedReadUrl = async filename => {
   return url
 }
 
-const uploadImage = file =>
-  new Promise((resolve, reject) => {
-    const { buffer } = file
+const uploadImage = async file => {
+  const { buffer } = file
+  const extension = path.extname(file.originalname).toLowerCase()
+  const blobName = `${uuidv4()}${extension}`
+  const blob = bucket.file(blobName)
+  const blobStream = blob.createWriteStream({
+    resumable: false,
+  })
 
-    const extension = path.extname(file.originalname).toLowerCase()
-    const blob = bucket.file(`${uuidv4()}${extension}`)
-    const blobStream = blob.createWriteStream({
-      resumable: false,
+  // try uploading the file
+  try {
+    await new Promise((resolve, reject) => {
+      blobStream
+        .on('finish', resolve)
+        .on('error', err => {
+          console.error(err)
+          reject(new Error('Unable to upload image, something went wrong'))
+        })
+        .end(buffer)
     })
-    blobStream
-      .on('finish', async () => {
-        const publicUrl = await getSignedReadUrl(blob.name)
-        resolve({ name: blob.name, publicUrl })
-      })
-      .on('error', err => {
-        console.error(err)
-        reject(new Error('Unable to upload image, something went wrong'))
-      })
-      .end(buffer)
-  })
 
-const deleteImage = filename =>
-  new Promise((resolve, reject) => {
-    const blob = bucket.file(filename)
-    blob
-      .delete()
-      .then(() => {
-        resolve({ name: blob.name })
-      })
-      .catch(err => {
-        console.error(err)
-        reject(new Error('Unable to delete image, something went wrong'))
-      })
-  })
+    const publicUrl = await getSignedReadUrl(blob.name)
+    return { name: blob.name, publicUrl }
+  } catch (err) {
+    console.error(err)
+    throw new Error('Unable to upload image, something went wrong')
+  }
+}
+
+const deleteImage = async filename => {
+  const blob = bucket.file(filename)
+  try {
+    await blob.delete()
+    return { name: blob.name }
+  } catch (err) {
+    console.error(err)
+    throw new Error('Unable to delete image, something went wrong')
+  }
+}
 
 module.exports = { uploadImage, deleteImage, getSignedReadUrl }
