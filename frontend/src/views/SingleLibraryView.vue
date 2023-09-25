@@ -51,7 +51,7 @@ import { mapActions, mapState } from 'pinia'
 import SingleLibraryMap from '../components/SingleLibraryMap.vue'
 
 export default {
-  name: 'LibraryView',
+  name: 'SingleLibraryView',
   data() {
     return {
       library: null, // init with null for clearer conditional checks

@@ -42,7 +42,7 @@
       async doEditLibrary() {
         await this.updateLibrary(this.$route.params.id, this.name, this.location )
         await this.fetchUser()
-        this.$router.push({ name: 'library', params: { id: this.$route.params.id } })
+        this.$router.push({ name: 'single-library', params: { id: this.$route.params.id } })
       },
       validateName(name) {
         if (!name) {
