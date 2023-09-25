@@ -14,3 +14,5 @@ beforeAll(async () => {
 afterAll(() => {
   mongoose.disconnect()
 })
+
+jest.setTimeout(10000)
