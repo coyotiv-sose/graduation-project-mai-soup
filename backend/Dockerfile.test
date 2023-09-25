@@ -1,0 +1,19 @@
+FROM node:alpine
+
+ENV NODE_ENV=test
+
+WORKDIR /app
+
+# add package.json and package-lock.json to the container
+ADD package.json package-lock.json ./
+
+# Install dependencies
+RUN npm install
+
+# Add the rest of the files
+ADD bin ./bin
+ADD src ./src
+ADD tests ./tests
+
+# Run the app
+CMD ["npm", "run", "test:coverage"]
