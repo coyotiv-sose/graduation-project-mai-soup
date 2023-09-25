@@ -37,6 +37,7 @@ app.use(
 
 app.use(helmet())
 
+// has to be a promise to work with mongostore
 const connectionPromise = mongoose.connection
   .asPromise()
   // eslint-disable-next-line no-return-assign, no-param-reassign
