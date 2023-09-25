@@ -1,5 +1,4 @@
 const createError = require('http-errors')
-const mbxGeocoding = require('@mapbox/mapbox-sdk/services/geocoding')
 const axios = require('axios')
 
 const Library = require('../models/library')
@@ -8,9 +7,7 @@ const BookCopy = require('../models/book-copy')
 const User = require('../models/user')
 const { uploadImage, deleteImage } = require('../lib/google-cloud-storage')
 const descriptionEnhancer = require('../lib/description-enhancer')
-
-const mbxToken = process.env.MAPBOX_TOKEN
-const geocoder = mbxGeocoding({ accessToken: mbxToken })
+const { getGeometryOfLocation } = require('../lib/geocoder')
 
 module.exports.getSingleLibrary = async (req, res, next) => {
   const { id } = req.params
@@ -53,15 +50,7 @@ module.exports.createLibrary = async (req, res, next) => {
     return next(createError(400, 'Name and location are required'))
 
   try {
-    // TODO: error handling for geocoding specifically?
-    const geocoderResponse = await geocoder
-      .forwardGeocode({
-        query: location,
-        limit: 1,
-      })
-      .send()
-
-    const { geometry } = geocoderResponse.body.features[0]
+    const geometry = await getGeometryOfLocation(location)
 
     const library = await Library.create({
       name,
@@ -269,14 +258,7 @@ module.exports.updateLibrary = async (req, res, next) => {
     if (library.location !== location) {
       library.location = location
 
-      const geocoderResponse = await geocoder
-        .forwardGeocode({
-          query: location,
-          limit: 1,
-        })
-        .send()
-
-      const { geometry } = geocoderResponse.body.features[0]
+      const geometry = await getGeometryOfLocation(location)
 
       // update geometry
       library.geometry = geometry
