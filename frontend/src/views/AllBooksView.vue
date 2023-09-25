@@ -14,7 +14,7 @@
           td {{ book.title }}
           td {{ book.author }}
           td
-            RouterLink(:to="{ name: 'book', params: { id: book.openLibraryId } }") View
+            RouterLink(:to="{ name: 'single-book', params: { id: book.openLibraryId } }") View
   div(v-else)
     div(v-if="books === null") Loading...
     div(v-else) No books exist.
@@ -26,7 +26,7 @@ import { useBooksHandler } from '../stores/books-handler'
 import { mapActions } from 'pinia'
 
 export default {
-  name: 'BooksView',
+  name: 'AllBooksView',
   components: {
     RouterLink
   },

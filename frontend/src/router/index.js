@@ -49,14 +49,14 @@ const router = createRouter({
     },
     {
       path: '/books',
-      name: 'books',
-      component: () => import('../views/BooksView.vue'),
+      name: 'all-books',
+      component: () => import('../views/AllBooksView.vue'),
       meta: { requiresAuth: true }
     },
     {
       path: '/books/:id',
-      name: 'book',
-      component: () => import('../views/BookView.vue'),
+      name: 'single-book',
+      component: () => import('../views/SingleBookView.vue'),
       meta: { requiresAuth: true }
     },
     {
