@@ -13,7 +13,6 @@ const {
   leaveLibrary,
   updateCopy,
   updateLibrary,
-  generateEnhancedDescription,
   getAllMembers,
 } = require('../controllers/libraries')
 
@@ -22,10 +21,6 @@ router.get('/:id', getSingleLibrary)
 
 router.post('/', mustLogin, createLibrary)
 router.patch('/:id', mustLogin, updateLibrary)
-
-// TODO: this is a temporary route for testing the description enhancer
-// refactor this into proper route when description enhancer is complete
-router.post('/test', generateEnhancedDescription)
 
 router.post('/:id/copies', mustLogin, addCopy)
 router.delete('/:id/copies/:bookId', mustLogin, removeCopy)
