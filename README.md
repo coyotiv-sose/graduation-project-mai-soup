@@ -19,6 +19,8 @@ A hosted production version is available at https://porchreads.club/.
 You will need API keys for the following services:
 - [MapBox](https://www.mapbox.com/) for geocoding and map rendering
 - [OpenAI](https://openai.com/) for text generation
+  
+As well as, for image upload, a Google Cloud Storage bucket and service account credentials. For information on how to create a service account key, refer to the [GCS documentation](https://cloud.google.com/iam/docs/keys-create-delete#creating). The key is expected to be in a file `backend/src/config/keys.json`, and the container will not start without it. The project and bucket names are set in environment variables.
 
 Create `.env` files in the frontend and backend directories with contents similar to the `.env.example` files.
 
