@@ -1,2 +1,2 @@
 #!/bin/sh
-docker compose -f docker-compose.test.yml --project-name prc-t up --build --abort-on-container-exit
+docker compose -f docker-compose.test.yml --project-name test up --build --abort-on-container-exit
