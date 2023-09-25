@@ -38,4 +38,6 @@ jobs:
           SESSION_SECRET: ${{ secrets.SESSION_SECRET }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           MAPBOX_TOKEN: ${{ secrets.MAPBOX_TOKEN }}
+          GCLOUD_PROJECT_ID: ${{ secrets.GCLOUD_PROJECT_ID }}
+          GCLOUD_STORAGE_BUCKET: ${{ secrets.GCLOUD_STORAGE_BUCKET }}
         run: npm run test
