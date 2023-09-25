@@ -5,10 +5,6 @@ const User = require('../models/user')
 
 const router = express.Router()
 
-router.get('/', (req, res) => {
-  res.send(req.session)
-})
-
 router.post('/', async (req, res, next) => {
   try {
     const { username, email, password } = req.body
