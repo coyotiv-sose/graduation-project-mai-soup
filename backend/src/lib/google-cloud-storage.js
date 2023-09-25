@@ -5,15 +5,16 @@ const { v4: uuidv4 } = require('uuid')
 const serviceKey = path.join(__dirname, '../config/keys.json')
 const { Storage } = Cloud
 
-// TODO: use defauly app credentials from service in prod
-// and keyfile in dev
-const gcs = new Storage({
-  keyFilename: serviceKey,
-  projectId: process.env.GCLOUD_PROJECT_ID,
-})
+// use default storage in production, config from key in dev
+const gcs =
+  process.env.NODE_ENV === 'production'
+    ? new Storage()
+    : new Storage({
+        keyFilename: serviceKey,
+        projectId: process.env.GCLOUD_PROJECT_ID,
+      })
 
-// TODO: different bucket for dev and prod, should probably just use env vars
-const bucketName = 'prc-libraries-test'
+const bucketName = process.env.GCLOUD_STORAGE_BUCKET
 const bucket = gcs.bucket(bucketName)
 
 const getSignedReadUrl = async filename => {
