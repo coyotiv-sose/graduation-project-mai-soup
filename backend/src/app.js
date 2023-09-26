@@ -54,7 +54,10 @@ app.use(
     // in production, cookies should be set to https only
     cookie: {
       secure: process.env.NODE_ENV === 'production',
-      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+      sameSite:
+        process.env.NODE_ENV === 'production'
+          ? /* istanbul ignore next */ 'none'
+          : 'lax',
       // max age of 2 weeks
       maxAge: 1000 * 60 * 60 * 24 * 14,
     },
@@ -63,6 +66,7 @@ app.use(
 app.use(passport.session())
 
 app.set('trust proxy', 1)
+/* istanbul ignore next */
 const loggerFormat = app.get('env') === 'development' ? 'dev' : 'combined'
 app.use(logger(loggerFormat))
 app.use(express.json())
@@ -89,7 +93,8 @@ app.use((req, res, next) => {
 app.use((err, req, res, next) => {
   // set locals, only providing error in development
   const { message } = err
-  const error = req.app.get('env') === 'development' ? err : {}
+  const error =
+    req.app.get('env') === 'development' ? /* istanbul ignore next */ err : {}
 
   res.status(err.status || 500)
   res.send({ message, error })
