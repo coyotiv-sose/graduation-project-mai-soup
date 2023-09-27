@@ -24,10 +24,6 @@ module.exports.logoutAndDestroySession = (req, res, next) => {
     if (err) return next(createError(500, 'Logout failed'))
 
     // return to appease the eslint overlords
-    return req.session.destroy(error => {
-      return error
-        ? next(createError(500, "Couldn't destroy session"))
-        : res.sendStatus(200)
-    })
+    return res.sendStatus(200)
   })
 }
