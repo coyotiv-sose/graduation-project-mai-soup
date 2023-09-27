@@ -1,16 +1,27 @@
 const createError = require('http-errors')
-
 const User = require('../models/user')
 
 module.exports.registerUser = async (req, res, next) => {
   try {
     const { username, email, password } = req.body
 
+    // check all fields are present
+    if (!username || !email || !password)
+      return next(createError(400, 'Missing fields'))
+
     const user = await User.register({ username, email }, password)
 
     return res.send(user)
   } catch (err) {
-    return next(createError(400, 'Registration failed'))
+    if (
+      err.name === 'ValidationError' ||
+      err.code === 11000 ||
+      err.name === 'UserExistsError'
+    ) {
+      // handle validation or duplicate key errors separately
+      return next(createError(400, 'Registration failed'))
+    }
+    return next(createError(500, err))
   }
 }
 
