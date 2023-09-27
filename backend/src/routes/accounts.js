@@ -1,6 +1,8 @@
 const express = require('express')
 const passport = require('passport')
 
+const mustLogin = require('../middleware/must-login')
+
 const router = express.Router()
 
 const {
@@ -19,6 +21,6 @@ router.post(
   getAuthenticatedUser
 )
 
-router.delete('/session', logoutAndDestroySession)
+router.delete('/session', mustLogin, logoutAndDestroySession)
 
 module.exports = router

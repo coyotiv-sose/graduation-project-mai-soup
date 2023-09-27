@@ -12,7 +12,10 @@ services:
       - PORT=3001
       - MONGO_URI=mongodb://mongo:27018
       - SESSION_SECRET=your_session_secret
-
+    volumes:
+      - ./backend/coverage:/app/coverage
+      - ./backend/src:/app/src
+      - ./backend/tests:/app/tests
   mongo:
     image: mongo
     command: mongod --quiet --logpath /dev/null --port 27018
