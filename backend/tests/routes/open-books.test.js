@@ -39,3 +39,22 @@ it('should return 404 on request with nonexistent book', async () => {
 
   expect(res.statusCode).toBe(404)
 })
+
+it('should return 200 and an array of books on request with valid query', async () => {
+  const validTitle = 'The Book Thief'
+
+  const res = await agent.get('/open-books').query({
+    q: validTitle,
+  })
+
+  expect(res.statusCode).toBe(200)
+  expect(res.body).toBeInstanceOf(Array)
+
+  res.body.forEach(result => {
+    // each book's result should have title, authors, id, and coverUrl
+    expect(result).toHaveProperty('title')
+    expect(result).toHaveProperty('authors')
+    expect(result).toHaveProperty('id')
+    expect(result).toHaveProperty('coverUrl')
+  })
+})
