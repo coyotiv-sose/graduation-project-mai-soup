@@ -1,6 +1,5 @@
 const createError = require('http-errors')
 const axios = require('axios')
-const ISBN = require('isbn3')
 const Fuse = require('fuse.js')
 
 const BookInfo = require('../models/book-info')
@@ -48,7 +47,6 @@ module.exports.createBook = async (req, res, next) => {
     const authorNames = await Promise.all(
       authorIds.map(async a => {
         const author = await axios.get(`https://openlibrary.org${a}.json`)
-        console.error(a)
         return author.data.name
       })
     )
@@ -76,20 +74,10 @@ module.exports.getBooks = async (req, res, next) => {
     const books = await BookInfo.find({})
 
     if (query) {
-      // is the query an isbn?
-      const isbn = ISBN.parse(query)
-      if (isbn) {
-        const book = books.find(
-          b => b.isbn === isbn.isbn13 || b.isbn === isbn.isbn10
-        )
-
-        if (!book) return next(createError(404, 'No results found'))
-        return res.send([book])
-      }
-      // since not an isbn, check title and author
+      // check title and author
       // set up fuzzy search with Fuse.js
       const fuse = new Fuse(books, {
-        keys: ['title', 'author'],
+        keys: ['title', 'authors'],
       })
 
       const results = fuse.search(query)
