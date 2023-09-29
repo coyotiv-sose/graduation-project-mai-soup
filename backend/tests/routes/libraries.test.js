@@ -138,63 +138,12 @@ it('should allow access to a single library with or without authentication', asy
 // shouldnt leave lib without authing as member
 // shouldnt patch copies without authing as member
 
-// it('should list all libraries', async () => {
-//   const owner = await User.create({
-//     username: chance.word({ length: 5 }),
-//     email: chance.email(),
-//   })
-
-//   const library1 = {
-//     name: chance.word({ length: 25 }),
-//     longitude: chance.longitude(),
-//     latitude: chance.latitude(),
-//   }
-//   const library2 = {
-//     name: chance.word({ length: 25 }),
-//     longitude: chance.longitude(),
-//     latitude: chance.latitude(),
-//   }
-//   await owner.createLibrary(library1)
-//   await owner.createLibrary(library2)
-
-//   const response = await request(app).get('/libraries')
-//   expect(response.status).toBe(200)
-//   expect(response.body).toMatchObject(
-//     expect.arrayContaining([
-//       expect.objectContaining(library1),
-//       expect.objectContaining(library2),
-//     ])
-//   )
-// })
-
 it('should handle server errors when listing libraries', async () => {
   jest.spyOn(Library, 'find').mockRejectedValueOnce(new Error('oops'))
 
   const response = await request(app).get('/libraries')
   expect(response.status).toBe(500)
 })
-
-// TODO: rewrite to account for auth
-// it('should get a library by id', async () => {
-//   const owner = await User.create({
-//     username: chance.word({ length: 5 }),
-//     email: chance.email(),
-//   })
-
-//   const library = await owner.createLibrary({
-//     name: chance.word({ length: 25 }),
-//     longitude: chance.longitude(),
-//     latitude: chance.latitude(),
-//   })
-
-//   const response = await request(app).get(`/libraries/${library._id}`)
-//   expect(response.status).toBe(200)
-//   expect(response.body).toMatchObject({
-//     name: library.name,
-//     longitude: library.longitude,
-//     latitude: library.latitude,
-//   })
-// })
 
 it('should handle server errors when getting a library by id', async () => {
   jest.spyOn(Library, 'findById').mockRejectedValueOnce(new Error('oops'))
@@ -208,4 +157,14 @@ it('should handle not found errors when getting a library by id', async () => {
 
   const response = await request(app).get(`/libraries/${chance.word()}`)
   expect(response.status).toBe(404)
+})
+
+it('should handle server errors when creating a library', async () => {
+  jest.spyOn(Library, 'create').mockRejectedValueOnce(new Error('oops'))
+
+  const response = await agentOwner.post('/libraries').send({
+    name: chance.word({ length: 5 }),
+    location: chance.word({ length: 5 }),
+  })
+  expect(response.status).toBe(500)
 })
