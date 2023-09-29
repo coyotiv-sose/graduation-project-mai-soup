@@ -61,7 +61,7 @@ class Library {
 
     // subscribe new owner if owner has changed or document is new
     if (this.isModified('owner') || this.isNew) {
-      if (!newOwner.memberships.includes(this)) {
+      if (!newOwner.memberships?.includes(this)) {
         // subscribe new owner
         this.members.push(newOwner)
       }
