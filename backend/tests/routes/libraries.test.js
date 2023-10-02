@@ -171,6 +171,7 @@ it('should handle server errors when creating a library', async () => {
 })
 
 it('should not let unauthenticated users join a library', async () => {
+  // TODO: refactor library creation to its own function, repetitive
   const library = await Library.create({
     name: chance.word({ length: 5 }),
     location: chance.word({ length: 5 }),
@@ -318,4 +319,82 @@ it('should return 500 when server error occurs when getting members of a library
 
   const response = await agentMember.get(`/libraries/${fakeId}/members`)
   expect(response.status).toBe(500)
+})
+
+it('should not allow unauthenticated users to patch a library', async () => {
+  const library = await Library.create({
+    name: chance.word({ length: 5 }),
+    location: chance.word({ length: 5 }),
+    geometry: {
+      type: 'Point',
+      coordinates: [chance.longitude(), chance.latitude()],
+    },
+    owner: ownerId,
+  })
+  const response = await request(app).patch(`/libraries/${library._id}`)
+  expect(response.status).toBe(401)
+})
+
+it('should not allow users to patch a library they are not the owner of', async () => {
+  const library = await Library.create({
+    name: chance.word({ length: 5 }),
+    location: chance.word({ length: 5 }),
+    geometry: {
+      type: 'Point',
+      coordinates: [chance.longitude(), chance.latitude()],
+    },
+    owner: ownerId,
+  })
+  const response = await agentMember.patch(`/libraries/${library._id}`)
+  expect(response.status).toBe(403)
+})
+
+it('should return not found when attempting to patch a non-existent library', async () => {
+  const fakeId = new mongoose.Types.ObjectId()
+  const response = await agentOwner.patch(`/libraries/${fakeId}`)
+  expect(response.status).toBe(404)
+})
+
+it('should patch library with any combination of valid fields', async () => {
+  const library = await Library.create({
+    name: chance.word({ length: 5 }),
+    location: chance.word({ length: 5 }),
+    geometry: {
+      type: 'Point',
+      coordinates: [chance.longitude(), chance.latitude()],
+    },
+    owner: ownerId,
+  })
+  const newName = chance.word({ length: 5 })
+  const newLocation = chance.word({ length: 5 })
+
+  const responseName = await agentOwner
+    .patch(`/libraries/${library._id}`)
+    .send({
+      name: newName,
+    })
+  // console.error('name response', responseName)
+  expect(responseName.status).toBe(200)
+  expect(responseName.body.name).toBe(newName)
+
+  const responseLocation = await agentOwner
+    .patch(`/libraries/${library._id}`)
+    .send({
+      location: newLocation,
+    })
+  expect(responseLocation.status).toBe(200)
+  expect(responseLocation.body.location).toBe(newLocation)
+
+  const newestName = chance.word({ length: 5 })
+  const newestLocation = chance.word({ length: 5 })
+
+  const responseBoth = await agentOwner
+    .patch(`/libraries/${library._id}`)
+    .send({
+      name: newestName,
+      location: newestLocation,
+    })
+  expect(responseBoth.status).toBe(200)
+  expect(responseBoth.body.name).toBe(newestName)
+  expect(responseBoth.body.location).toBe(newestLocation)
 })
