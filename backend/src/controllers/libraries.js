@@ -148,14 +148,13 @@ module.exports.removeCopy = async (req, res, next) => {
 module.exports.joinLibrary = async (req, res, next) => {
   const { id } = req.params
   const { user } = req
-
-  const library = await Library.findById(id)
-  if (!library) return next(createError(404, 'Library not found'))
-
-  const newMember = await User.findOne({ username: user?.username })
-  if (!newMember) return next(createError(404, 'User not found'))
-
   try {
+    const library = await Library.findById(id)
+    if (!library) return next(createError(404, 'Library not found'))
+
+    const newMember = await User.findOne({ username: user?.username })
+    if (!newMember) return next(createError(404, 'User not found'))
+
     await newMember.joinLibrary(library)
     return res.status(201).send(library)
   } catch (err) {
@@ -166,33 +165,31 @@ module.exports.joinLibrary = async (req, res, next) => {
 module.exports.leaveLibrary = async (req, res, next) => {
   const { id } = req.params
   const { user } = req
+  try {
+    const library = await Library.findById(id)
+    if (!library) return next(createError(404, 'Library not found'))
 
-  const library = await Library.findById(id)
-  if (!library) return next(createError(404, 'Library not found'))
+    if (req.body.remove) {
+      const userToRemove = await User.findOne({ username: user?.username })
+      if (!userToRemove) return next(createError(404, 'User not found'))
 
-  if (req.body.remove) {
-    const userToRemove = await User.findOne({ username: user?.username })
-    if (!userToRemove) return next(createError(404, 'User not found'))
-
-    try {
       await userToRemove.leaveLibrary(library)
       return res.status(204).send()
-    } catch (err) {
-      console.error(err)
-      return next(createError(500, err.message))
     }
-  } else {
+
     return next(createError(400, 'Invalid request'))
+  } catch (err) {
+    console.error(err)
+    return next(createError(500, err.message))
   }
 }
 
 module.exports.getAllMembers = async (req, res, next) => {
   const { id } = req.params
-
-  const library = await Library.findById(id)
-  if (!library) return next(createError(404, 'Library not found'))
-
   try {
+    const library = await Library.findById(id)
+    if (!library) return next(createError(404, 'Library not found'))
+
     const { members } = library
     return res.send(members)
   } catch (err) {

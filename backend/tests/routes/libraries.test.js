@@ -215,3 +215,107 @@ it('should return 404 when attempting to join a non-existent library', async () 
   const response = await agentMember.post(`/libraries/${fakeId}/members`)
   expect(response.status).toBe(404)
 })
+
+it('should return 500 when server error occurs when joining a library', async () => {
+  const fakeId = new mongoose.Types.ObjectId()
+  jest.spyOn(Library, 'findById').mockRejectedValueOnce(new Error('oops'))
+
+  const response = await agentMember.post(`/libraries/${fakeId}/members`)
+  expect(response.status).toBe(500)
+})
+
+it('should return 204 when user leaves a library', async () => {
+  const library = await Library.create({
+    name: chance.word({ length: 5 }),
+    location: chance.word({ length: 5 }),
+    geometry: {
+      type: 'Point',
+      coordinates: [chance.longitude(), chance.latitude()],
+    },
+    owner: ownerId,
+  })
+
+  await agentMember.post(`/libraries/${library._id}/members`)
+
+  const response = await agentMember
+    .patch(`/libraries/${library._id}/members`)
+    .send({ remove: true })
+  expect(response.status).toBe(204)
+})
+
+it('should return 404 when attempting to leave a non-existent library', async () => {
+  const fakeId = new mongoose.Types.ObjectId()
+  const response = await agentMember
+    .patch(`/libraries/${fakeId}/members`)
+    .send({ remove: true })
+  expect(response.status).toBe(404)
+})
+
+it('should return 500 when server error occurs when leaving a library', async () => {
+  const fakeId = new mongoose.Types.ObjectId()
+  jest.spyOn(Library, 'findById').mockRejectedValueOnce(new Error('oops'))
+
+  const response = await agentMember
+    .patch(`/libraries/${fakeId}/members`)
+    .send({ remove: true })
+  expect(response.status).toBe(500)
+})
+
+it('should return 400 when attempting to patch library members without body', async () => {
+  const library = await Library.create({
+    name: chance.word({ length: 5 }),
+    location: chance.word({ length: 5 }),
+    geometry: {
+      type: 'Point',
+      coordinates: [chance.longitude(), chance.latitude()],
+    },
+    owner: ownerId,
+  })
+  const response = await agentMember.patch(`/libraries/${library._id}/members`)
+  expect(response.status).toBe(400)
+})
+
+it('should return 400 when attempting to patch library members without remove in body', async () => {
+  const library = await Library.create({
+    name: chance.word({ length: 5 }),
+    location: chance.word({ length: 5 }),
+    geometry: {
+      type: 'Point',
+      coordinates: [chance.longitude(), chance.latitude()],
+    },
+    owner: ownerId,
+  })
+  const response = await agentMember
+    .patch(`/libraries/${library._id}/members`)
+    .send({ foo: 'bar' })
+  expect(response.status).toBe(400)
+})
+
+it('should get all members of a library', async () => {
+  const library = await Library.create({
+    name: chance.word({ length: 5 }),
+    location: chance.word({ length: 5 }),
+    geometry: {
+      type: 'Point',
+      coordinates: [chance.longitude(), chance.latitude()],
+    },
+    owner: ownerId,
+  })
+
+  const response = await agentMember.get(`/libraries/${library._id}/members`)
+  expect(response.status).toBe(200)
+})
+
+it('should return 404 when attempting to get members of a non-existent library', async () => {
+  const fakeId = new mongoose.Types.ObjectId()
+  const response = await agentMember.get(`/libraries/${fakeId}/members`)
+  expect(response.status).toBe(404)
+})
+
+it('should return 500 when server error occurs when getting members of a library', async () => {
+  const fakeId = new mongoose.Types.ObjectId()
+  jest.spyOn(Library, 'findById').mockRejectedValueOnce(new Error('oops'))
+
+  const response = await agentMember.get(`/libraries/${fakeId}/members`)
+  expect(response.status).toBe(500)
+})
