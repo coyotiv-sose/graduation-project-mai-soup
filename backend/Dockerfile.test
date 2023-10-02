@@ -12,6 +12,7 @@ RUN npm install
 
 # Add the rest of the files
 ADD bin ./bin
+ADD jest.config.js ./jest.config.js
 
 # Run the app
 CMD ["npm", "run", "test:watch"]
