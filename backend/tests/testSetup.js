@@ -1,4 +1,3 @@
-const mongoose = require('mongoose')
 const dbConnection = require('../src/database-connection')
 
 function sleep(ms) {
@@ -10,9 +9,6 @@ module.exports = async () => {
   console.log('dropping db before tests...')
   const connection = await dbConnection
   await connection.dropDatabase()
+  // sleep for 5s since apparently otherwise the dropping might still be running
   await sleep(5000)
 }
-
-// afterAll(() => {
-//   mongoose.disconnect()
-// })
