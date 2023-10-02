@@ -242,7 +242,7 @@ module.exports.updateLibrary = async (req, res, next) => {
     const { name, location } = req.body
 
     const library = await Library.findById(libraryId)
-    if (!library) next(createError(404, 'Library not found'))
+    if (!library) return next(createError(404, 'Library not found'))
 
     // only library owner can edit library
     const { user } = req
@@ -250,9 +250,9 @@ module.exports.updateLibrary = async (req, res, next) => {
       return next(createError(403, 'You are not the owner of this library'))
 
     // update only the fields that have changed
-    if (library.name !== name) library.name = name
+    if (name && library.name !== name) library.name = name
 
-    if (library.location !== location) {
+    if (location && library.location !== location) {
       library.location = location
 
       const geometry = await getGeometryOfLocation(location)
