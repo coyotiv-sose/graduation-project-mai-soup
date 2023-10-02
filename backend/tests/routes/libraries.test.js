@@ -1,4 +1,5 @@
 const request = require('supertest')
+const mongoose = require('mongoose')
 const chance = require('chance').Chance()
 const app = require('../../src/app')
 const Library = require('../../src/models/library')
@@ -167,4 +168,50 @@ it('should handle server errors when creating a library', async () => {
     location: chance.word({ length: 5 }),
   })
   expect(response.status).toBe(500)
+})
+
+it('should not let unauthenticated users join a library', async () => {
+  const library = await Library.create({
+    name: chance.word({ length: 5 }),
+    location: chance.word({ length: 5 }),
+    geometry: {
+      type: 'Point',
+      coordinates: [chance.longitude(), chance.latitude()],
+    },
+    owner: ownerId,
+  })
+
+  const response = await request(app).post(`/libraries/${library._id}/members`)
+  expect(response.status).toBe(401)
+})
+
+it('should let an authenticated user join a library', async () => {
+  const library = await Library.create({
+    name: chance.word({ length: 5 }),
+    location: chance.word({ length: 5 }),
+    geometry: {
+      type: 'Point',
+      coordinates: [chance.longitude(), chance.latitude()],
+    },
+    owner: ownerId,
+  })
+
+  const response = await agentMember.post(`/libraries/${library._id}/members`)
+  expect(response.status).toBe(201)
+})
+
+it('library owner should be a member by default', async () => {
+  const name = 'Tester Library'
+  const location = 'Minnesota'
+
+  const response = await agentOwner.post('/libraries').send({ name, location })
+  expect(response.body.members).toEqual(
+    expect.arrayContaining([expect.objectContaining({ _id: ownerId })])
+  )
+})
+
+it('should return 404 when attempting to join a non-existent library', async () => {
+  const fakeId = new mongoose.Types.ObjectId()
+  const response = await agentMember.post(`/libraries/${fakeId}/members`)
+  expect(response.status).toBe(404)
 })
