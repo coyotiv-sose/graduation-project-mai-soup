@@ -3,7 +3,10 @@ const mongoose = require('mongoose')
 const chance = require('chance').Chance()
 const app = require('../../src/app')
 const Library = require('../../src/models/library')
+const BookCopy = require('../../src/models/book-copy')
 
+const validOpenLibraryId = 'OL468431W'
+const anotherValidOpenLibraryId = 'OL63073W'
 let ownerId = ''
 const agentOwner = request.agent(app)
 const agentMember = request.agent(app)
@@ -397,4 +400,713 @@ it('should patch library with any combination of valid fields', async () => {
   expect(responseBoth.status).toBe(200)
   expect(responseBoth.body.name).toBe(newestName)
   expect(responseBoth.body.location).toBe(newestLocation)
+})
+
+it('should handle server errors when patching library', async () => {
+  const fakeId = new mongoose.Types.ObjectId()
+  jest.spyOn(Library, 'findById').mockRejectedValueOnce(new Error('oops'))
+
+  const response = await agentOwner.patch(`/libraries/${fakeId}`)
+  expect(response.status).toBe(500)
+})
+
+it('should not allow unauthenticated users to add copies to a library', async () => {
+  const library = await Library.create({
+    name: chance.word({ length: 5 }),
+    location: chance.word({ length: 5 }),
+    geometry: {
+      type: 'Point',
+      coordinates: [chance.longitude(), chance.latitude()],
+    },
+    owner: ownerId,
+  })
+  const response = await request(app).post(`/libraries/${library._id}/copies`)
+  expect(response.status).toBe(401)
+})
+
+it('should not allow users to add copies to a library they are not the owner of', async () => {
+  const library = await Library.create({
+    name: chance.word({ length: 5 }),
+    location: chance.word({ length: 5 }),
+    geometry: {
+      type: 'Point',
+      coordinates: [chance.longitude(), chance.latitude()],
+    },
+    owner: ownerId,
+  })
+  const response = await agentMember.post(`/libraries/${library._id}/copies`)
+  expect(response.status).toBe(403)
+})
+
+it('should return not found when attempting to add copies to a non-existent library', async () => {
+  const fakeId = new mongoose.Types.ObjectId()
+  const response = await agentOwner.post(`/libraries/${fakeId}/copies`)
+  expect(response.status).toBe(404)
+})
+
+it('should add copies to a library with a new openLibraryId', async () => {
+  const library = await Library.create({
+    name: chance.word({ length: 5 }),
+    location: chance.word({ length: 5 }),
+    geometry: {
+      type: 'Point',
+      coordinates: [chance.longitude(), chance.latitude()],
+    },
+    owner: ownerId,
+  })
+  const response = await agentOwner
+    .post(`/libraries/${library._id}/copies`)
+    .send({
+      openLibraryId: validOpenLibraryId,
+    })
+
+  expect(response.status).toBe(201)
+  expect(response.body.books).toEqual(
+    expect.arrayContaining([
+      expect.objectContaining({
+        bookInfo: expect.objectContaining({
+          openLibraryId: validOpenLibraryId,
+        }),
+      }),
+    ])
+  )
+})
+
+it('should add multiple copies of the same book to a library and not call the api multiple times', async () => {
+  const library = await Library.create({
+    name: chance.word({ length: 5 }),
+    location: chance.word({ length: 5 }),
+    geometry: {
+      type: 'Point',
+      coordinates: [chance.longitude(), chance.latitude()],
+    },
+    owner: ownerId,
+  })
+  await agentOwner.post(`/libraries/${library._id}/copies`).send({
+    openLibraryId: anotherValidOpenLibraryId,
+  })
+
+  const response = await agentOwner
+    .post(`/libraries/${library._id}/copies`)
+    .send({
+      openLibraryId: anotherValidOpenLibraryId,
+    })
+  expect(response.status).toBe(201)
+  expect(response.body.books).toEqual(
+    expect.arrayContaining([
+      expect.objectContaining({
+        bookInfo: expect.objectContaining({
+          openLibraryId: anotherValidOpenLibraryId,
+        }),
+      }),
+      expect.objectContaining({
+        bookInfo: expect.objectContaining({
+          openLibraryId: anotherValidOpenLibraryId,
+        }),
+      }),
+    ])
+  )
+})
+
+it('should handle server errors when adding copies to a library', async () => {
+  const fakeId = new mongoose.Types.ObjectId()
+  jest.spyOn(Library, 'findById').mockRejectedValueOnce(new Error('oops'))
+
+  const response = await agentOwner.post(`/libraries/${fakeId}/copies`)
+  expect(response.status).toBe(500)
+})
+
+it('should not allow unauthenticated user to remove a copy from a library', async () => {
+  const library = await Library.create({
+    name: chance.word({ length: 5 }),
+    location: chance.word({ length: 5 }),
+    geometry: {
+      type: 'Point',
+      coordinates: [chance.longitude(), chance.latitude()],
+    },
+    owner: ownerId,
+  })
+  const fakeId = new mongoose.Types.ObjectId()
+  const response = await request(app).delete(
+    `/libraries/${library._id}/copies/${fakeId}`
+  )
+  expect(response.status).toBe(401)
+})
+
+it('should not allow users to remove copies from a library they are not the owner of', async () => {
+  const library = await Library.create({
+    name: chance.word({ length: 5 }),
+    location: chance.word({ length: 5 }),
+    geometry: {
+      type: 'Point',
+      coordinates: [chance.longitude(), chance.latitude()],
+    },
+    owner: ownerId,
+  })
+  const fakeId = new mongoose.Types.ObjectId()
+  const response = await agentMember.delete(
+    `/libraries/${library._id}/copies/${fakeId}`
+  )
+  expect(response.status).toBe(403)
+})
+
+it('should return not found when attempting to remove a copy from a non-existent library', async () => {
+  const fakeId = new mongoose.Types.ObjectId()
+  const response = await agentOwner.delete(
+    `/libraries/${fakeId}/copies/${fakeId}`
+  )
+  expect(response.status).toBe(404)
+})
+
+it('should return not found when attempting to remove a non-existent copy from a library', async () => {
+  const library = await Library.create({
+    name: chance.word({ length: 5 }),
+    location: chance.word({ length: 5 }),
+    geometry: {
+      type: 'Point',
+      coordinates: [chance.longitude(), chance.latitude()],
+    },
+    owner: ownerId,
+  })
+  const fakeId = new mongoose.Types.ObjectId()
+  const response = await agentOwner.delete(
+    `/libraries/${library._id}/copies/${fakeId}`
+  )
+  expect(response.status).toBe(404)
+})
+
+it('should remove a copy from a library', async () => {
+  const library = await Library.create({
+    name: chance.word({ length: 5 }),
+    location: chance.word({ length: 5 }),
+    geometry: {
+      type: 'Point',
+      coordinates: [chance.longitude(), chance.latitude()],
+    },
+    owner: ownerId,
+  })
+
+  const copyAdded = await agentOwner
+    .post(`/libraries/${library._id}/copies`)
+    .send({
+      openLibraryId: anotherValidOpenLibraryId,
+    })
+
+  const response = await agentOwner.delete(
+    `/libraries/${library._id}/copies/${copyAdded.body.books[0]._id}`
+  )
+
+  expect(response.status).toBe(204)
+})
+
+it('should only remove one copy if a library has multiple copies of the same book', async () => {
+  const library = await Library.create({
+    name: chance.word({ length: 5 }),
+    location: chance.word({ length: 5 }),
+    geometry: {
+      type: 'Point',
+      coordinates: [chance.longitude(), chance.latitude()],
+    },
+    owner: ownerId,
+  })
+
+  const copyAdded = await agentOwner
+    .post(`/libraries/${library._id}/copies`)
+    .send({
+      openLibraryId: anotherValidOpenLibraryId,
+    })
+
+  await agentOwner.post(`/libraries/${library._id}/copies`).send({
+    openLibraryId: anotherValidOpenLibraryId,
+  })
+
+  const response = await agentOwner.delete(
+    `/libraries/${library._id}/copies/${copyAdded.body.books[0]._id}`
+  )
+
+  const libraryAfter = await Library.findById(library._id)
+
+  expect(response.status).toBe(204)
+  expect(libraryAfter.books.length).toBe(1)
+  expect(libraryAfter.books).toEqual(
+    expect.arrayContaining([
+      expect.objectContaining({
+        bookInfo: expect.objectContaining({
+          openLibraryId: anotherValidOpenLibraryId,
+        }),
+      }),
+    ])
+  )
+})
+
+it('should handle server errors when removing a copy from a library', async () => {
+  const fakeId = new mongoose.Types.ObjectId()
+  jest.spyOn(Library, 'findById').mockRejectedValueOnce(new Error('oops'))
+
+  const response = await agentOwner.delete(
+    `/libraries/${fakeId}/copies/${fakeId}`
+  )
+  expect(response.status).toBe(500)
+})
+
+it('should not allow unauthenticated user to update a copy in a library', async () => {
+  const library = await Library.create({
+    name: chance.word({ length: 5 }),
+    location: chance.word({ length: 5 }),
+    geometry: {
+      type: 'Point',
+      coordinates: [chance.longitude(), chance.latitude()],
+    },
+    owner: ownerId,
+  })
+  const fakeId = new mongoose.Types.ObjectId()
+  const response = await request(app).patch(
+    `/libraries/${library._id}/copies/${fakeId}`
+  )
+  expect(response.status).toBe(401)
+})
+
+// it('should not allow users that are not members of a library to update a copy in a library', async () => {
+//   const library = await Library.create({
+//     name: chance.word({ length: 5 }),
+//     location: chance.word({ length: 5 }),
+//     geometry: {
+//       type: 'Point',
+//       coordinates: [chance.longitude(), chance.latitude()],
+//     },
+//     owner: ownerId,
+//   })
+//   const fakeId = new mongoose.Types.ObjectId()
+//   const response = await agentMember.patch(
+//     `/libraries/${library._id}/copies/${fakeId}`
+//   )
+//   expect(response.status).toBe(403)
+// })
+
+it('should return not found when attempting to update a copy in a non-existent library', async () => {
+  const fakeId = new mongoose.Types.ObjectId()
+  const response = await agentOwner.patch(
+    `/libraries/${fakeId}/copies/${fakeId}`
+  )
+  expect(response.status).toBe(404)
+})
+
+it('should return not found when attempting to update a non-existent copy in a library', async () => {
+  const library = await Library.create({
+    name: chance.word({ length: 5 }),
+    location: chance.word({ length: 5 }),
+    geometry: {
+      type: 'Point',
+      coordinates: [chance.longitude(), chance.latitude()],
+    },
+    owner: ownerId,
+  })
+  const fakeId = new mongoose.Types.ObjectId()
+  const response = await agentOwner.patch(
+    `/libraries/${library._id}/copies/${fakeId}`
+  )
+  expect(response.status).toBe(404)
+})
+
+it('should return 400 when no action is specified in a copy update', async () => {
+  const library = await Library.create({
+    name: chance.word({ length: 5 }),
+    location: chance.word({ length: 5 }),
+    geometry: {
+      type: 'Point',
+      coordinates: [chance.longitude(), chance.latitude()],
+    },
+    owner: ownerId,
+  })
+  const copyAdded = await agentOwner
+    .post(`/libraries/${library._id}/copies`)
+    .send({
+      openLibraryId: anotherValidOpenLibraryId,
+    })
+
+  const response = await agentOwner
+    .patch(`/libraries/${library._id}/copies/${copyAdded.body.books[0]._id}`)
+    .send({ foo: 'bar' })
+
+  expect(response.status).toBe(400)
+})
+
+it('should return 400 when an invalid action is specified in a copy update', async () => {
+  const library = await Library.create({
+    name: chance.word({ length: 5 }),
+    location: chance.word({ length: 5 }),
+    geometry: {
+      type: 'Point',
+      coordinates: [chance.longitude(), chance.latitude()],
+    },
+    owner: ownerId,
+  })
+  const copyAdded = await agentOwner
+    .post(`/libraries/${library._id}/copies`)
+    .send({
+      openLibraryId: anotherValidOpenLibraryId,
+    })
+
+  const response = await agentOwner
+    .patch(`/libraries/${library._id}/copies/${copyAdded.body.books[0]._id}`)
+    .send({ action: 'foo' })
+
+  expect(response.status).toBe(400)
+})
+
+it('should allow members to patch a copy as borrowed and then returned', async () => {
+  const library = await Library.create({
+    name: chance.word({ length: 5 }),
+    location: chance.word({ length: 5 }),
+    geometry: {
+      type: 'Point',
+      coordinates: [chance.longitude(), chance.latitude()],
+    },
+    owner: ownerId,
+  })
+  const copyAdded = await agentOwner
+    .post(`/libraries/${library._id}/copies`)
+    .send({
+      openLibraryId: anotherValidOpenLibraryId,
+    })
+
+  await agentMember.post(`/libraries/${library._id}/members`)
+
+  const responseBorrow = await agentMember
+    .patch(`/libraries/${library._id}/copies/${copyAdded.body.books[0]._id}`)
+    .send({ action: 'borrow' })
+
+  expect(responseBorrow.status).toBe(200)
+  expect(responseBorrow.body.status).toBe('borrowed')
+
+  const responseReturn = await agentMember
+    .patch(`/libraries/${library._id}/copies/${copyAdded.body.books[0]._id}`)
+    .send({ action: 'return' })
+
+  expect(responseReturn.status).toBe(200)
+  expect(responseReturn.body.status).toBe('available')
+})
+
+it('shouldnt allow members to patch a copy as returned if they have not borrowed it', async () => {
+  const library = await Library.create({
+    name: chance.word({ length: 5 }),
+    location: chance.word({ length: 5 }),
+    geometry: {
+      type: 'Point',
+      coordinates: [chance.longitude(), chance.latitude()],
+    },
+    owner: ownerId,
+  })
+  const copyAdded = await agentOwner
+    .post(`/libraries/${library._id}/copies`)
+    .send({
+      openLibraryId: anotherValidOpenLibraryId,
+    })
+
+  await agentMember.post(`/libraries/${library._id}/members`)
+
+  const responseReturn = await agentMember
+    .patch(`/libraries/${library._id}/copies/${copyAdded.body.books[0]._id}`)
+    .send({ action: 'return' })
+
+  expect(responseReturn.status).toBe(403)
+})
+
+it('shouldnt allow a member to patch a copy as borrowed if it is already borrowed', async () => {
+  const library = await Library.create({
+    name: chance.word({ length: 5 }),
+    location: chance.word({ length: 5 }),
+    geometry: {
+      type: 'Point',
+      coordinates: [chance.longitude(), chance.latitude()],
+    },
+    owner: ownerId,
+  })
+  const copyAdded = await agentOwner
+    .post(`/libraries/${library._id}/copies`)
+    .send({
+      openLibraryId: anotherValidOpenLibraryId,
+    })
+
+  await agentMember.post(`/libraries/${library._id}/members`)
+  await agentAnother.post(`/libraries/${library._id}/members`)
+
+  await agentMember
+    .patch(`/libraries/${library._id}/copies/${copyAdded.body.books[0]._id}`)
+    .send({ action: 'borrow' })
+
+  const responseBorrow = await agentAnother
+    .patch(`/libraries/${library._id}/copies/${copyAdded.body.books[0]._id}`)
+    .send({ action: 'borrow' })
+
+  expect(responseBorrow.status).toBe(403)
+
+  const responseRepeatBorrow = await agentMember
+    .patch(`/libraries/${library._id}/copies/${copyAdded.body.books[0]._id}`)
+    .send({ action: 'borrow' })
+
+  expect(responseRepeatBorrow.status).toBe(403)
+})
+
+it('shouldnt allow unauthenticated users to extend a loan', async () => {
+  const library = await Library.create({
+    name: chance.word({ length: 5 }),
+    location: chance.word({ length: 5 }),
+    geometry: {
+      type: 'Point',
+      coordinates: [chance.longitude(), chance.latitude()],
+    },
+    owner: ownerId,
+  })
+  const copyAdded = await agentOwner
+    .post(`/libraries/${library._id}/copies`)
+    .send({
+      openLibraryId: anotherValidOpenLibraryId,
+    })
+
+  const response = await request(app)
+    .patch(`/libraries/${library._id}/copies/${copyAdded.body.books[0]._id}`)
+    .send({ action: 'extend' })
+
+  expect(response.status).toBe(401)
+})
+
+it('shouldnt allow users to extend a loan if they are not a member', async () => {
+  const library = await Library.create({
+    name: chance.word({ length: 5 }),
+    location: chance.word({ length: 5 }),
+    geometry: {
+      type: 'Point',
+      coordinates: [chance.longitude(), chance.latitude()],
+    },
+    owner: ownerId,
+  })
+  const copyAdded = await agentOwner
+    .post(`/libraries/${library._id}/copies`)
+    .send({
+      openLibraryId: anotherValidOpenLibraryId,
+    })
+
+  const response = await agentAnother
+    .patch(`/libraries/${library._id}/copies/${copyAdded.body.books[0]._id}`)
+    .send({ action: 'extend' })
+
+  expect(response.status).toBe(403)
+})
+
+it('shouldnt allow users to extend a loan if the copy is not borrowed', async () => {
+  const library = await Library.create({
+    name: chance.word({ length: 5 }),
+    location: chance.word({ length: 5 }),
+    geometry: {
+      type: 'Point',
+      coordinates: [chance.longitude(), chance.latitude()],
+    },
+    owner: ownerId,
+  })
+  const copyAdded = await agentOwner
+    .post(`/libraries/${library._id}/copies`)
+    .send({
+      openLibraryId: anotherValidOpenLibraryId,
+    })
+
+  await agentMember.post(`/libraries/${library._id}/members`)
+
+  const response = await agentMember
+    .patch(`/libraries/${library._id}/copies/${copyAdded.body.books[0]._id}`)
+    .send({ action: 'extend' })
+
+  expect(response.status).toBe(403)
+})
+
+it('should not allow another member to extend someone elses loan', async () => {
+  const library = await Library.create({
+    name: chance.word({ length: 5 }),
+    location: chance.word({ length: 5 }),
+    geometry: {
+      type: 'Point',
+      coordinates: [chance.longitude(), chance.latitude()],
+    },
+    owner: ownerId,
+  })
+  const copyAdded = await agentOwner
+    .post(`/libraries/${library._id}/copies`)
+    .send({
+      openLibraryId: anotherValidOpenLibraryId,
+    })
+
+  await agentMember.post(`/libraries/${library._id}/members`)
+  await agentAnother.post(`/libraries/${library._id}/members`)
+
+  await agentMember
+    .patch(`/libraries/${library._id}/copies/${copyAdded.body.books[0]._id}`)
+    .send({ action: 'borrow' })
+
+  const response = await agentAnother
+    .patch(`/libraries/${library._id}/copies/${copyAdded.body.books[0]._id}`)
+    .send({ action: 'extend' })
+
+  expect(response.status).toBe(403)
+})
+
+it('should not allow a member to extend a loan that has more than 7 days remaining', async () => {
+  const library = await Library.create({
+    name: chance.word({ length: 5 }),
+    location: chance.word({ length: 5 }),
+    geometry: {
+      type: 'Point',
+      coordinates: [chance.longitude(), chance.latitude()],
+    },
+    owner: ownerId,
+  })
+  const copyAdded = await agentOwner
+    .post(`/libraries/${library._id}/copies`)
+    .send({
+      openLibraryId: anotherValidOpenLibraryId,
+    })
+
+  await agentMember.post(`/libraries/${library._id}/members`)
+
+  await agentMember
+    .patch(`/libraries/${library._id}/copies/${copyAdded.body.books[0]._id}`)
+    .send({ action: 'borrow' })
+
+  const response = await agentMember
+    .patch(`/libraries/${library._id}/copies/${copyAdded.body.books[0]._id}`)
+    .send({ action: 'extend' })
+
+  expect(response.status).toBe(403)
+})
+
+it('should allow a member to extend a loan that has less than 7 days remaining', async () => {
+  const library = await Library.create({
+    name: chance.word({ length: 5 }),
+    location: chance.word({ length: 5 }),
+    geometry: {
+      type: 'Point',
+      coordinates: [chance.longitude(), chance.latitude()],
+    },
+    owner: ownerId,
+  })
+  const copyAdded = await agentOwner
+    .post(`/libraries/${library._id}/copies`)
+    .send({
+      openLibraryId: anotherValidOpenLibraryId,
+    })
+
+  await agentMember.post(`/libraries/${library._id}/members`)
+
+  await agentMember
+    .patch(`/libraries/${library._id}/copies/${copyAdded.body.books[0]._id}`)
+    .send({ action: 'borrow' })
+
+  await BookCopy.findOneAndUpdate(
+    { _id: copyAdded.body.books[0]._id },
+    {
+      $set: {
+        returnDate: new Date(Date.now() + 6 * 24 * 60 * 60 * 1000),
+      },
+    }
+  )
+
+  const response = await agentMember
+    .patch(`/libraries/${library._id}/copies/${copyAdded.body.books[0]._id}`)
+    .send({ action: 'extend' })
+
+  expect(response.status).toBe(200)
+  // return date should be 13 days after the previous value
+  // time doesn't matter
+  expect(new Date(response.body.returnDate).toISOString().slice(0, 10)).toBe(
+    new Date(Date.now() + 13 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10)
+  )
+})
+
+// it('should not allow regular members to mark a copy as lost', async () => {
+//   const library = await Library.create({
+//     name: chance.word({ length: 5 }),
+//     location: chance.word({ length: 5 }),
+//     geometry: {
+//       type: 'Point',
+//       coordinates: [chance.longitude(), chance.latitude()],
+//     },
+//     owner: ownerId,
+//   })
+//   const copyAdded = await agentOwner
+//     .post(`/libraries/${library._id}/copies`)
+//     .send({
+//       openLibraryId: anotherValidOpenLibraryId,
+//     })
+
+//   await agentMember.post(`/libraries/${library._id}/members`)
+
+//   const response = await agentMember
+//     .patch(`/libraries/${library._id}/copies/${copyAdded.body.books[0]._id}`)
+//     .send({ action: 'lose' })
+
+//   expect(response.status).toBe(403)
+// })
+
+it('should allow the library owner to mark a copy as lost, no matter its status', async () => {
+  const library = await Library.create({
+    name: chance.word({ length: 5 }),
+    location: chance.word({ length: 5 }),
+    geometry: {
+      type: 'Point',
+      coordinates: [chance.longitude(), chance.latitude()],
+    },
+    owner: ownerId,
+  })
+  const copyToBorrow = await agentOwner
+    .post(`/libraries/${library._id}/copies`)
+    .send({
+      openLibraryId: anotherValidOpenLibraryId,
+    })
+  const copyToLeaveAvailable = await agentOwner
+    .post(`/libraries/${library._id}/copies`)
+    .send({
+      openLibraryId: anotherValidOpenLibraryId,
+    })
+
+  await agentMember.post(`/libraries/${library._id}/members`)
+  await agentMember
+    .patch(`/libraries/${library._id}/copies/${copyToBorrow.body.books[0]._id}`)
+    .send({ action: 'borrow' })
+
+  const responseBorrowed = await agentOwner
+    .patch(`/libraries/${library._id}/copies/${copyToBorrow.body.books[0]._id}`)
+    .send({ action: 'lose' })
+
+  const responseAvailable = await agentOwner
+    .patch(
+      `/libraries/${library._id}/copies/${copyToLeaveAvailable.body.books[0]._id}`
+    )
+    .send({ action: 'lose' })
+
+  expect(responseBorrowed.status).toBe(200)
+  expect(responseAvailable.status).toBe(200)
+})
+
+it('should handle server errors when patching a copy', async () => {
+  const library = await Library.create({
+    name: chance.word({ length: 5 }),
+    location: chance.word({ length: 5 }),
+    geometry: {
+      type: 'Point',
+      coordinates: [chance.longitude(), chance.latitude()],
+    },
+    owner: ownerId,
+  })
+  const copyAdded = await agentOwner
+    .post(`/libraries/${library._id}/copies`)
+    .send({
+      openLibraryId: anotherValidOpenLibraryId,
+    })
+
+  jest.spyOn(BookCopy, 'findById').mockRejectedValueOnce(new Error('oops'))
+
+  const response = await agentOwner
+    .patch(`/libraries/${library._id}/copies/${copyAdded.body.books[0]._id}`)
+    .send({ action: 'borrow' })
+
+  expect(response.status).toBe(500)
 })
