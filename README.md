@@ -37,6 +37,16 @@ The backend API will be available at http://localhost:3000 and the frontend at h
 
 > **Note**: in dev environment, the app uses live reload for changes inside the `src` directory in both the frontend and backend. Any changes to files outside of `src`, e.g. package installations, will require a rebuild of the respective containers.
 
+### Running the tests
+
+A script is provided to run the Docker containers in a testing environment, for convenience. You can just run
+
+```bash
+run-tests.sh
+```
+
+and, after the containers are built, the tests will run in watch mode.
+
 ### Customising the environment
 
 If using your own MongoDB instance, there is no need to run the mongo service, so after modifying `backend/.env` accordingly you can just run the app with:
