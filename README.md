@@ -42,10 +42,10 @@ The backend API will be available at http://localhost:3000 and the frontend at h
 A script is provided to run the Docker containers in a testing environment, for convenience. You can just run
 
 ```bash
-run-tests.sh
+./run-tests.sh
 ```
 
-and, after the containers are built, the tests will run in watch mode.
+from the root of the project, and, after the containers are built, the tests will run in watch mode.
 
 ### Customising the environment
 
