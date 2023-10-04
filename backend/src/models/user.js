@@ -9,7 +9,7 @@ const userSchema = new mongoose.Schema({
     required: true,
     minlength: 3,
     maxlength: 24,
-    //   match: /^[a-zA-Z0-9_-]+$/,
+    match: /^[a-zA-Z0-9_-]+$/, // alphanumeric, underscore, and dash characters only
     //   // TODO: make uniqueness case-insensitive
     unique: true,
   },
