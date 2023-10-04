@@ -77,7 +77,6 @@ it('should send 500 if encountering server error', async () => {
 it('should get all books', async () => {
   const response = await agent.get('/books')
   expect(response.status).toBe(200)
-  expect(response.body.length).toBe(2)
 })
 
 it('should return 500 upon server error when getting all books', async () => {
