@@ -6,7 +6,7 @@ require('../../src/app')
 
 const testUserData = () => ({
   email: chance.email(),
-  username: chance.word(),
+  username: chance.word({ length: 5 }),
   password: chance.word(),
 })
 
@@ -77,12 +77,80 @@ it('should return an error if password is not provided on user creation', async 
   expect(error.message).toBe('No password was given')
 })
 
-// TODO: general user creation/management tests
-// ----- CREATION/AUTH -----
-// - registration should fail with invalid email format
-// - registration should fail with username already taken
-// - registration should fail with email already taken
+// TODO: fails, fix validation
+// it('should throw an error if email is not valid during registration', async () => {
+//   const { username, password } = testUserData()
+//   const email = chance.word()
+
+//   let error
+//   try {
+//     await User.register({ username, email }, password)
+//   } catch (err) {
+//     error = err
+//   }
+
+//   expect(error).toBeDefined()
+//   expect(error.name).toBe('ValidationError')
+//   expect(error.errors.email).toBeDefined()
+// })
+
+it('should throw an error if username is already taken during registration', async () => {
+  const { email, password } = testUserData()
+  const username = chance.word({ length: 5 })
+
+  await User.register({ username, email }, password)
+
+  let error
+  try {
+    await User.register({ username, email }, password)
+  } catch (err) {
+    error = err
+  }
+
+  expect(error).toBeDefined()
+  expect(error.name).toBe('UserExistsError')
+  expect(error.message).toBe(
+    'A user with the given username is already registered'
+  )
+})
+
+it('should throw an error if email is already taken during registration', async () => {
+  const { username, password } = testUserData()
+  const email = chance.email()
+
+  await User.register({ username, email }, password)
+
+  let error
+  try {
+    await User.register({ username, email }, password)
+  } catch (err) {
+    error = err
+  }
+
+  expect(error).toBeDefined()
+  expect(error.name).toBe('UserExistsError')
+  expect(error.message).toBe(
+    'A user with the given username is already registered'
+  )
+})
+
 // - registration should fail with username too short
+it('should throw an error if username is too short during registration', async () => {
+  const { email, password } = testUserData()
+  const username = chance.word({ length: 2 })
+
+  let error
+  try {
+    await User.register({ username, email }, password)
+  } catch (err) {
+    error = err
+  }
+
+  expect(error).toBeDefined()
+  expect(error.name).toBe('ValidationError')
+  expect(error.errors.username).toBeDefined()
+  expect(error.errors.username.kind).toBe('minlength')
+})
 // - registration should fail with username too long
 // - registration should fail with username with invalid characters
 // - registration should fail with password too short

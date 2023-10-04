@@ -14,11 +14,11 @@ const agentAnother = request.agent(app)
 
 beforeAll(async () => {
   // TODO: refactor to be less repetitive
-  const usernameOwner = chance.word()
+  const usernameOwner = chance.word({ length: 10 })
   const passwordOwner = chance.word()
-  const usernameMember = chance.word()
+  const usernameMember = chance.word({ length: 10 })
   const passwordMember = chance.word()
-  const usernameAnother = chance.word()
+  const usernameAnother = chance.word({ length: 10 })
   const passwordAnother = chance.word()
 
   const res = await agentOwner.post('/accounts').send({
