@@ -11,7 +11,7 @@ const validOpenLibraryId = 'OL16809803W'
 const anotherValidOpenLibraryId = 'OL32197W'
 
 beforeAll(async () => {
-  const username = chance.word()
+  const username = chance.word({ length: 10 })
   const password = chance.word()
 
   await agent.post('/accounts').send({

@@ -6,7 +6,7 @@ const User = require('../../src/models/user')
 
 // use agent to persist cookies between requests
 const agent = request.agent(app)
-const validUsername = chance.word()
+const validUsername = chance.word({ length: 10 })
 const validEmail = chance.email()
 const validPassword = chance.word()
 
@@ -44,17 +44,21 @@ it('should not sign up a user with an existing username', async () => {
 
 it('should not sign up a user with an existing email', async () => {
   const testEmail = chance.email()
-  await request(app).post('/accounts').send({
-    username: chance.word(),
-    email: testEmail,
-    password: chance.word(),
-  })
+  await request(app)
+    .post('/accounts')
+    .send({
+      username: chance.word({ length: 10 }),
+      email: testEmail,
+      password: chance.word(),
+    })
 
-  const response = await request(app).post('/accounts').send({
-    username: chance.word(),
-    email: testEmail,
-    password: chance.word(),
-  })
+  const response = await request(app)
+    .post('/accounts')
+    .send({
+      username: chance.word({ length: 10 }),
+      email: testEmail,
+      password: chance.word(),
+    })
 
   expect(response.status).toBe(400)
 })
@@ -94,21 +98,25 @@ it('should not sign up a user with no username', async () => {
 })
 
 it('should not sign up a user with no email', async () => {
-  const response = await request(app).post('/accounts').send({
-    username: chance.word(),
-    email: '',
-    password: chance.word(),
-  })
+  const response = await request(app)
+    .post('/accounts')
+    .send({
+      username: chance.word({ length: 10 }),
+      email: '',
+      password: chance.word(),
+    })
 
   expect(response.status).toBe(400)
 })
 
 it('should not sign up a user with no password', async () => {
-  const response = await request(app).post('/accounts').send({
-    username: chance.word(),
-    email: chance.email(),
-    password: '',
-  })
+  const response = await request(app)
+    .post('/accounts')
+    .send({
+      username: chance.word({}),
+      email: chance.email(),
+      password: '',
+    })
   expect(response.status).toBe(400)
 })
 

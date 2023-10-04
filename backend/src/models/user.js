@@ -4,15 +4,15 @@ const passportLocalMongoose = require('passport-local-mongoose')
 const UserService = require('../services/user')
 
 const userSchema = new mongoose.Schema({
-  // username: {
-  //   type: String,
-  //   required: true,
-  //   minlength: 3,
-  //   maxlength: 24,
-  //   match: /^[a-zA-Z0-9_-]+$/,
-  //   // TODO: make uniqueness case-insensitive
-  //   unique: true,
-  // },
+  username: {
+    type: String,
+    required: true,
+    minlength: 3,
+    maxlength: 24,
+    //   match: /^[a-zA-Z0-9_-]+$/,
+    //   // TODO: make uniqueness case-insensitive
+    unique: true,
+  },
   email: {
     // TODO: validate email
     type: String,
