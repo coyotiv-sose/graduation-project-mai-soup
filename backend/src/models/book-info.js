@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
 const autopopulate = require('mongoose-autopopulate')
+const BookInfoService = require('../services/book-info')
 
 const bookInfoSchema = new mongoose.Schema({
   title: {
@@ -29,33 +30,6 @@ const bookInfoSchema = new mongoose.Schema({
   ],
 })
 
-class BookInfo {
-  async addToLibrary(library) {
-    const libraryWithId = this.librariesFoundIn.find(
-      l => l._id.toString() === library._id.toString()
-    )
-
-    if (!libraryWithId) {
-      this.librariesFoundIn.push(library)
-      await this.save()
-    }
-  }
-
-  async removeFromLibrary(library) {
-    const libraryWithId = this.librariesFoundIn.find(
-      l => l._id.toString() === library._id.toString()
-    )
-
-    if (!libraryWithId) {
-      throw new Error('book is not in this library')
-    }
-
-    const index = this.librariesFoundIn.indexOf(libraryWithId)
-    this.librariesFoundIn.splice(index, 1)
-    await this.save()
-  }
-}
-
-bookInfoSchema.loadClass(BookInfo)
+bookInfoSchema.loadClass(BookInfoService)
 bookInfoSchema.plugin(autopopulate)
 module.exports = mongoose.model('BookInfo', bookInfoSchema)
