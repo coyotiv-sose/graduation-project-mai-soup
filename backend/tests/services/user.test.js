@@ -168,7 +168,59 @@ it('should throw an error if username is too long during registration', async ()
   expect(error.errors.username.kind).toBe('maxlength')
 })
 
-// - registration should fail with username with invalid characters
+it('should allow registration with username with every type of valid character', async () => {
+  const { email, password } = testUserData()
+  // username can have alphanumeric characters of both cases, underscores, dashes
+  const username =
+    // eslint-disable-next-line prefer-template
+    chance.word({ length: 3 }) +
+    '_' +
+    chance.word({ length: 3 }).toUpperCase() +
+    '-' +
+    chance.word({ length: 3 }) +
+    chance.integer({ min: 0, max: 999 })
+
+  const user = await User.register({ username, email }, password)
+
+  expect(user).not.toBeNull()
+  expect(user.email).toBe(email)
+  expect(user.username).toBe(username)
+})
+
+it('should throw an error if username has invalid characters during registration', async () => {
+  const { email, password } = testUserData()
+
+  // not exhaustive
+  const invalidCharacterPool = [
+    '!',
+    '@',
+    '#',
+    '$',
+    '%',
+    '^',
+    '&',
+    '*',
+    '(',
+    ')',
+  ]
+
+  invalidCharacterPool.forEach(async invalidCharacter => {
+    const username =
+      chance.word({ length: 3 }) + invalidCharacter + chance.word({ length: 3 })
+
+    let error
+    try {
+      await User.register({ username, email }, password)
+    } catch (err) {
+      error = err
+    }
+
+    expect(error).toBeDefined()
+    expect(error.name).toBe('ValidationError')
+    expect(error.errors.username).toBeDefined()
+    expect(error.errors.username.kind).toBe('regexp')
+  })
+})
 // - registration should fail with password too short
 // - registration should fail with password too long
 // - registration should fail with a password too weak
