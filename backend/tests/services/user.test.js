@@ -2,8 +2,7 @@ const chance = require('chance').Chance()
 const User = require('../../src/models/user')
 // the require fixes mongo connection not yet being established
 // when model operations are called
-// eslint-disable-next-line no-unused-vars
-const app = require('../../src/app')
+require('../../src/app')
 
 const testUserData = () => ({
   email: chance.email(),
