@@ -1,6 +1,5 @@
 const chance = require('chance').Chance()
 const User = require('../../src/models/user')
-const Library = require('../../src/models/library')
 // the require fixes mongo connection not yet being established
 // when model operations are called
 // eslint-disable-next-line no-unused-vars
@@ -78,3 +77,42 @@ it('should return an error if password is not provided on user creation', async 
   expect(error.name).toBe('MissingPasswordError')
   expect(error.message).toBe('No password was given')
 })
+
+// TODO: general user creation/management tests
+// ----- CREATION/AUTH -----
+// - registration should fail with invalid email format
+// - successful login with valid username and password
+// - successful login with valid email and password
+// - failing login with unregistered username
+// - failing login with unregistered email
+// - failing login with valid username but wrong password
+// - failing login with valid email but wrong password
+// - failing login with no password
+// - failing login with no username
+// - failing login with no email
+// ----- USER RETRIEVAL -----
+// - any registered user's (limited) info can be retrieved successfully
+// - user's own info can be retrieved successfully
+// -- not implemented functionality yet, but for future --
+// - user's own profile can be updated with valid information in various combinations
+// - user's own profile cannot be updated with an invalid email
+// - user can change their own password
+// - user can delete their own account
+
+// TODO: user functionality tests
+// - successful library creation with valid fields
+// - failing library creation with invalid fields
+// - successful library update with valid fields
+// - failing library update with invalid fields
+// - successful joining of an existing library
+// - failing joining a library that does not exist
+// - failing joining a library the user is already a member of
+// - successful leaving of an existing library (user is a member)
+// - failing leaving of an existing library (user is not a member)
+// - failing leaving a library that does not exist
+// - if a book is available in a library the user is a member of, it can be borrowed
+// - if a book is not available in a library the user is a member of, it cannot be borrowed
+// - a book the user has borrowed can be returned
+// - if the user has not borrowed a book, it cannot be returned
+// - missing fields in borrowing a book
+// - missing fields in returning a book
