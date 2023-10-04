@@ -81,6 +81,14 @@ it('should return an error if password is not provided on user creation', async 
 // TODO: general user creation/management tests
 // ----- CREATION/AUTH -----
 // - registration should fail with invalid email format
+// - registration should fail with username already taken
+// - registration should fail with email already taken
+// - registration should fail with username too short
+// - registration should fail with username too long
+// - registration should fail with username with invalid characters
+// - registration should fail with password too short
+// - registration should fail with password too long
+// - registration should fail with a password too weak
 // - successful login with valid username and password
 // - successful login with valid email and password
 // - failing login with unregistered username
@@ -93,7 +101,7 @@ it('should return an error if password is not provided on user creation', async 
 // ----- USER RETRIEVAL -----
 // - any registered user's (limited) info can be retrieved successfully
 // - user's own info can be retrieved successfully
-// -- not implemented functionality yet, but for future --
+// --- not implemented functionality yet, but for future ---
 // - user's own profile can be updated with valid information in various combinations
 // - user's own profile cannot be updated with an invalid email
 // - user can change their own password
@@ -102,8 +110,9 @@ it('should return an error if password is not provided on user creation', async 
 // TODO: user functionality tests
 // - successful library creation with valid fields
 // - failing library creation with invalid fields
-// - successful library update with valid fields
-// - failing library update with invalid fields
+// - successful owned library update with valid fields
+// - failing owned library update with invalid fields
+// - failing update of a library the user does not own
 // - successful joining of an existing library
 // - failing joining a library that does not exist
 // - failing joining a library the user is already a member of
