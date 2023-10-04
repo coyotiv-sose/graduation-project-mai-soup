@@ -134,7 +134,6 @@ it('should throw an error if email is already taken during registration', async 
   )
 })
 
-// - registration should fail with username too short
 it('should throw an error if username is too short during registration', async () => {
   const { email, password } = testUserData()
   const username = chance.word({ length: 2 })
@@ -151,7 +150,24 @@ it('should throw an error if username is too short during registration', async (
   expect(error.errors.username).toBeDefined()
   expect(error.errors.username.kind).toBe('minlength')
 })
-// - registration should fail with username too long
+
+it('should throw an error if username is too long during registration', async () => {
+  const { email, password } = testUserData()
+  const username = chance.word({ length: 25 })
+
+  let error
+  try {
+    await User.register({ username, email }, password)
+  } catch (err) {
+    error = err
+  }
+
+  expect(error).toBeDefined()
+  expect(error.name).toBe('ValidationError')
+  expect(error.errors.username).toBeDefined()
+  expect(error.errors.username.kind).toBe('maxlength')
+})
+
 // - registration should fail with username with invalid characters
 // - registration should fail with password too short
 // - registration should fail with password too long

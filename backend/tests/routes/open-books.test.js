@@ -5,7 +5,7 @@ const app = require('../../src/app')
 const agent = request.agent(app)
 
 beforeAll(async () => {
-  const username = chance.word()
+  const username = chance.word({ length: 10 })
   const password = chance.word()
 
   await agent.post('/accounts').send({
