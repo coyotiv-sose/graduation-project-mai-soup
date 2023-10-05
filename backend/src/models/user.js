@@ -49,12 +49,17 @@ const userSchema = new mongoose.Schema({
 
 const passwordSchema = new PasswordValidator()
 
-passwordSchema.is
+passwordSchema
+  .is()
   .min(8)
-  .is.max(64)
-  .has.uppercase()
-  .has.lowercase()
-  .has.symbols()
+  .is()
+  .max(64)
+  .has()
+  .uppercase()
+  .has()
+  .lowercase()
+  .has()
+  .symbols()
 
 const validatePassword = function (password, cb) {
   const result = passwordSchema.validate(password, { list: true })

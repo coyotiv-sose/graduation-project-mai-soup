@@ -4,6 +4,7 @@ const chance = require('chance').Chance()
 const app = require('../../src/app')
 const Library = require('../../src/models/library')
 const BookCopy = require('../../src/models/book-copy')
+const getValidPassword = require('../generateValidPassword')
 
 const validOpenLibraryId = 'OL468431W'
 const anotherValidOpenLibraryId = 'OL63073W'
@@ -15,11 +16,11 @@ const agentAnother = request.agent(app)
 beforeAll(async () => {
   // TODO: refactor to be less repetitive
   const usernameOwner = chance.word({ length: 10 })
-  const passwordOwner = chance.word()
+  const passwordOwner = getValidPassword()
   const usernameMember = chance.word({ length: 10 })
-  const passwordMember = chance.word()
+  const passwordMember = getValidPassword()
   const usernameAnother = chance.word({ length: 10 })
-  const passwordAnother = chance.word()
+  const passwordAnother = getValidPassword()
 
   const res = await agentOwner.post('/accounts').send({
     username: usernameOwner,

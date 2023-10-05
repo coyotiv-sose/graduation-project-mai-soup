@@ -1,12 +1,13 @@
 const request = require('supertest')
 const chance = require('chance').Chance()
+const getValidPassword = require('../generateValidPassword')
 const app = require('../../src/app')
 
 const agent = request.agent(app)
 
 beforeAll(async () => {
   const username = chance.word({ length: 10 })
-  const password = chance.word()
+  const password = getValidPassword()
 
   await agent.post('/accounts').send({
     username,

@@ -1,14 +1,14 @@
 const request = require('supertest')
 const chance = require('chance').Chance()
 const app = require('../../src/app')
-
 const User = require('../../src/models/user')
+const getValidPassword = require('../generateValidPassword')
 
 // use agent to persist cookies between requests
 const agent = request.agent(app)
 const validUsername = chance.word({ length: 10 })
 const validEmail = chance.email()
-const validPassword = chance.word()
+const validPassword = getValidPassword()
 
 it('should sign up a user', async () => {
   const response = await agent.post('/accounts').send({
@@ -25,18 +25,18 @@ it('should sign up a user', async () => {
 })
 
 it('should not sign up a user with an existing username', async () => {
-  const testUsername = chance.word()
+  const testUsername = chance.word({ length: 10 })
 
   await request(app).post('/accounts').send({
     username: testUsername,
     email: chance.email(),
-    password: chance.word(),
+    password: getValidPassword(),
   })
 
   const response = await request(app).post('/accounts').send({
     username: testUsername,
     email: chance.email(),
-    password: chance.word(),
+    password: getValidPassword(),
   })
 
   expect(response.status).toBe(400)
@@ -49,7 +49,7 @@ it('should not sign up a user with an existing email', async () => {
     .send({
       username: chance.word({ length: 10 }),
       email: testEmail,
-      password: chance.word(),
+      password: getValidPassword(),
     })
 
   const response = await request(app)
@@ -57,7 +57,7 @@ it('should not sign up a user with an existing email', async () => {
     .send({
       username: chance.word({ length: 10 }),
       email: testEmail,
-      password: chance.word(),
+      password: getValidPassword(),
     })
 
   expect(response.status).toBe(400)
@@ -91,7 +91,7 @@ it('should not sign up a user with no username', async () => {
   const response = await request(app).post('/accounts').send({
     username: '',
     email: chance.email(),
-    password: chance.word(),
+    password: getValidPassword(),
   })
 
   expect(response.status).toBe(400)
@@ -103,7 +103,7 @@ it('should not sign up a user with no email', async () => {
     .send({
       username: chance.word({ length: 10 }),
       email: '',
-      password: chance.word(),
+      password: getValidPassword(),
     })
 
   expect(response.status).toBe(400)
@@ -113,7 +113,7 @@ it('should not sign up a user with no password', async () => {
   const response = await request(app)
     .post('/accounts')
     .send({
-      username: chance.word({}),
+      username: chance.word({ length: 10 }),
       email: chance.email(),
       password: '',
     })
@@ -134,10 +134,12 @@ it('should sign in a user', async () => {
 })
 
 it('should not sign in a user with an invalid username', async () => {
-  const response = await request(app).post('/accounts/session').send({
-    username: chance.word(),
-    password: chance.word(),
-  })
+  const response = await request(app)
+    .post('/accounts/session')
+    .send({
+      username: chance.word({ length: 10 }),
+      password: getValidPassword(),
+    })
 
   expect(response.status).toBe(401)
 })
@@ -145,7 +147,7 @@ it('should not sign in a user with an invalid username', async () => {
 it('should not sign in a user with an wrong password', async () => {
   const response = await request(app).post('/accounts/session').send({
     username: validUsername,
-    password: chance.word(),
+    password: getValidPassword(),
   })
 
   expect(response.status).toBe(401)
@@ -154,7 +156,7 @@ it('should not sign in a user with an wrong password', async () => {
 it('should not sign in a user with an invalid email', async () => {
   const response = await request(app).post('/accounts/session').send({
     username: chance.email(),
-    password: chance.word(),
+    password: getValidPassword(),
   })
 
   expect(response.status).toBe(401)
@@ -183,9 +185,9 @@ it('should handle server errors when signing up a new user', async () => {
   User.register = jest.fn().mockRejectedValueOnce(new Error('Simulated Error'))
 
   const user = {
-    username: chance.word(),
+    username: chance.word({ length: 10 }),
     email: chance.email(),
-    password: chance.word(),
+    password: getValidPassword(),
   }
 
   const response = await request(app).post('/accounts').send(user)
