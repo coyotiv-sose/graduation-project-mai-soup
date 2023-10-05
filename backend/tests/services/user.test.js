@@ -1,4 +1,5 @@
 const chance = require('chance').Chance()
+const getValidPassword = require('../generateValidPassword')
 const User = require('../../src/models/user')
 // the require fixes mongo connection not yet being established
 // when model operations are called
@@ -7,7 +8,7 @@ require('../../src/app')
 const testUserData = () => ({
   email: chance.email(),
   username: chance.word({ length: 5 }),
-  password: chance.word(),
+  password: getValidPassword(),
 })
 
 it('should create and save a new user', async () => {

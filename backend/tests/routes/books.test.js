@@ -2,6 +2,7 @@ const request = require('supertest')
 const chance = require('chance').Chance()
 const app = require('../../src/app')
 const BookInfo = require('../../src/models/book-info')
+const getValidPassword = require('../generateValidPassword')
 
 const agent = request.agent(app)
 
@@ -12,7 +13,7 @@ const anotherValidOpenLibraryId = 'OL32197W'
 
 beforeAll(async () => {
   const username = chance.word({ length: 10 })
-  const password = chance.word()
+  const password = getValidPassword()
 
   await agent.post('/accounts').send({
     username,
