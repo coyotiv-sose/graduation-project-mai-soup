@@ -2,12 +2,15 @@ const Library = require('../models/library')
 const BookCopy = require('../models/book-copy')
 
 class UserService {
-  async createLibrary({ name, latitude, longitude }) {
+  async createLibrary({ name, location, latitude, longitude }) {
     const newLibrary = await Library.create({
       name,
       owner: this,
-      latitude,
-      longitude,
+      location,
+      geometry: {
+        type: 'Point',
+        coordinates: [longitude, latitude],
+      },
     })
 
     this.memberships.push(newLibrary)
@@ -17,6 +20,12 @@ class UserService {
   }
 
   async joinLibrary(library) {
+    if (
+      this.memberships.find(m => m._id.toString() === library._id.toString())
+    ) {
+      throw new Error('user is already a member of this library')
+    }
+
     this.memberships.push(library)
     await this.save()
     await library.addMember(this)
