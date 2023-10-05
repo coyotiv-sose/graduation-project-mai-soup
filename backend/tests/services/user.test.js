@@ -2,6 +2,7 @@ const chance = require('chance').Chance()
 const passwordGen = require('generate-password')
 const getValidPassword = require('../generateValidPassword')
 const User = require('../../src/models/user')
+const Library = require('../../src/models/library')
 // the require fixes mongo connection not yet being established
 // when model operations are called
 require('../../src/app')
@@ -432,26 +433,298 @@ it('should return error when trying to authenticate with no username but someone
   expect(error.message).toBe('Password or username is incorrect')
 })
 
-// ----- USER RETRIEVAL -----
-// - any registered user's info can be retrieved successfully
-// --- not implemented functionality yet, but for future ---
-// - user's own profile can be updated with valid information in various combinations
-// - user's own profile cannot be updated with an invalid email
-// - user can change their own password
-// - user can delete their own account
+it('should find a registered user by username', async () => {
+  const { username, email, password } = testUserData()
 
-// TODO: user functionality tests
-// - successful library creation with valid fields
-// - failing library creation with invalid fields
+  await User.register({ username, email }, password)
+
+  const user = await User.findOne({ username })
+
+  expect(user).toBeDefined()
+  expect(user.username).toBe(username)
+  expect(user.email).toBe(email)
+})
+
+// // TODO: rewrite when email validation implemented
+// it('should throw error when updating user with invalid email', async () => {
+//   const { username, email, password } = testUserData()
+
+//   const user = await User.register({ username, email }, password)
+
+//   const invalidEmail = 'asdfghjkl;'
+//   user.email = invalidEmail
+
+//   let error
+// try {
+//   await user.save()
+// } catch (err) {
+//   error = err
+// }
+
+// expect(error).toBeDefined()
+// expect(error.name).toBe('ValidationError')
+// expect(error.errors.email).toBeDefined()
+// })
+
+it('throws error when updating user with invalid username', async () => {
+  const { username, email, password } = testUserData()
+
+  const user = await User.register({ username, email }, password)
+
+  const invalidUsername = 'a;' // too short and invalid character
+  user.username = invalidUsername
+
+  let error
+  try {
+    await user.save()
+  } catch (err) {
+    error = err
+  }
+
+  expect(error).toBeDefined()
+  expect(error.name).toBe('ValidationError')
+  expect(error.errors.username).toBeDefined()
+})
+
+it('returns error when updating user with invalid password', async () => {
+  const { username, email, password } = testUserData()
+
+  const user = await User.register({ username, email }, password)
+
+  const invalidPassword = '<PASSWORD>' // no digits, no lowercase letters
+
+  let error
+  try {
+    await user.setPassword(invalidPassword)
+  } catch (err) {
+    error = err
+  }
+
+  expect(error).toBeDefined()
+  expect(error).toContain('lowercase')
+  expect(error).toContain('digits')
+})
+
+it('successfully creates a new library with valid fields', async () => {
+  const { username, email, password } = testUserData()
+  const user = await User.register({ username, email }, password)
+
+  const libraryInfo = {
+    name: chance.word({ length: 10 }),
+    location: chance.word(),
+    latitude: chance.latitude(),
+    longitude: chance.longitude(),
+  }
+
+  await user.createLibrary(libraryInfo)
+
+  const library = await Library.findOne({
+    name: libraryInfo.name,
+    owner: user._id,
+  })
+
+  expect(library).toBeDefined()
+  expect(library.location).toBe(libraryInfo.location)
+  expect(library.geometry.coordinates[1]).toBe(libraryInfo.latitude)
+  expect(library.geometry.coordinates[0]).toBe(libraryInfo.longitude)
+})
+
+it('throws error when creating a new library with invalid fields', async () => {
+  const { username, email, password } = testUserData()
+  const user = await User.register({ username, email }, password)
+
+  const invalidLibraryInfo = {
+    name: '',
+    location: chance.word(),
+    latitude: '',
+    longitude: '',
+  }
+
+  let error
+  try {
+    await user.createLibrary(invalidLibraryInfo)
+  } catch (err) {
+    error = err
+  }
+
+  expect(error).toBeDefined()
+  expect(error.name).toBe('ValidationError')
+  expect(error.errors.name).toBeDefined()
+  // TODO: fix when latitude and longitude validation implemented
+  // expect(error.errors.latitude).toBeDefined()
+  // expect(error.errors.longitude).toBeDefined()
+})
+
+// TODO: implement in userservice
 // - successful owned library update with valid fields
 // - failing owned library update with invalid fields
 // - failing update of a library the user does not own
-// - successful joining of an existing library
-// - failing joining a library that does not exist
-// - failing joining a library the user is already a member of
+
+it('successful joining of an existing library', async () => {
+  const { username, email, password } = testUserData()
+  const owner = await User.register({ username, email }, password)
+
+  const library = await owner.createLibrary({
+    name: chance.word({ length: 10 }),
+    location: chance.word(),
+    latitude: chance.latitude(),
+    longitude: chance.longitude(),
+  })
+
+  const {
+    username: username2,
+    email: email2,
+    password: password2,
+  } = testUserData()
+  const user = await User.register(
+    { username: username2, email: email2 },
+    password2
+  )
+
+  await user.joinLibrary(library)
+
+  expect(library.members.length).toBe(2)
+  expect(library.members).toEqual(
+    expect.arrayContaining([
+      expect.objectContaining({
+        _id: user._id,
+        username: username2,
+        email: email2,
+      }),
+      expect.objectContaining({
+        _id: owner._id,
+        username,
+        email,
+      }),
+    ])
+  )
+
+  expect(user.memberships).toBeDefined()
+  expect(user.memberships.length).toBe(1)
+  expect(user.memberships).toEqual(
+    expect.arrayContaining([
+      expect.objectContaining({
+        _id: library._id,
+        name: library.name,
+        location: library.location,
+      }),
+    ])
+  )
+})
+
+it('throws error when trying to join a library the user is already a member of', async () => {
+  const { username, email, password } = testUserData()
+  const owner = await User.register({ username, email }, password)
+  const library = await owner.createLibrary({
+    name: chance.word({ length: 10 }),
+    location: chance.word(),
+    latitude: chance.latitude(),
+    longitude: chance.longitude(),
+  })
+
+  const {
+    username: username2,
+    email: email2,
+    password: password2,
+  } = testUserData()
+
+  const user = await User.register(
+    { username: username2, email: email2 },
+    password2
+  )
+
+  await user.joinLibrary(library)
+
+  let error
+  try {
+    await user.joinLibrary(library)
+  } catch (err) {
+    error = err
+  }
+
+  expect(error).toBeDefined()
+  expect(error.message).toBe('user is already a member of this library')
+})
+
 // - successful leaving of an existing library (user is a member)
-// - failing leaving of an existing library (user is not a member)
-// - failing leaving a library that does not exist
+it('can leave a library the user is a member of', async () => {
+  const { username, email, password } = testUserData()
+  const owner = await User.register({ username, email }, password)
+  const library = await owner.createLibrary({
+    name: chance.word({ length: 10 }),
+    location: chance.word(),
+    latitude: chance.latitude(),
+    longitude: chance.longitude(),
+  })
+
+  const {
+    username: username2,
+    email: email2,
+    password: password2,
+  } = testUserData()
+  const user = await User.register(
+    { username: username2, email: email2 },
+    password2
+  )
+
+  await user.joinLibrary(library)
+  await user.leaveLibrary(library)
+
+  expect(library.members.length).toBe(1)
+  // owner should still be a member
+  expect(library.members).toEqual(
+    expect.arrayContaining([
+      expect.objectContaining({
+        _id: owner._id,
+        username,
+        email,
+      }),
+    ])
+  )
+  // user who left should no longer be a member
+  expect(library.members).not.toEqual(
+    expect.arrayContaining([
+      expect.objectContaining({
+        _id: user._id,
+        username: username2,
+        email: email2,
+      }),
+    ])
+  )
+})
+
+it('throws error when trying to leave a library the user is not a member of', async () => {
+  const { username, email, password } = testUserData()
+  const owner = await User.register({ username, email }, password)
+  const library = await owner.createLibrary({
+    name: chance.word({ length: 10 }),
+    location: chance.word(),
+    latitude: chance.latitude(),
+    longitude: chance.longitude(),
+  })
+
+  const {
+    username: username2,
+    email: email2,
+    password: password2,
+  } = testUserData()
+  const user = await User.register(
+    { username: username2, email: email2 },
+    password2
+  )
+
+  let error
+  try {
+    await user.leaveLibrary(library)
+  } catch (err) {
+    error = err
+  }
+
+  expect(error).toBeDefined()
+  expect(error.message).toBe('user is not member of this library')
+})
+
+// TODO: finish these after testing libraries and book copies
 // - if a book is available in a library the user is a member of, it can be borrowed
 // - if a book is not available in a library the user is a member of, it cannot be borrowed
 // - a book the user has borrowed can be returned
