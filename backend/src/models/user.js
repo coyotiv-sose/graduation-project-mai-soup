@@ -1,6 +1,7 @@
 const mongoose = require('mongoose')
 const autopopulate = require('mongoose-autopopulate')
 const passportLocalMongoose = require('passport-local-mongoose')
+const PasswordValidator = require('password-validator')
 const UserService = require('../services/user')
 
 const userSchema = new mongoose.Schema({
@@ -46,8 +47,29 @@ const userSchema = new mongoose.Schema({
   ],
 })
 
+const passwordSchema = new PasswordValidator()
+
+passwordSchema.is
+  .min(8)
+  .is.max(64)
+  .has.uppercase()
+  .has.lowercase()
+  .has.symbols()
+
+const validatePassword = function (password, cb) {
+  const result = passwordSchema.validate(password, { list: true })
+  if (result.length > 0) {
+    return cb(result)
+  }
+  // return an empty cb() on success
+  return cb()
+}
+
 userSchema.loadClass(UserService)
 userSchema.plugin(autopopulate)
-userSchema.plugin(passportLocalMongoose, { usernameQueryFields: ['email'] })
+userSchema.plugin(passportLocalMongoose, {
+  usernameQueryFields: ['email'],
+  passwordValidator: validatePassword,
+})
 
 module.exports = mongoose.model('User', userSchema)
