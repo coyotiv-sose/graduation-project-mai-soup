@@ -1,4 +1,5 @@
 const chance = require('chance').Chance()
+const passwordGen = require('generate-password')
 const getValidPassword = require('../generateValidPassword')
 const User = require('../../src/models/user')
 // the require fixes mongo connection not yet being established
@@ -253,19 +254,186 @@ it('should throw an error if password is too long when registering', async () =>
   expect(error).toContain('max')
 })
 
-// - registration should fail with a password too weak
-// - successful login with valid username and password
-// - successful login with valid email and password
-// - failing login with unregistered username
-// - failing login with unregistered email
-// - failing login with valid username but wrong password
-// - failing login with valid email but wrong password
-// - failing login with no password
-// - failing login with no username
-// - failing login with no email
+it('should throw error if password does not have all required types of symbols', async () => {
+  const { username, email } = testUserData()
+
+  const passNoNumbers = passwordGen.generate({
+    length: 48,
+    uppercase: true,
+    lowercase: true,
+    numbers: false,
+    symbols: true,
+    strict: true,
+  })
+
+  let error
+  // TODO: refactor to be less repetitive
+  try {
+    await User.register({ username, email }, passNoNumbers)
+  } catch (err) {
+    error = err
+    expect(err).toContain('digits')
+  }
+
+  expect(error).toBeDefined()
+  error = undefined
+
+  const passNoUppercase = passwordGen.generate({
+    length: 48,
+    uppercase: false,
+    lowercase: true,
+    numbers: true,
+    symbols: true,
+    strict: true,
+  })
+
+  try {
+    await User.register({ username, email }, passNoUppercase)
+  } catch (err) {
+    error = err
+    expect(err).toContain('uppercase')
+  }
+
+  expect(error).toBeDefined()
+  error = undefined
+
+  const passNoLowerCase = passwordGen.generate({
+    length: 48,
+    uppercase: true,
+    lowercase: false,
+    numbers: true,
+    symbols: true,
+    strict: true,
+  })
+
+  try {
+    await User.register({ username, email }, passNoLowerCase)
+  } catch (err) {
+    error = err
+    expect(err).toContain('lowercase')
+  }
+
+  expect(error).toBeDefined()
+  error = undefined
+
+  const passNoSymbols = passwordGen.generate({
+    length: 48,
+    uppercase: true,
+    lowercase: true,
+    numbers: true,
+    symbols: false,
+    strict: true,
+  })
+
+  try {
+    await User.register({ username, email }, passNoSymbols)
+  } catch (err) {
+    error = err
+    expect(err).toContain('symbols')
+  }
+
+  expect(error).toBeDefined()
+})
+
+it('should successfully authenticate a registered user with username and password', async () => {
+  const { username, email, password } = testUserData()
+
+  await User.register({ username, email }, password)
+
+  const { user, error } = await User.authenticate()(username, password)
+
+  expect(error).not.toBeDefined()
+  expect(user).toBeDefined()
+  expect(user.username).toBe(username)
+  expect(user.email).toBe(email)
+})
+
+it('should successfully authenticate a registered user with email and password', async () => {
+  const { username, email, password } = testUserData()
+
+  await User.register({ username, email }, password)
+
+  const { user, error } = await User.authenticate()(email, password)
+
+  expect(error).not.toBeDefined()
+  expect(user).toBeDefined()
+  expect(user.username).toBe(username)
+  expect(user.email).toBe(email)
+})
+
+it('should return error when trying to authenticate with unregistered username', async () => {
+  const { username, password } = testUserData()
+
+  const { user, error } = await User.authenticate()(username, password)
+
+  expect(user).toBe(false)
+  expect(error.name).toBe('IncorrectUsernameError')
+  expect(error.message).toBe('Password or username is incorrect')
+})
+
+it('should return error when trying to authenticate with unregistered email', async () => {
+  const { email, password } = testUserData()
+
+  const { user, error } = await User.authenticate()(email, password)
+
+  expect(user).toBe(false)
+  expect(error.name).toBe('IncorrectUsernameError')
+  expect(error.message).toBe('Password or username is incorrect')
+})
+
+it('should return error when trying to authenticate with valid username but wrong password', async () => {
+  const { username, email, password } = testUserData()
+
+  await User.register({ username, email }, password)
+
+  const { user, error } = await User.authenticate()(
+    username,
+    getValidPassword()
+  )
+
+  expect(user).toBe(false)
+  expect(error.name).toBe('IncorrectPasswordError')
+  expect(error.message).toBe('Password or username is incorrect')
+})
+
+it('should return error when trying to authenticate with valid email but wrong password', async () => {
+  const { username, email, password } = testUserData()
+
+  await User.register({ username, email }, password)
+
+  const { user, error } = await User.authenticate()(email, getValidPassword())
+
+  expect(user).toBe(false)
+  expect(error.name).toBe('IncorrectPasswordError')
+  expect(error.message).toBe('Password or username is incorrect')
+})
+
+it('should return error when trying to authenticate with valid username but no password', async () => {
+  const { username, email, password } = testUserData()
+
+  await User.register({ username, email }, password)
+
+  const { user, error } = await User.authenticate()(username, '')
+
+  expect(user).toBe(false)
+  expect(error.name).toBe('IncorrectPasswordError')
+  expect(error.message).toBe('Password or username is incorrect')
+})
+
+it('should return error when trying to authenticate with no username but someones password', async () => {
+  const { username, email, password } = testUserData()
+
+  await User.register({ username, email }, password)
+
+  const { user, error } = await User.authenticate()('', password)
+
+  expect(user).toBe(false)
+  expect(error.name).toBe('IncorrectUsernameError')
+  expect(error.message).toBe('Password or username is incorrect')
+})
+
 // ----- USER RETRIEVAL -----
-// - any registered user's (limited) info can be retrieved successfully
-// - user's own info can be retrieved successfully
+// - any registered user's info can be retrieved successfully
 // --- not implemented functionality yet, but for future ---
 // - user's own profile can be updated with valid information in various combinations
 // - user's own profile cannot be updated with an invalid email
