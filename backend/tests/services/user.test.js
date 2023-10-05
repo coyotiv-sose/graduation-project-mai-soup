@@ -222,8 +222,37 @@ it('should throw an error if username has invalid characters during registration
     expect(error.errors.username.kind).toBe('regexp')
   })
 })
-// - registration should fail with password too short
-// - registration should fail with password too long
+
+it('should throw an error if password is too short when registering', async () => {
+  const { username, email } = testUserData()
+  const password = chance.word({ length: 7 })
+
+  let error
+  try {
+    await User.register({ username, email }, password)
+  } catch (err) {
+    error = err
+  }
+
+  expect(error).toBeDefined()
+  expect(error).toContain('min')
+})
+
+it('should throw an error if password is too long when registering', async () => {
+  const { username, email } = testUserData()
+  const password = chance.word({ length: 65 })
+
+  let error
+  try {
+    await User.register({ username, email }, password)
+  } catch (err) {
+    error = err
+  }
+
+  expect(error).toBeDefined()
+  expect(error).toContain('max')
+})
+
 // - registration should fail with a password too weak
 // - successful login with valid username and password
 // - successful login with valid email and password

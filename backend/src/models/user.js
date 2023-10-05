@@ -60,6 +60,8 @@ passwordSchema
   .lowercase()
   .has()
   .symbols()
+  .has()
+  .digits()
 
 const validatePassword = function (password, cb) {
   const result = passwordSchema.validate(password, { list: true })
