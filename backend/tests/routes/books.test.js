@@ -8,8 +8,8 @@ const agent = request.agent(app)
 
 // donna tartt's goldfinch
 const validOpenLibraryId = 'OL16809803W'
-// danielewski's house of leaves
-const anotherValidOpenLibraryId = 'OL32197W'
+// arthur conan doyle's adventures of gerard
+const anotherValidOpenLibraryId = 'OL262595W'
 
 beforeAll(async () => {
   const username = chance.word({ length: 10 })
