@@ -7,12 +7,20 @@ const bookInfoSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  authors: [
-    {
-      type: String,
-      required: true,
+  authors: {
+    type: [
+      {
+        type: String,
+        required: true,
+      },
+    ],
+    validate: {
+      validator(arr) {
+        return arr && arr.length > 0
+      },
+      message: 'At least one author is required.',
     },
-  ],
+  },
   openLibraryId: {
     type: String,
     required: true,
