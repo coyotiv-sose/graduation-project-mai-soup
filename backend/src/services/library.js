@@ -42,6 +42,7 @@ class LibraryService {
     await bookInfo.addToLibrary(this)
     this.books.push(bookCopy)
     await this.save()
+    return bookCopy
   }
 
   async removeBookCopy(bookCopy) {
