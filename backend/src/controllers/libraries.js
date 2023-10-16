@@ -239,7 +239,7 @@ module.exports.deleteImage = catchAsync(async (req, res) => {
   })
 })
 
-module.exports.generateEnhancedDescription = async (req, res) => {
+module.exports.generateEnhancedDescription = catchAsync(async (req, res) => {
   const { description } = req.body
   if (!description) {
     return res.status(400).json({
@@ -248,4 +248,4 @@ module.exports.generateEnhancedDescription = async (req, res) => {
   }
   const enhancedDescription = await descriptionEnhancer(description)
   return res.send(enhancedDescription)
-}
+})
