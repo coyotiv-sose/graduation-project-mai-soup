@@ -2,6 +2,8 @@ const BookCopy = require('../models/book-copy')
 const BookInfo = require('../models/book-info')
 
 // TODO: only owner can change name
+
+// TODO: compare ids with .equals() instead of casting to string
 class LibraryService {
   async setOwner(newOwner) {
     // TODO: check that owner isn't suspended
@@ -16,7 +18,9 @@ class LibraryService {
   }
 
   async addMember(user) {
-    if (this.members.includes(user)) return
+    const memberIds = this.members.map(member => member._id.toString())
+
+    if (memberIds.includes(user._id.toString())) return
 
     this.members.push(user)
     await this.save()
