@@ -21,13 +21,9 @@ module.exports.getAllLibraries = catchAsync(async (req, res) => {
   return res.send(libraries)
 })
 
-module.exports.createLibrary = catchAsync(async (req, res, next) => {
+module.exports.createLibrary = catchAsync(async (req, res) => {
   const owner = req.user
-
   const { name, location } = req.body
-  if (!name || !location)
-    return next(createError(400, 'Name and location are required'))
-
   const geometry = await getGeometryOfLocation(location)
 
   const library = await Library.create({
@@ -176,9 +172,9 @@ module.exports.updateLibrary = catchAsync(async (req, res) => {
   const library = await Library.findById(libraryId)
 
   // update only the fields that have changed
-  if (name && library.name !== name) library.name = name
+  if (library.name !== name) library.name = name
 
-  if (location && library.location !== location) {
+  if (library.location !== location) {
     library.location = location
 
     const geometry = await getGeometryOfLocation(location)
