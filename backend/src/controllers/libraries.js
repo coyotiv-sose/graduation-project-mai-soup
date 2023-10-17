@@ -9,12 +9,9 @@ const descriptionEnhancer = require('../lib/description-enhancer')
 const { getGeometryOfLocation } = require('../lib/geocoder')
 const catchAsync = require('../utils/catch-async')
 
-module.exports.getSingleLibrary = catchAsync(async (req, res, next) => {
+module.exports.getSingleLibrary = catchAsync(async (req, res) => {
   const { id } = req.params
-
   const library = await Library.findById(id)
-
-  if (!library) return next(createError(404, 'Library not found'))
 
   return res.send(library)
 })
@@ -47,17 +44,11 @@ module.exports.createLibrary = catchAsync(async (req, res, next) => {
   return res.status(201).send(library)
 })
 
-module.exports.addCopy = catchAsync(async (req, res, next) => {
+module.exports.addCopy = catchAsync(async (req, res) => {
   const { id } = req.params
   const { openLibraryId } = req.body
 
   const library = await Library.findById(id)
-  if (!library) return next(createError(404, 'Library not found'))
-
-  // only library owner can add copies
-  const { user } = req
-  if (user.id !== library.owner.id)
-    return next(createError(403, 'You are not the owner of this library'))
 
   let book = await BookInfo.findOne({ openLibraryId })
   if (!book) {
@@ -75,7 +66,6 @@ module.exports.addCopy = catchAsync(async (req, res, next) => {
     const authorNames = await Promise.all(
       authorIds.map(async a => {
         const author = await axios.get(`https://openlibrary.org${a}.json`)
-        console.error(a)
         return author.data.name
       })
     )
@@ -98,13 +88,6 @@ module.exports.removeCopy = catchAsync(async (req, res, next) => {
   const { id, bookId } = req.params
 
   const library = await Library.findById(id)
-  if (!library) return next(createError(404, 'Library not found'))
-
-  // only library owner can remove copies
-  // TODO: refactor to middleware
-  const { user } = req
-  if (user.id !== library.owner.id)
-    return next(createError(403, 'You are not the owner of this library'))
 
   const book = await BookCopy.findById(bookId)
   if (!book) return next(createError(404, 'Book not found'))
@@ -118,7 +101,6 @@ module.exports.joinLibrary = catchAsync(async (req, res, next) => {
   const { user } = req
 
   const library = await Library.findById(id)
-  if (!library) return next(createError(404, 'Library not found'))
 
   const newMember = await User.findOne({ username: user?.username })
   if (!newMember) return next(createError(404, 'User not found'))
@@ -131,7 +113,6 @@ module.exports.leaveLibrary = catchAsync(async (req, res, next) => {
   const { id } = req.params
   const { user } = req
   const library = await Library.findById(id)
-  if (!library) return next(createError(404, 'Library not found'))
 
   if (req.body.remove) {
     const userToRemove = await User.findOne({ username: user?.username })
@@ -144,11 +125,10 @@ module.exports.leaveLibrary = catchAsync(async (req, res, next) => {
   return next(createError(400, 'Invalid request'))
 })
 
-module.exports.getAllMembers = catchAsync(async (req, res, next) => {
+module.exports.getAllMembers = catchAsync(async (req, res) => {
   const { id } = req.params
 
   const library = await Library.findById(id)
-  if (!library) return next(createError(404, 'Library not found'))
 
   const { members } = library
   return res.send(members)
@@ -189,17 +169,11 @@ module.exports.updateCopy = catchAsync(async (req, res, next) => {
   return res.send(updatedCopy)
 })
 
-module.exports.updateLibrary = catchAsync(async (req, res, next) => {
+module.exports.updateLibrary = catchAsync(async (req, res) => {
   const libraryId = req.params.id
   const { name, location } = req.body
 
   const library = await Library.findById(libraryId)
-  if (!library) return next(createError(404, 'Library not found'))
-
-  // only library owner can edit library
-  const { user } = req
-  if (user.id !== library.owner.id)
-    return next(createError(403, 'You are not the owner of this library'))
 
   // update only the fields that have changed
   if (name && library.name !== name) library.name = name
