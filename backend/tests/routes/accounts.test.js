@@ -63,29 +63,51 @@ it('should not sign up a user with an existing email', async () => {
   expect(response.status).toBe(400)
 })
 
-// TODO: uncomment when validation implemented
-// it('should not sign up a user with an invalid email', async () => {
-//   const response = await request(app).post('/accounts').send({
-//     username: chance.word(),
-//     email: chance.word(),
-//     password: chance.word(),
-//   })
+it('should not sign up a user with an invalid email', async () => {
+  const response = await request(app).post('/accounts').send({
+    username: chance.word(),
+    email: chance.word(),
+    password: chance.word(),
+  })
 
-//   expect(response.status).toBe(400)
-// })
+  expect(response.status).toBe(400)
+})
 
-// TODO: uncomment when validation implemented
-// it('should not sign up a user with a username that is too short', async () => {
-//   const response = await request(app)
-//     .post('/accounts')
-//     .send({
-//       username: chance.string({ length: 4 }),
-//       email: chance.email(),
-//       password: chance.word(),
-//     })
+it('should not sign up a user with a username that is too short', async () => {
+  const response = await request(app)
+    .post('/accounts')
+    .send({
+      username: chance.string({ length: 4 }),
+      email: chance.email(),
+      password: getValidPassword(),
+    })
 
-//   expect(response.status).toBe(400)
-// })
+  expect(response.status).toBe(400)
+})
+
+it('should not sign up a user with a username that is too long', async () => {
+  const response = await request(app)
+    .post('/accounts')
+    .send({
+      username: chance.string({ length: 50 }),
+      email: chance.email(),
+      password: getValidPassword(),
+    })
+
+  expect(response.status).toBe(400)
+})
+
+it('should not sign up a user with a weak password', async () => {
+  const response = await request(app)
+    .post('/accounts')
+    .send({
+      username: chance.word({ length: 10 }),
+      email: chance.email(),
+      password: chance.string({ length: 5 }),
+    })
+
+  expect(response.status).toBe(400)
+})
 
 it('should not sign up a user with no username', async () => {
   const response = await request(app).post('/accounts').send({
