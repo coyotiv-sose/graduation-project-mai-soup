@@ -2,6 +2,7 @@ const express = require('express')
 const passport = require('passport')
 
 const mustLogin = require('../middleware/must-login')
+const { validateNewAccount } = require('../middleware/validators')
 
 const router = express.Router()
 
@@ -11,7 +12,7 @@ const {
   logoutAndDestroySession,
 } = require('../controllers/accounts')
 
-router.post('/', registerUser)
+router.post('/', validateNewAccount, registerUser)
 
 router.get('/session', getAuthenticatedUser)
 
