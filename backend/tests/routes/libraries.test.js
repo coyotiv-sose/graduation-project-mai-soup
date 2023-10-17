@@ -79,6 +79,7 @@ it('should create a library for an authenticated user with valid data', async ()
   const location = 'Minnesota'
 
   const response = await agentOwner.post('/libraries').send({ name, location })
+
   expect(response.status).toBe(201)
   expect(response.body).toMatchObject({
     name,
@@ -359,7 +360,7 @@ it('should return not found when attempting to patch a non-existent library', as
   expect(response.status).toBe(404)
 })
 
-it('should patch library with any combination of valid fields', async () => {
+it('should patch library with valid fields', async () => {
   const library = await Library.create({
     name: chance.word({ length: 5 }),
     location: chance.word({ length: 5 }),
@@ -372,35 +373,13 @@ it('should patch library with any combination of valid fields', async () => {
   const newName = chance.word({ length: 5 })
   const newLocation = chance.word({ length: 5 })
 
-  const responseName = await agentOwner
-    .patch(`/libraries/${library._id}`)
-    .send({
-      name: newName,
-    })
-  // console.error('name response', responseName)
-  expect(responseName.status).toBe(200)
-  expect(responseName.body.name).toBe(newName)
-
-  const responseLocation = await agentOwner
-    .patch(`/libraries/${library._id}`)
-    .send({
-      location: newLocation,
-    })
-  expect(responseLocation.status).toBe(200)
-  expect(responseLocation.body.location).toBe(newLocation)
-
-  const newestName = chance.word({ length: 5 })
-  const newestLocation = chance.word({ length: 5 })
-
-  const responseBoth = await agentOwner
-    .patch(`/libraries/${library._id}`)
-    .send({
-      name: newestName,
-      location: newestLocation,
-    })
-  expect(responseBoth.status).toBe(200)
-  expect(responseBoth.body.name).toBe(newestName)
-  expect(responseBoth.body.location).toBe(newestLocation)
+  const response = await agentOwner.patch(`/libraries/${library._id}`).send({
+    name: newName,
+    location: newLocation,
+  })
+  expect(response.status).toBe(200)
+  expect(response.body.name).toBe(newName)
+  expect(response.body.location).toBe(newLocation)
 })
 
 it('should handle server errors when patching library', async () => {

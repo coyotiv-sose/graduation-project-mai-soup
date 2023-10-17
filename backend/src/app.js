@@ -1,4 +1,5 @@
 const createError = require('http-errors')
+const { errors } = require('celebrate')
 const express = require('express')
 const cookieParser = require('cookie-parser')
 const logger = require('morgan')
@@ -82,6 +83,9 @@ app.use('/libraries', librariesRouter)
 app.use('/books', bookInfoRouter)
 app.use('/accounts', accountsRouter)
 app.use('/open-books', openBooksRouter)
+
+// celebrate errors
+app.use(errors())
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {

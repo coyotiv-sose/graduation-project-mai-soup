@@ -4,6 +4,7 @@ const router = express.Router()
 const mustLogin = require('../middleware/must-login')
 const libraryExists = require('../middleware/library-exists')
 const isOwner = require('../middleware/is-owner')
+const { validateLibrary } = require('../middleware/validators')
 
 const {
   getSingleLibrary,
@@ -21,8 +22,15 @@ const {
 router.get('/', getAllLibraries)
 router.get('/:id', libraryExists, getSingleLibrary)
 
-router.post('/', mustLogin, createLibrary)
-router.patch('/:id', mustLogin, libraryExists, isOwner, updateLibrary)
+router.post('/', mustLogin, validateLibrary, createLibrary)
+router.patch(
+  '/:id',
+  mustLogin,
+  libraryExists,
+  isOwner,
+  validateLibrary,
+  updateLibrary
+)
 
 router.post('/:id/copies', mustLogin, libraryExists, isOwner, addCopy)
 router.delete(
