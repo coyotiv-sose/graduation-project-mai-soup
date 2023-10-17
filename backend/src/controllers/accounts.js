@@ -4,11 +4,6 @@ const User = require('../models/user')
 module.exports.registerUser = async (req, res, next) => {
   try {
     const { username, email, password } = req.body
-
-    // check all fields are present
-    if (!username || !email || !password)
-      return next(createError(400, 'Missing fields'))
-
     const user = await User.register({ username, email }, password)
 
     return res.send(user)
