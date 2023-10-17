@@ -5,13 +5,10 @@ const Fuse = require('fuse.js')
 const BookInfo = require('../models/book-info')
 const catchAsync = require('../utils/catch-async')
 
-module.exports.getOpenLibraryBook = catchAsync(async (req, res, next) => {
+module.exports.getOpenLibraryBook = catchAsync(async (req, res) => {
   const { openLibraryId } = req.params
 
   const bookInfo = await BookInfo.findOne({ openLibraryId })
-
-  if (!bookInfo) return next(createError(404, 'Book not found'))
-
   return res.send(bookInfo)
 })
 
