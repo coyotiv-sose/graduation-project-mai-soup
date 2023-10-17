@@ -7,4 +7,10 @@ const validateLibrary = celebrate({
   },
 })
 
-module.exports = { validateLibrary }
+const validateCopyUpdate = celebrate({
+  [Segments.BODY]: {
+    action: Joi.string().valid('borrow', 'return', 'extend', 'lose').required(),
+  },
+})
+
+module.exports = { validateLibrary, validateCopyUpdate }

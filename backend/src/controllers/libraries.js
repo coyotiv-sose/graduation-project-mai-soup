@@ -80,13 +80,12 @@ module.exports.addCopy = catchAsync(async (req, res) => {
   return res.status(201).send(library)
 })
 
-module.exports.removeCopy = catchAsync(async (req, res, next) => {
-  const { id, bookId } = req.params
+module.exports.removeCopy = catchAsync(async (req, res) => {
+  const { id, copyId } = req.params
 
   const library = await Library.findById(id)
 
-  const book = await BookCopy.findById(bookId)
-  if (!book) return next(createError(404, 'Book not found'))
+  const book = await BookCopy.findById(copyId)
 
   await library.removeBookCopy(book)
   return res.status(204).send()
@@ -102,6 +101,7 @@ module.exports.joinLibrary = catchAsync(async (req, res) => {
   return res.status(201).send(library)
 })
 
+// TODO: refactor to user controller and route
 module.exports.leaveLibrary = catchAsync(async (req, res, next) => {
   const { id } = req.params
   const { user } = req
@@ -130,10 +130,6 @@ module.exports.updateCopy = catchAsync(async (req, res, next) => {
   const { user } = req
 
   const bookCopy = await BookCopy.findById(copyId)
-
-  if (!bookCopy) {
-    return next(createError(404, 'Book copy not found'))
-  }
 
   try {
     switch (action) {
