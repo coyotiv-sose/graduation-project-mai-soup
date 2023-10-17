@@ -3,7 +3,6 @@ const axios = require('axios')
 const Library = require('../models/library')
 const BookInfo = require('../models/book-info')
 const BookCopy = require('../models/book-copy')
-const User = require('../models/user')
 const { uploadImage, deleteImage } = require('../lib/google-cloud-storage')
 const descriptionEnhancer = require('../lib/description-enhancer')
 const { getGeometryOfLocation } = require('../lib/geocoder')
@@ -33,6 +32,7 @@ module.exports.createLibrary = catchAsync(async (req, res) => {
     owner,
   })
 
+  // TODO: refactor, shouldnt be in controller but in service
   owner.ownedLibraries.push(library)
   owner.memberships.push(library)
   await owner.save()
@@ -92,16 +92,13 @@ module.exports.removeCopy = catchAsync(async (req, res, next) => {
   return res.status(204).send()
 })
 
-module.exports.joinLibrary = catchAsync(async (req, res, next) => {
+module.exports.joinLibrary = catchAsync(async (req, res) => {
   const { id } = req.params
   const { user } = req
 
   const library = await Library.findById(id)
 
-  const newMember = await User.findOne({ username: user?.username })
-  if (!newMember) return next(createError(404, 'User not found'))
-
-  await newMember.joinLibrary(library)
+  await user.joinLibrary(library)
   return res.status(201).send(library)
 })
 
@@ -111,10 +108,7 @@ module.exports.leaveLibrary = catchAsync(async (req, res, next) => {
   const library = await Library.findById(id)
 
   if (req.body.remove) {
-    const userToRemove = await User.findOne({ username: user?.username })
-    if (!userToRemove) return next(createError(404, 'User not found'))
-
-    await userToRemove.leaveLibrary(library)
+    await user.leaveLibrary(library)
     return res.status(204).send()
   }
 
