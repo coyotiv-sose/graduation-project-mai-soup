@@ -1,10 +1,7 @@
 const createError = require('http-errors')
-const axios = require('axios')
 const Library = require('../models/library')
-const BookInfo = require('../models/book-info')
 const BookCopy = require('../models/book-copy')
 const Book = require('../models/book')
-const User = require('../models/user')
 const { uploadImage, deleteImage } = require('../lib/google-cloud-storage')
 const descriptionEnhancer = require('../lib/description-enhancer')
 const { getGeometryOfLocation } = require('../lib/geocoder')
@@ -40,57 +37,6 @@ module.exports.createLibrary = catchAsync(async (req, res) => {
   await owner.save()
 
   return res.status(201).send(library)
-})
-
-module.exports.addCopy = catchAsync(async (req, res) => {
-  const { id } = req.params
-  const { openLibraryId } = req.body
-
-  const library = await Library.findById(id)
-
-  let book = await BookInfo.findOne({ openLibraryId })
-  if (!book) {
-    // add from OpenLibrary API if not found locally
-    const volume = await axios.get(
-      `https://openlibrary.org/works/${openLibraryId}.json`
-    )
-    // TODO: handle errors
-
-    const { title, covers, authors } = volume.data
-
-    // convert author objects to author names
-    const authorIds = authors.map(item => item.author.key)
-
-    const authorNames = await Promise.all(
-      authorIds.map(async a => {
-        const author = await axios.get(`https://openlibrary.org${a}.json`)
-        return author.data.name
-      })
-    )
-    // construct bookInfo
-    // TODO: error handling
-    book = await BookInfo.create({
-      openLibraryId,
-      title,
-      authors: [...new Set(authorNames)], // remove duplicate authors
-      imageUrl: covers
-        ? `https://covers.openlibrary.org/b/id/${covers[0]}-M.jpg`
-        : null,
-    })
-  }
-  await library.addBook(book)
-  return res.status(201).send(library)
-})
-
-module.exports.removeCopy = catchAsync(async (req, res) => {
-  const { id, copyId } = req.params
-
-  const library = await Library.findById(id)
-
-  const book = await BookCopy.findById(copyId)
-
-  await library.removeBookCopy(book)
-  return res.status(204).send()
 })
 
 module.exports.joinLibrary = catchAsync(async (req, res) => {
