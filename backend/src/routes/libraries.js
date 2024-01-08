@@ -22,6 +22,7 @@ const {
   updateLibrary,
   getAllMembers,
   createBook,
+  removeBook,
 } = require('../controllers/libraries')
 
 router.get('/', getAllLibraries)
@@ -61,5 +62,6 @@ router.patch(
 )
 
 router.post('/:id/books', mustLogin, libraryExists, createBook)
+router.delete('/:id/books/:bookId', mustLogin, libraryExists, removeBook)
 
 module.exports = router
