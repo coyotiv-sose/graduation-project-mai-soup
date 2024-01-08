@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import { useBooksHandler } from '../stores/books-handler'
+import { useLibrarianHandler } from '../stores/librarian-handler'
 import { mapActions } from 'pinia'
 
 export default {
@@ -30,7 +30,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(useBooksHandler, ['createBook']),
+    ...mapActions(useLibrarianHandler, ['createBook']),
     async onSubmit() {
       if (this.shouldPreventSubmission) return
 
