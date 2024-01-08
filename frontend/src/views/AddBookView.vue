@@ -39,6 +39,11 @@ export default {
         title: this.title,
         authors: this.authors
       })
+
+      this.$router.push({
+        name: 'single-library',
+        params: { id: this.$route.params.id }
+      })
     }
   },
   watch: {
