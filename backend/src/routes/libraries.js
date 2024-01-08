@@ -14,8 +14,6 @@ const {
   getSingleLibrary,
   getAllLibraries,
   createLibrary,
-  addCopy,
-  removeCopy,
   joinLibrary,
   leaveLibrary,
   updateCopy,
@@ -36,16 +34,6 @@ router.patch(
   isOwner,
   validateLibrary,
   updateLibrary
-)
-
-router.post('/:id/copies', mustLogin, libraryExists, isOwner, addCopy)
-router.delete(
-  '/:id/copies/:copyId',
-  mustLogin,
-  libraryExists,
-  isOwner,
-  copyExists,
-  removeCopy
 )
 
 router.get('/:id/members', mustLogin, libraryExists, getAllMembers)
