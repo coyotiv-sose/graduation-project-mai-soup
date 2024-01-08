@@ -3,9 +3,9 @@ import axios from 'axios'
 
 export const useLoansHandler = defineStore('loans-handler', {
   actions: {
-    async borrowBook(libraryId, bookCopyId) {
+    async borrowBook(libraryId, bookId) {
       try {
-        await axios.patch(`/libraries/${libraryId}/books/${bookCopyId}`, {
+        await axios.patch(`/libraries/${libraryId}/books/${bookId}`, {
           action: 'borrow'
         })
       } catch (error) {
@@ -13,9 +13,9 @@ export const useLoansHandler = defineStore('loans-handler', {
         console.error(error)
       }
     },
-    async returnBook(libraryId, bookCopyId) {
+    async returnBook(libraryId, bookId) {
       try {
-        await axios.patch(`/libraries/${libraryId}/books/${bookCopyId}`, {
+        await axios.patch(`/libraries/${libraryId}/books/${bookId}`, {
           action: 'return'
         })
       } catch (error) {
@@ -23,9 +23,9 @@ export const useLoansHandler = defineStore('loans-handler', {
         console.error(error)
       }
     },
-    async extendLoan(libraryId, bookCopyId) {
+    async extendLoan(libraryId, bookId) {
       try {
-        await axios.patch(`/libraries/${libraryId}/books/${bookCopyId}`, {
+        await axios.patch(`/libraries/${libraryId}/books/${bookId}`, {
           action: 'extend'
         })
       } catch (error) {
