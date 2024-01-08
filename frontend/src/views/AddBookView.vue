@@ -1,64 +1,44 @@
 <template lang="pug">
 .container
   h1 Add Book to Library
-  // form for query to search for
   // TODO: refactor to be same as other forms
   form(v-on:submit.prevent="onSubmit")
-    input(type="text" v-model="query" placeholder="Search for a book...")
-    small(v-if="queryError") {{ queryError }}
+    // books have a title, author(s), and optional image to upload
+    input(type="text" v-model="title" placeholder="Title")
+    input(type="text" v-model="authors" placeholder="Authors")
+    //- TODO: add image upload
+    //- small(v-if="queryError") {{ queryError }}
     button(type="submit" :disabled="shouldPreventSubmission") Submit
-
-  // if books not null, display a BookListItem component for each
-  div(v-if="booksAreLoading" aria-busy="true")
-  div(v-if="books")
-    BookListItem(v-for="book in books" :key="book.id" :book="book")
-  div(v-if="!books?.length && booksLoaded")
-    p No results found. Check your spelling, or try another query?
 </template>
 
 <script>
 import { useBooksHandler } from '../stores/books-handler'
 import { mapActions } from 'pinia'
-import BookListItem from '../components/BookListItem.vue'
 
 export default {
   name: 'AddBookView',
-  components: {
-    BookListItem
-  },
-  data () {
+  data() {
     return {
-      query: '',
-      queryError: null,
-      books: null,
-      booksAreLoading: false,
-      booksLoaded: false,
+      title: '',
+      authors: ''
     }
   },
   computed: {
+    // TODO: the name of this method should prob be consistent across components
     shouldPreventSubmission() {
-      return !this.query || this.queryError
+      return !this.title || !this.authors
     }
   },
   methods: {
-    ...mapActions(useBooksHandler, ['fetchOpenBooks']),
-    async onSubmit () {
+    ...mapActions(useBooksHandler, ['createBook']),
+    async onSubmit() {
       if (this.shouldPreventSubmission) return
 
-      this.booksLoaded = false
-      this.booksAreLoading = true
-
-      this.books = await this.fetchOpenBooks(this.query)
-      this.booksAreLoading = false
-      this.booksLoaded = true
-    },
-    validateQuery(query) {
-      if (!query || query.trim().length < 3) {
-        this.queryError = "Query must be at least 3 characters long"
-        return
-      }
-
-      this.queryError = null
+      await this.createBook({
+        library: this.$route.params.id,
+        title: this.title,
+        authors: this.authors
+      })
     }
   },
   watch: {
