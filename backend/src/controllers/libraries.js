@@ -3,6 +3,8 @@ const axios = require('axios')
 const Library = require('../models/library')
 const BookInfo = require('../models/book-info')
 const BookCopy = require('../models/book-copy')
+const Book = require('../models/book')
+const User = require('../models/user')
 const { uploadImage, deleteImage } = require('../lib/google-cloud-storage')
 const descriptionEnhancer = require('../lib/description-enhancer')
 const { getGeometryOfLocation } = require('../lib/geocoder')
@@ -209,3 +211,18 @@ module.exports.generateEnhancedDescription = catchAsync(async (req, res) => {
   const enhancedDescription = await descriptionEnhancer(description)
   return res.send(enhancedDescription)
 })
+
+module.exports.createBook = async (req, res, next) => {
+  const { authors, title } = req.body
+
+  if (!authors || !title) return next(createError(400, 'Missing parameters'))
+
+  const library = await Library.findById(req.params.id)
+  const book = await Book.create({
+    authors,
+    title,
+    library,
+  })
+
+  return res.status(201).send(book)
+}
