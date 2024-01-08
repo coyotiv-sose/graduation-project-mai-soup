@@ -4,11 +4,7 @@ const router = express.Router()
 const mustLogin = require('../middleware/must-login')
 const libraryExists = require('../middleware/library-exists')
 const isOwner = require('../middleware/is-owner')
-const copyExists = require('../middleware/copy-exists')
-const {
-  validateLibrary,
-  validateCopyUpdate,
-} = require('../middleware/validators')
+const { validateLibrary } = require('../middleware/validators')
 
 const {
   getSingleLibrary,

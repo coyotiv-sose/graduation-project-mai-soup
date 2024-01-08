@@ -76,7 +76,7 @@ module.exports.updateBook = catchAsync(async (req, res, next) => {
   const { action } = req.body
   const { user } = req
 
-  const book = await Book.findById(copyId)
+  const book = await Book.findById(bookId)
 
   try {
     switch (action) {
