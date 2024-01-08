@@ -16,7 +16,7 @@ const {
   createLibrary,
   joinLibrary,
   leaveLibrary,
-  updateCopy,
+  updateBook,
   updateLibrary,
   getAllMembers,
   createBook,
@@ -40,16 +40,8 @@ router.get('/:id/members', mustLogin, libraryExists, getAllMembers)
 router.post('/:id/members', mustLogin, libraryExists, joinLibrary)
 router.patch('/:id/members', mustLogin, libraryExists, leaveLibrary)
 
-router.patch(
-  '/:id/copies/:copyId',
-  mustLogin,
-  libraryExists,
-  copyExists,
-  validateCopyUpdate,
-  updateCopy
-)
-
 router.post('/:id/books', mustLogin, libraryExists, createBook)
+router.patch('/:id/books/:bookId', mustLogin, libraryExists, updateBook)
 router.delete('/:id/books/:bookId', mustLogin, libraryExists, removeBook)
 
 module.exports = router
