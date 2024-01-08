@@ -2,17 +2,10 @@ const express = require('express')
 
 const router = express.Router()
 const mustLogin = require('../middleware/must-login')
-const bookInfoExists = require('../middleware/book-info-exists')
-const {
-  getOpenLibraryBook,
-  createBook,
-  getBooks,
-} = require('../controllers/books')
+const { getAllBooks, getSingleBook } = require('../controllers/books')
 
-router.get('/:openLibraryId', mustLogin, bookInfoExists, getOpenLibraryBook)
+router.get('/', mustLogin, getAllBooks)
 
-router.post('/', mustLogin, createBook)
-
-router.get('/', mustLogin, getBooks)
+router.get('/:id', mustLogin, getSingleBook)
 
 module.exports = router
