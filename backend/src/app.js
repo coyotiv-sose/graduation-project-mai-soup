@@ -24,8 +24,6 @@ const usersRouter = require('./routes/users')
 const librariesRouter = require('./routes/libraries')
 const bookRouter = require('./routes/books')
 const accountsRouter = require('./routes/accounts')
-const openBooksRouter = require('./routes/open-books')
-
 const app = express()
 
 app.use(
@@ -82,9 +80,11 @@ app.use('/users', usersRouter)
 app.use('/libraries', librariesRouter)
 app.use('/books', bookRouter)
 app.use('/accounts', accountsRouter)
-app.use('/open-books', openBooksRouter)
 
 // celebrate errors
+// i do mean the errors from validation with the package 'celebrate'
+// and not being happy because of the errors, but the comment was
+// too funny to rewrite
 app.use(errors())
 
 // catch 404 and forward to error handler
