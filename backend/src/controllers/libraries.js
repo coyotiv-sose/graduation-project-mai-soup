@@ -1,6 +1,5 @@
 const createError = require('http-errors')
 const Library = require('../models/library')
-const BookCopy = require('../models/book-copy')
 const Book = require('../models/book')
 const { uploadImage, deleteImage } = require('../lib/google-cloud-storage')
 const descriptionEnhancer = require('../lib/description-enhancer')

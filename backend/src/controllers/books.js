@@ -1,8 +1,4 @@
 const createError = require('http-errors')
-const axios = require('axios')
-const Fuse = require('fuse.js')
-
-const BookInfo = require('../models/book-info')
 const catchAsync = require('../utils/catch-async')
 const Book = require('../models/book')
 
