@@ -72,26 +72,26 @@ module.exports.getAllMembers = catchAsync(async (req, res) => {
   return res.send(members)
 })
 
-module.exports.updateCopy = catchAsync(async (req, res, next) => {
-  const { copyId } = req.params
+module.exports.updateBook = catchAsync(async (req, res, next) => {
+  const { bookId } = req.params
   const { action } = req.body
   const { user } = req
 
-  const bookCopy = await BookCopy.findById(copyId)
+  const book = await Book.findById(copyId)
 
   try {
     switch (action) {
       case 'borrow':
-        await user.borrowBook(bookCopy)
+        await user.borrowBook(book)
         break
       case 'return':
-        await user.returnBook(bookCopy)
+        await user.returnBook(book)
         break
       case 'extend':
-        await bookCopy.extend()
+        await book.extend()
         break
       case 'lose':
-        await bookCopy.lose()
+        await book.lose()
         break
       default:
         return next(createError(400, 'Invalid action'))
@@ -99,8 +99,8 @@ module.exports.updateCopy = catchAsync(async (req, res, next) => {
   } catch (err) {
     return next(createError(403, err.message))
   }
-  const updatedCopy = await BookCopy.findById(copyId)
-  return res.send(updatedCopy)
+  const updatedBook = await Book.findById(bookId)
+  return res.send(updatedBook)
 })
 
 module.exports.updateLibrary = catchAsync(async (req, res) => {
