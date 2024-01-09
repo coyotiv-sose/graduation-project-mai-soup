@@ -18,9 +18,12 @@ module.exports.getAllLibraries = catchAsync(async (req, res) => {
   return res.send(libraries)
 })
 
-module.exports.createLibrary = catchAsync(async (req, res) => {
+module.exports.createLibrary = catchAsync(async (req, res, next) => {
+  // TODO: update the validation now that you have the file too
   const owner = req.user
   const { name, location } = req.body
+  if (!name || !location)
+    return next(createError(400, 'Missing name or location'))
   const geometry = await getGeometryOfLocation(location)
 
   let filetype, encodedImage
