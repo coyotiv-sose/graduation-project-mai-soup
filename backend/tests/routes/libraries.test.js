@@ -3,11 +3,9 @@ const mongoose = require('mongoose')
 const chance = require('chance').Chance()
 const app = require('../../src/app')
 const Library = require('../../src/models/library')
-const BookCopy = require('../../src/models/book-copy')
+const Book = require('../../src/models/book')
 const getValidPassword = require('../generateValidPassword')
 
-const validOpenLibraryId = 'OL468431W'
-const anotherValidOpenLibraryId = 'OL63073W'
 let ownerId = ''
 const agentOwner = request.agent(app)
 const agentMember = request.agent(app)
@@ -142,7 +140,7 @@ it('should allow access to a single library with or without authentication', asy
 // shouldnt add book without authing as owner
 // shouldnt join lib without authing
 // shouldnt leave lib without authing as member
-// shouldnt patch copies without authing as member
+// shouldnt patch books without authing as member
 
 it('should handle server errors when listing libraries', async () => {
   jest.spyOn(Library, 'find').mockRejectedValueOnce(new Error('oops'))
@@ -390,7 +388,7 @@ it('should handle server errors when patching library', async () => {
   expect(response.status).toBe(500)
 })
 
-it('should not allow unauthenticated users to add copies to a library', async () => {
+it('should not allow unauthenticated users to add books to a library', async () => {
   const library = await Library.create({
     name: chance.word({ length: 5 }),
     location: chance.word({ length: 5 }),
@@ -400,11 +398,11 @@ it('should not allow unauthenticated users to add copies to a library', async ()
     },
     owner: ownerId,
   })
-  const response = await request(app).post(`/libraries/${library._id}/copies`)
+  const response = await request(app).post(`/libraries/${library._id}/books`)
   expect(response.status).toBe(401)
 })
 
-it('should not allow users to add copies to a library they are not the owner of', async () => {
+it('should not allow users to add books to a library they are not the owner of', async () => {
   const library = await Library.create({
     name: chance.word({ length: 5 }),
     location: chance.word({ length: 5 }),
@@ -414,17 +412,17 @@ it('should not allow users to add copies to a library they are not the owner of'
     },
     owner: ownerId,
   })
-  const response = await agentMember.post(`/libraries/${library._id}/copies`)
+  const response = await agentMember.post(`/libraries/${library._id}/books`)
   expect(response.status).toBe(403)
 })
 
-it('should return not found when attempting to add copies to a non-existent library', async () => {
+it('should return not found when attempting to add books to a non-existent library', async () => {
   const fakeId = new mongoose.Types.ObjectId()
-  const response = await agentOwner.post(`/libraries/${fakeId}/copies`)
+  const response = await agentOwner.post(`/libraries/${fakeId}/books`)
   expect(response.status).toBe(404)
 })
 
-it('should add copies to a library with a new openLibraryId', async () => {
+it('should let owner add books to a library', async () => {
   const library = await Library.create({
     name: chance.word({ length: 5 }),
     location: chance.word({ length: 5 }),
@@ -434,69 +432,28 @@ it('should add copies to a library with a new openLibraryId', async () => {
     },
     owner: ownerId,
   })
+
+  const testBook = {
+    title: chance.word({ length: 5 }),
+    authors: chance.name(),
+  }
   const response = await agentOwner
-    .post(`/libraries/${library._id}/copies`)
-    .send({
-      openLibraryId: validOpenLibraryId,
-    })
+    .post(`/libraries/${library._id}/books`)
+    .send(testBook)
 
   expect(response.status).toBe(201)
-  expect(response.body.books).toEqual(
-    expect.arrayContaining([
-      expect.objectContaining({
-        bookInfo: expect.objectContaining({
-          openLibraryId: validOpenLibraryId,
-        }),
-      }),
-    ])
-  )
+  expect(response.body).toEqual(expect.objectContaining(testBook))
 })
 
-it('should add multiple copies of the same book to a library and not call the api multiple times', async () => {
-  const library = await Library.create({
-    name: chance.word({ length: 5 }),
-    location: chance.word({ length: 5 }),
-    geometry: {
-      type: 'Point',
-      coordinates: [chance.longitude(), chance.latitude()],
-    },
-    owner: ownerId,
-  })
-  await agentOwner.post(`/libraries/${library._id}/copies`).send({
-    openLibraryId: anotherValidOpenLibraryId,
-  })
-
-  const response = await agentOwner
-    .post(`/libraries/${library._id}/copies`)
-    .send({
-      openLibraryId: anotherValidOpenLibraryId,
-    })
-  expect(response.status).toBe(201)
-  expect(response.body.books).toEqual(
-    expect.arrayContaining([
-      expect.objectContaining({
-        bookInfo: expect.objectContaining({
-          openLibraryId: anotherValidOpenLibraryId,
-        }),
-      }),
-      expect.objectContaining({
-        bookInfo: expect.objectContaining({
-          openLibraryId: anotherValidOpenLibraryId,
-        }),
-      }),
-    ])
-  )
-})
-
-it('should handle server errors when adding copies to a library', async () => {
+it('should handle server errors when adding books to a library', async () => {
   const fakeId = new mongoose.Types.ObjectId()
   jest.spyOn(Library, 'findById').mockRejectedValueOnce(new Error('oops'))
 
-  const response = await agentOwner.post(`/libraries/${fakeId}/copies`)
+  const response = await agentOwner.post(`/libraries/${fakeId}/books`)
   expect(response.status).toBe(500)
 })
 
-it('should not allow unauthenticated user to remove a copy from a library', async () => {
+it('should not allow unauthenticated user to remove a book from a library', async () => {
   const library = await Library.create({
     name: chance.word({ length: 5 }),
     location: chance.word({ length: 5 }),
@@ -508,12 +465,12 @@ it('should not allow unauthenticated user to remove a copy from a library', asyn
   })
   const fakeId = new mongoose.Types.ObjectId()
   const response = await request(app).delete(
-    `/libraries/${library._id}/copies/${fakeId}`
+    `/libraries/${library._id}/books/${fakeId}`
   )
   expect(response.status).toBe(401)
 })
 
-it('should not allow users to remove copies from a library they are not the owner of', async () => {
+it('should not allow users to remove books from a library they are not the owner of', async () => {
   const library = await Library.create({
     name: chance.word({ length: 5 }),
     location: chance.word({ length: 5 }),
@@ -525,20 +482,20 @@ it('should not allow users to remove copies from a library they are not the owne
   })
   const fakeId = new mongoose.Types.ObjectId()
   const response = await agentMember.delete(
-    `/libraries/${library._id}/copies/${fakeId}`
+    `/libraries/${library._id}/books/${fakeId}`
   )
   expect(response.status).toBe(403)
 })
 
-it('should return not found when attempting to remove a copy from a non-existent library', async () => {
+it('should return not found when attempting to remove a book from a non-existent library', async () => {
   const fakeId = new mongoose.Types.ObjectId()
   const response = await agentOwner.delete(
-    `/libraries/${fakeId}/copies/${fakeId}`
+    `/libraries/${fakeId}/books/${fakeId}`
   )
   expect(response.status).toBe(404)
 })
 
-it('should return not found when attempting to remove a non-existent copy from a library', async () => {
+it('should return not found when attempting to remove a non-existent book from a library', async () => {
   const library = await Library.create({
     name: chance.word({ length: 5 }),
     location: chance.word({ length: 5 }),
@@ -550,12 +507,12 @@ it('should return not found when attempting to remove a non-existent copy from a
   })
   const fakeId = new mongoose.Types.ObjectId()
   const response = await agentOwner.delete(
-    `/libraries/${library._id}/copies/${fakeId}`
+    `/libraries/${library._id}/books/${fakeId}`
   )
   expect(response.status).toBe(404)
 })
 
-it('should remove a copy from a library', async () => {
+it('should remove a book from a library', async () => {
   const library = await Library.create({
     name: chance.word({ length: 5 }),
     location: chance.word({ length: 5 }),
@@ -566,70 +523,31 @@ it('should remove a copy from a library', async () => {
     owner: ownerId,
   })
 
-  const copyAdded = await agentOwner
-    .post(`/libraries/${library._id}/copies`)
+  const bookAdded = await agentOwner
+    .post(`/libraries/${library._id}/books`)
     .send({
-      openLibraryId: anotherValidOpenLibraryId,
+      title: chance.word({ length: 5 }),
+      authors: chance.name(),
     })
 
   const response = await agentOwner.delete(
-    `/libraries/${library._id}/copies/${copyAdded.body.books[0]._id}`
+    `/libraries/${library._id}/books/${bookAdded.body._id}`
   )
 
   expect(response.status).toBe(204)
 })
 
-it('should only remove one copy if a library has multiple copies of the same book', async () => {
-  const library = await Library.create({
-    name: chance.word({ length: 5 }),
-    location: chance.word({ length: 5 }),
-    geometry: {
-      type: 'Point',
-      coordinates: [chance.longitude(), chance.latitude()],
-    },
-    owner: ownerId,
-  })
-
-  const copyAdded = await agentOwner
-    .post(`/libraries/${library._id}/copies`)
-    .send({
-      openLibraryId: anotherValidOpenLibraryId,
-    })
-
-  await agentOwner.post(`/libraries/${library._id}/copies`).send({
-    openLibraryId: anotherValidOpenLibraryId,
-  })
-
-  const response = await agentOwner.delete(
-    `/libraries/${library._id}/copies/${copyAdded.body.books[0]._id}`
-  )
-
-  const libraryAfter = await Library.findById(library._id)
-
-  expect(response.status).toBe(204)
-  expect(libraryAfter.books.length).toBe(1)
-  expect(libraryAfter.books).toEqual(
-    expect.arrayContaining([
-      expect.objectContaining({
-        bookInfo: expect.objectContaining({
-          openLibraryId: anotherValidOpenLibraryId,
-        }),
-      }),
-    ])
-  )
-})
-
-it('should handle server errors when removing a copy from a library', async () => {
+it('should handle server errors when removing a book from a library', async () => {
   const fakeId = new mongoose.Types.ObjectId()
   jest.spyOn(Library, 'findById').mockRejectedValueOnce(new Error('oops'))
 
   const response = await agentOwner.delete(
-    `/libraries/${fakeId}/copies/${fakeId}`
+    `/libraries/${fakeId}/books/${fakeId}`
   )
   expect(response.status).toBe(500)
 })
 
-it('should not allow unauthenticated user to update a copy in a library', async () => {
+it('should not allow unauthenticated user to update a book in a library', async () => {
   const library = await Library.create({
     name: chance.word({ length: 5 }),
     location: chance.word({ length: 5 }),
@@ -641,12 +559,12 @@ it('should not allow unauthenticated user to update a copy in a library', async 
   })
   const fakeId = new mongoose.Types.ObjectId()
   const response = await request(app).patch(
-    `/libraries/${library._id}/copies/${fakeId}`
+    `/libraries/${library._id}/books/${fakeId}`
   )
   expect(response.status).toBe(401)
 })
 
-// it('should not allow users that are not members of a library to update a copy in a library', async () => {
+// it('should not allow users that are not members of a library to update a book in a library', async () => {
 //   const library = await Library.create({
 //     name: chance.word({ length: 5 }),
 //     location: chance.word({ length: 5 }),
@@ -658,20 +576,20 @@ it('should not allow unauthenticated user to update a copy in a library', async 
 //   })
 //   const fakeId = new mongoose.Types.ObjectId()
 //   const response = await agentMember.patch(
-//     `/libraries/${library._id}/copies/${fakeId}`
+//     `/libraries/${library._id}/books/${fakeId}`
 //   )
 //   expect(response.status).toBe(403)
 // })
 
-it('should return not found when attempting to update a copy in a non-existent library', async () => {
+it('should return not found when attempting to update a book in a non-existent library', async () => {
   const fakeId = new mongoose.Types.ObjectId()
   const response = await agentOwner.patch(
-    `/libraries/${fakeId}/copies/${fakeId}`
+    `/libraries/${fakeId}/books/${fakeId}`
   )
   expect(response.status).toBe(404)
 })
 
-it('should return not found when attempting to update a non-existent copy in a library', async () => {
+it('should return not found when attempting to update a non-existent book in a library', async () => {
   const library = await Library.create({
     name: chance.word({ length: 5 }),
     location: chance.word({ length: 5 }),
@@ -681,14 +599,15 @@ it('should return not found when attempting to update a non-existent copy in a l
     },
     owner: ownerId,
   })
+
   const fakeId = new mongoose.Types.ObjectId()
   const response = await agentOwner.patch(
-    `/libraries/${library._id}/copies/${fakeId}`
+    `/libraries/${library._id}/books/${fakeId}`
   )
   expect(response.status).toBe(404)
 })
 
-it('should return 400 when no action is specified in a copy update', async () => {
+it('should return 400 when no action is specified in a book update', async () => {
   const library = await Library.create({
     name: chance.word({ length: 5 }),
     location: chance.word({ length: 5 }),
@@ -698,20 +617,21 @@ it('should return 400 when no action is specified in a copy update', async () =>
     },
     owner: ownerId,
   })
-  const copyAdded = await agentOwner
-    .post(`/libraries/${library._id}/copies`)
+  const bookAdded = await agentOwner
+    .post(`/libraries/${library._id}/books`)
     .send({
-      openLibraryId: anotherValidOpenLibraryId,
+      title: chance.word({ length: 5 }),
+      authors: chance.name(),
     })
 
   const response = await agentOwner
-    .patch(`/libraries/${library._id}/copies/${copyAdded.body.books[0]._id}`)
+    .patch(`/libraries/${library._id}/books/${bookAdded.body._id}`)
     .send({ foo: 'bar' })
 
   expect(response.status).toBe(400)
 })
 
-it('should return 400 when an invalid action is specified in a copy update', async () => {
+it('should return 400 when an invalid action is specified in a book update', async () => {
   const library = await Library.create({
     name: chance.word({ length: 5 }),
     location: chance.word({ length: 5 }),
@@ -721,20 +641,21 @@ it('should return 400 when an invalid action is specified in a copy update', asy
     },
     owner: ownerId,
   })
-  const copyAdded = await agentOwner
-    .post(`/libraries/${library._id}/copies`)
+  const bookAdded = await agentOwner
+    .post(`/libraries/${library._id}/books`)
     .send({
-      openLibraryId: anotherValidOpenLibraryId,
+      title: chance.word({ length: 5 }),
+      authors: chance.name(),
     })
 
   const response = await agentOwner
-    .patch(`/libraries/${library._id}/copies/${copyAdded.body.books[0]._id}`)
+    .patch(`/libraries/${library._id}/books/${bookAdded.body._id}`)
     .send({ action: 'foo' })
 
   expect(response.status).toBe(400)
 })
 
-it('should allow members to patch a copy as borrowed and then returned', async () => {
+it('should allow members to patch a book as borrowed and then returned', async () => {
   const library = await Library.create({
     name: chance.word({ length: 5 }),
     location: chance.word({ length: 5 }),
@@ -744,30 +665,31 @@ it('should allow members to patch a copy as borrowed and then returned', async (
     },
     owner: ownerId,
   })
-  const copyAdded = await agentOwner
-    .post(`/libraries/${library._id}/copies`)
+  const bookAdded = await agentOwner
+    .post(`/libraries/${library._id}/books`)
     .send({
-      openLibraryId: anotherValidOpenLibraryId,
+      title: chance.word({ length: 5 }),
+      authors: chance.name(),
     })
 
   await agentMember.post(`/libraries/${library._id}/members`)
 
   const responseBorrow = await agentMember
-    .patch(`/libraries/${library._id}/copies/${copyAdded.body.books[0]._id}`)
+    .patch(`/libraries/${library._id}/books/${bookAdded.body._id}`)
     .send({ action: 'borrow' })
 
   expect(responseBorrow.status).toBe(200)
   expect(responseBorrow.body.status).toBe('borrowed')
 
   const responseReturn = await agentMember
-    .patch(`/libraries/${library._id}/copies/${copyAdded.body.books[0]._id}`)
+    .patch(`/libraries/${library._id}/books/${bookAdded.body._id}`)
     .send({ action: 'return' })
 
   expect(responseReturn.status).toBe(200)
   expect(responseReturn.body.status).toBe('available')
 })
 
-it('shouldnt allow members to patch a copy as returned if they have not borrowed it', async () => {
+it('shouldnt allow members to patch a book as returned if they have not borrowed it', async () => {
   const library = await Library.create({
     name: chance.word({ length: 5 }),
     location: chance.word({ length: 5 }),
@@ -777,22 +699,23 @@ it('shouldnt allow members to patch a copy as returned if they have not borrowed
     },
     owner: ownerId,
   })
-  const copyAdded = await agentOwner
-    .post(`/libraries/${library._id}/copies`)
+  const bookAdded = await agentOwner
+    .post(`/libraries/${library._id}/books`)
     .send({
-      openLibraryId: anotherValidOpenLibraryId,
+      title: chance.word({ length: 5 }),
+      authors: chance.name(),
     })
 
   await agentMember.post(`/libraries/${library._id}/members`)
 
   const responseReturn = await agentMember
-    .patch(`/libraries/${library._id}/copies/${copyAdded.body.books[0]._id}`)
+    .patch(`/libraries/${library._id}/books/${bookAdded.body._id}`)
     .send({ action: 'return' })
 
   expect(responseReturn.status).toBe(403)
 })
 
-it('shouldnt allow a member to patch a copy as borrowed if it is already borrowed', async () => {
+it('shouldnt allow a member to patch a book as borrowed if it is already borrowed', async () => {
   const library = await Library.create({
     name: chance.word({ length: 5 }),
     location: chance.word({ length: 5 }),
@@ -802,27 +725,28 @@ it('shouldnt allow a member to patch a copy as borrowed if it is already borrowe
     },
     owner: ownerId,
   })
-  const copyAdded = await agentOwner
-    .post(`/libraries/${library._id}/copies`)
+  const bookAdded = await agentOwner
+    .post(`/libraries/${library._id}/books`)
     .send({
-      openLibraryId: anotherValidOpenLibraryId,
+      title: chance.word({ length: 5 }),
+      authors: chance.name(),
     })
 
   await agentMember.post(`/libraries/${library._id}/members`)
   await agentAnother.post(`/libraries/${library._id}/members`)
 
   await agentMember
-    .patch(`/libraries/${library._id}/copies/${copyAdded.body.books[0]._id}`)
+    .patch(`/libraries/${library._id}/books/${bookAdded.body._id}`)
     .send({ action: 'borrow' })
 
   const responseBorrow = await agentAnother
-    .patch(`/libraries/${library._id}/copies/${copyAdded.body.books[0]._id}`)
+    .patch(`/libraries/${library._id}/books/${bookAdded.body._id}`)
     .send({ action: 'borrow' })
 
   expect(responseBorrow.status).toBe(403)
 
   const responseRepeatBorrow = await agentMember
-    .patch(`/libraries/${library._id}/copies/${copyAdded.body.books[0]._id}`)
+    .patch(`/libraries/${library._id}/books/${bookAdded.body._id}`)
     .send({ action: 'borrow' })
 
   expect(responseRepeatBorrow.status).toBe(403)
@@ -838,14 +762,15 @@ it('shouldnt allow unauthenticated users to extend a loan', async () => {
     },
     owner: ownerId,
   })
-  const copyAdded = await agentOwner
-    .post(`/libraries/${library._id}/copies`)
+  const bookAdded = await agentOwner
+    .post(`/libraries/${library._id}/books`)
     .send({
-      openLibraryId: anotherValidOpenLibraryId,
+      title: chance.word({ length: 5 }),
+      authors: chance.name(),
     })
 
   const response = await request(app)
-    .patch(`/libraries/${library._id}/copies/${copyAdded.body.books[0]._id}`)
+    .patch(`/libraries/${library._id}/books/${bookAdded.body._id}`)
     .send({ action: 'extend' })
 
   expect(response.status).toBe(401)
@@ -861,20 +786,21 @@ it('shouldnt allow users to extend a loan if they are not a member', async () =>
     },
     owner: ownerId,
   })
-  const copyAdded = await agentOwner
-    .post(`/libraries/${library._id}/copies`)
+  const bookAdded = await agentOwner
+    .post(`/libraries/${library._id}/books`)
     .send({
-      openLibraryId: anotherValidOpenLibraryId,
+      title: chance.word({ length: 5 }),
+      authors: chance.name(),
     })
 
   const response = await agentAnother
-    .patch(`/libraries/${library._id}/copies/${copyAdded.body.books[0]._id}`)
+    .patch(`/libraries/${library._id}/books/${bookAdded.body._id}`)
     .send({ action: 'extend' })
 
   expect(response.status).toBe(403)
 })
 
-it('shouldnt allow users to extend a loan if the copy is not borrowed', async () => {
+it('shouldnt allow users to extend a loan if the book is not borrowed', async () => {
   const library = await Library.create({
     name: chance.word({ length: 5 }),
     location: chance.word({ length: 5 }),
@@ -884,16 +810,17 @@ it('shouldnt allow users to extend a loan if the copy is not borrowed', async ()
     },
     owner: ownerId,
   })
-  const copyAdded = await agentOwner
-    .post(`/libraries/${library._id}/copies`)
+  const bookAdded = await agentOwner
+    .post(`/libraries/${library._id}/books`)
     .send({
-      openLibraryId: anotherValidOpenLibraryId,
+      title: chance.word({ length: 5 }),
+      authors: chance.name(),
     })
 
   await agentMember.post(`/libraries/${library._id}/members`)
 
   const response = await agentMember
-    .patch(`/libraries/${library._id}/copies/${copyAdded.body.books[0]._id}`)
+    .patch(`/libraries/${library._id}/books/${bookAdded.body._id}`)
     .send({ action: 'extend' })
 
   expect(response.status).toBe(403)
@@ -909,21 +836,22 @@ it('should not allow another member to extend someone elses loan', async () => {
     },
     owner: ownerId,
   })
-  const copyAdded = await agentOwner
-    .post(`/libraries/${library._id}/copies`)
+  const bookAdded = await agentOwner
+    .post(`/libraries/${library._id}/books`)
     .send({
-      openLibraryId: anotherValidOpenLibraryId,
+      title: chance.word({ length: 5 }),
+      authors: chance.name(),
     })
 
   await agentMember.post(`/libraries/${library._id}/members`)
   await agentAnother.post(`/libraries/${library._id}/members`)
 
   await agentMember
-    .patch(`/libraries/${library._id}/copies/${copyAdded.body.books[0]._id}`)
+    .patch(`/libraries/${library._id}/books/${bookAdded.body._id}`)
     .send({ action: 'borrow' })
 
   const response = await agentAnother
-    .patch(`/libraries/${library._id}/copies/${copyAdded.body.books[0]._id}`)
+    .patch(`/libraries/${library._id}/books/${bookAdded.body._id}`)
     .send({ action: 'extend' })
 
   expect(response.status).toBe(403)
@@ -939,20 +867,21 @@ it('should not allow a member to extend a loan that has more than 7 days remaini
     },
     owner: ownerId,
   })
-  const copyAdded = await agentOwner
-    .post(`/libraries/${library._id}/copies`)
+  const bookAdded = await agentOwner
+    .post(`/libraries/${library._id}/books`)
     .send({
-      openLibraryId: anotherValidOpenLibraryId,
+      title: chance.word({ length: 5 }),
+      authors: chance.name(),
     })
 
   await agentMember.post(`/libraries/${library._id}/members`)
 
   await agentMember
-    .patch(`/libraries/${library._id}/copies/${copyAdded.body.books[0]._id}`)
+    .patch(`/libraries/${library._id}/books/${bookAdded.body._id}`)
     .send({ action: 'borrow' })
 
   const response = await agentMember
-    .patch(`/libraries/${library._id}/copies/${copyAdded.body.books[0]._id}`)
+    .patch(`/libraries/${library._id}/books/${bookAdded.body._id}`)
     .send({ action: 'extend' })
 
   expect(response.status).toBe(403)
@@ -968,20 +897,21 @@ it('should allow a member to extend a loan that has less than 7 days remaining',
     },
     owner: ownerId,
   })
-  const copyAdded = await agentOwner
-    .post(`/libraries/${library._id}/copies`)
+  const bookAdded = await agentOwner
+    .post(`/libraries/${library._id}/books`)
     .send({
-      openLibraryId: anotherValidOpenLibraryId,
+      title: chance.word({ length: 5 }),
+      authors: chance.name(),
     })
 
   await agentMember.post(`/libraries/${library._id}/members`)
 
   await agentMember
-    .patch(`/libraries/${library._id}/copies/${copyAdded.body.books[0]._id}`)
+    .patch(`/libraries/${library._id}/books/${bookAdded.body._id}`)
     .send({ action: 'borrow' })
 
-  await BookCopy.findOneAndUpdate(
-    { _id: copyAdded.body.books[0]._id },
+  await Book.findOneAndUpdate(
+    { _id: bookAdded.body._id },
     {
       $set: {
         returnDate: new Date(Date.now() + 6 * 24 * 60 * 60 * 1000),
@@ -990,7 +920,7 @@ it('should allow a member to extend a loan that has less than 7 days remaining',
   )
 
   const response = await agentMember
-    .patch(`/libraries/${library._id}/copies/${copyAdded.body.books[0]._id}`)
+    .patch(`/libraries/${library._id}/books/${bookAdded.body._id}`)
     .send({ action: 'extend' })
 
   expect(response.status).toBe(200)
@@ -1001,7 +931,7 @@ it('should allow a member to extend a loan that has less than 7 days remaining',
   )
 })
 
-// it('should not allow regular members to mark a copy as lost', async () => {
+// it('should not allow regular members to mark a book as lost', async () => {
 //   const library = await Library.create({
 //     name: chance.word({ length: 5 }),
 //     location: chance.word({ length: 5 }),
@@ -1011,8 +941,8 @@ it('should allow a member to extend a loan that has less than 7 days remaining',
 //     },
 //     owner: ownerId,
 //   })
-//   const copyAdded = await agentOwner
-//     .post(`/libraries/${library._id}/copies`)
+//   const bookAdded = await agentOwner
+//     .post(`/libraries/${library._id}/books`)
 //     .send({
 //       openLibraryId: anotherValidOpenLibraryId,
 //     })
@@ -1020,13 +950,13 @@ it('should allow a member to extend a loan that has less than 7 days remaining',
 //   await agentMember.post(`/libraries/${library._id}/members`)
 
 //   const response = await agentMember
-//     .patch(`/libraries/${library._id}/copies/${copyAdded.body.books[0]._id}`)
+//     .patch(`/libraries/${library._id}/books/${bookAdded.body.books[0]._id}`)
 //     .send({ action: 'lose' })
 
 //   expect(response.status).toBe(403)
 // })
 
-it('should allow the library owner to mark a copy as lost, no matter its status', async () => {
+it('should allow the library owner to mark a book as lost, no matter its status', async () => {
   const library = await Library.create({
     name: chance.word({ length: 5 }),
     location: chance.word({ length: 5 }),
@@ -1036,37 +966,37 @@ it('should allow the library owner to mark a copy as lost, no matter its status'
     },
     owner: ownerId,
   })
-  const copyToBorrow = await agentOwner
-    .post(`/libraries/${library._id}/copies`)
+  const bookToBorrow = await agentOwner
+    .post(`/libraries/${library._id}/books`)
     .send({
-      openLibraryId: anotherValidOpenLibraryId,
+      title: chance.word({ length: 5 }),
+      authors: chance.name(),
     })
-  const copyToLeaveAvailable = await agentOwner
-    .post(`/libraries/${library._id}/copies`)
+  const bookToLeaveAvailable = await agentOwner
+    .post(`/libraries/${library._id}/books`)
     .send({
-      openLibraryId: anotherValidOpenLibraryId,
+      title: chance.word({ length: 5 }),
+      authors: chance.name(),
     })
 
   await agentMember.post(`/libraries/${library._id}/members`)
   await agentMember
-    .patch(`/libraries/${library._id}/copies/${copyToBorrow.body.books[0]._id}`)
+    .patch(`/libraries/${library._id}/books/${bookToBorrow.body._id}`)
     .send({ action: 'borrow' })
 
   const responseBorrowed = await agentOwner
-    .patch(`/libraries/${library._id}/copies/${copyToBorrow.body.books[0]._id}`)
+    .patch(`/libraries/${library._id}/books/${bookToBorrow.body._id}`)
     .send({ action: 'lose' })
 
   const responseAvailable = await agentOwner
-    .patch(
-      `/libraries/${library._id}/copies/${copyToLeaveAvailable.body.books[0]._id}`
-    )
+    .patch(`/libraries/${library._id}/books/${bookToLeaveAvailable.body._id}`)
     .send({ action: 'lose' })
 
   expect(responseBorrowed.status).toBe(200)
   expect(responseAvailable.status).toBe(200)
 })
 
-it('should handle server errors when patching a copy', async () => {
+it('should handle server errors when patching a book', async () => {
   const library = await Library.create({
     name: chance.word({ length: 5 }),
     location: chance.word({ length: 5 }),
@@ -1076,16 +1006,17 @@ it('should handle server errors when patching a copy', async () => {
     },
     owner: ownerId,
   })
-  const copyAdded = await agentOwner
-    .post(`/libraries/${library._id}/copies`)
+  const bookAdded = await agentOwner
+    .post(`/libraries/${library._id}/books`)
     .send({
-      openLibraryId: anotherValidOpenLibraryId,
+      title: chance.word({ length: 5 }),
+      authors: chance.name(),
     })
 
-  jest.spyOn(BookCopy, 'findById').mockRejectedValueOnce(new Error('oops'))
+  jest.spyOn(Book, 'findById').mockRejectedValueOnce(new Error('oops'))
 
   const response = await agentOwner
-    .patch(`/libraries/${library._id}/copies/${copyAdded.body.books[0]._id}`)
+    .patch(`/libraries/${library._id}/books/${bookAdded.body._id}`)
     .send({ action: 'borrow' })
 
   expect(response.status).toBe(500)
