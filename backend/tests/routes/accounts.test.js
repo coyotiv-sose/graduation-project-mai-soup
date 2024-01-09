@@ -77,7 +77,7 @@ it('should not sign up a user with a username that is too short', async () => {
   const response = await request(app)
     .post('/accounts')
     .send({
-      username: chance.string({ length: 4 }),
+      username: chance.string({ length: 2 }),
       email: chance.email(),
       password: getValidPassword(),
     })
