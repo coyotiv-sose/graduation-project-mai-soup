@@ -255,3 +255,37 @@ it('should throw if trying to remove a book that is not in the library', async (
     expect.arrayContaining([expect.objectContaining(bookInfo)])
   )
 })
+
+// TODO: the functionality for this one's not fully implemented yet
+// it('should not duplicate membership when changing to a new owner that is already a member', async () => {
+//   let library = await getLibrary()
+//   const newOwner = await getTestUser()
+//   const oldOwnerId = library.owner._id
+
+//   await newOwner.joinLibrary(library)
+//   library = await Library.findById(library._id)
+
+//   let error
+//   try {
+//     library.owner = newOwner
+//     await library.save()
+//   } catch (err) {
+//     error = err
+//   }
+
+//   const updatedLibrary = await Library.findById(library._id)
+//   const updatedOwner = await User.findById(newOwner._id)
+//   const updatedOldOwner = await User.findById(oldOwnerId)
+
+//   console.error('AWOOGA 4', updatedLibrary)
+//   expect(error).toBeUndefined()
+//   expect(updatedLibrary.owner.username).toBe(newOwner.username)
+//   expect(updatedLibrary.owner.email).toBe(newOwner.email)
+//   expect(updatedOwner.ownedLibraries.length).toBe(1)
+//   expect(updatedOwner.ownedLibraries).toEqual(
+//     expect.arrayContaining([expect.objectContaining({ _id: library._id })])
+//   )
+//   expect(updatedOldOwner.ownedLibraries.length).toBe(0)
+//   expect(updatedOldOwner.ownedLibraries).toEqual([])
+//   expect(updatedLibrary.members.length).toBe(2)
+// })
