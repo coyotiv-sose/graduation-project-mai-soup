@@ -78,6 +78,8 @@ module.exports.updateBook = catchAsync(async (req, res, next) => {
 
   const book = await Book.findById(bookId)
 
+  if (!book) return next(createError(404, 'Book not found'))
+
   try {
     switch (action) {
       case 'borrow':
@@ -170,6 +172,7 @@ module.exports.createBook = async (req, res, next) => {
 
 module.exports.removeBook = async (req, res, next) => {
   const book = await Book.findById(req.params.bookId)
+  if (!book) return next(createError(404, 'Book not found'))
 
   const library = await Library.findById(req.params.id)
   await library.removeBook(book)
