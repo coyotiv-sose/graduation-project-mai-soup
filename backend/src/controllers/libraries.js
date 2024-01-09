@@ -148,16 +148,16 @@ module.exports.deleteImage = catchAsync(async (req, res) => {
   })
 })
 
-module.exports.generateEnhancedDescription = catchAsync(async (req, res) => {
-  const { description } = req.body
-  if (!description) {
-    return res.status(400).json({
-      message: 'Please provide a description',
-    })
+module.exports.generateEnhancedDescription = catchAsync(
+  async (req, res, next) => {
+    const { description } = req.body
+    if (!description) {
+      return next(createError(400, 'Missing description'))
+    }
+    const enhancedDescription = await descriptionEnhancer(description)
+    return res.send(enhancedDescription)
   }
-  const enhancedDescription = await descriptionEnhancer(description)
-  return res.send(enhancedDescription)
-})
+)
 
 module.exports.createBook = async (req, res, next) => {
   const { authors, title } = req.body
