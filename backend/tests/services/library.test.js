@@ -1,7 +1,7 @@
 const chance = require('chance').Chance()
 const User = require('../../src/models/user')
 const Library = require('../../src/models/library')
-const BookInfo = require('../../src/models/book-info')
+const Book = require('../../src/models/book')
 const getValidPassword = require('../generateValidPassword')
 // the require fixes mongo connection not yet being established
 // when model operations are called
@@ -34,17 +34,10 @@ const getLibrary = async () => {
   return library
 }
 
-const getBookInfo = async () => {
-  const fields = {
-    title: chance.sentence(),
-    authors: [chance.name()],
-    openLibraryId: chance.guid(),
-    imageUrl: chance.url(),
-  }
-
-  const info = await BookInfo.create(fields)
-  return info
-}
+const getBookFields = async () => ({
+  title: chance.sentence(),
+  authors: chance.name(),
+})
 
 it('can create a new library with valid fields', async () => {
   const fields = getValidFields()
@@ -200,7 +193,7 @@ it('should throw error when trying to remove a non-member', async () => {
 
 it('should successfully add a book', async () => {
   const library = await getLibrary()
-  const bookInfo = await getBookInfo()
+  const bookInfo = await getBookFields()
 
   let error
   try {
@@ -210,29 +203,22 @@ it('should successfully add a book', async () => {
   }
 
   const updatedLibrary = await Library.findById(library._id)
-
   expect(error).toBeUndefined()
   expect(updatedLibrary.books.length).toBe(1)
   expect(updatedLibrary.books).toEqual(
-    expect.arrayContaining([
-      expect.objectContaining({
-        bookInfo: expect.objectContaining({
-          _id: bookInfo._id,
-        }),
-      }),
-    ])
+    expect.arrayContaining([expect.objectContaining(bookInfo)])
   )
 })
 
 it('should successfully remove a book', async () => {
   const library = await getLibrary()
-  const bookInfo = await getBookInfo()
+  const bookInfo = await getBookFields()
 
   const copy = await library.addBook(bookInfo)
 
   let error
   try {
-    await library.removeBookCopy(copy)
+    await library.removeBook(copy)
   } catch (err) {
     error = err
   }
@@ -246,19 +232,26 @@ it('should successfully remove a book', async () => {
 
 it('should throw if trying to remove a book that is not in the library', async () => {
   const library = await getLibrary()
-  const bookInfo = await getBookInfo()
+  const bookInfo = await getBookFields()
   const copy = await library.addBook(bookInfo)
   const newLibrary = await getLibrary()
 
   let error
   try {
-    await newLibrary.removeBookCopy(copy)
+    await newLibrary.removeBook(copy)
   } catch (err) {
     error = err
   }
 
   expect(error).toBeDefined()
-  expect(error.message).toBe('copy is not in this library')
+  expect(error.message).toBe('book is not in this library')
   expect(newLibrary.books.length).toBe(0)
   expect(newLibrary.books).toEqual([])
+
+  // check that the book wasn't removed from the original library
+  const updatedLibrary = await Library.findById(library._id)
+  expect(updatedLibrary.books.length).toBe(1)
+  expect(updatedLibrary.books).toEqual(
+    expect.arrayContaining([expect.objectContaining(bookInfo)])
+  )
 })
