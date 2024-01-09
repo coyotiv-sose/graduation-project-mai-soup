@@ -23,11 +23,21 @@ module.exports.createLibrary = catchAsync(async (req, res) => {
   const { name, location } = req.body
   const geometry = await getGeometryOfLocation(location)
 
+  let filetype, encodedImage
+  if (req.file) {
+    filetype = req.file.mimetype
+    encodedImage = req.file.buffer.toString('base64')
+  }
+
   const library = await Library.create({
     name,
     geometry,
     location,
     owner,
+    image: {
+      filetype,
+      data: encodedImage,
+    },
   })
 
   // TODO: refactor, shouldnt be in controller but in service
@@ -125,18 +135,6 @@ module.exports.updateLibrary = catchAsync(async (req, res) => {
   const updatedLibrary = await library.save()
 
   return res.status(200).send(updatedLibrary)
-})
-
-module.exports.uploadImage = catchAsync(async (req, res) => {
-  const myFile = req.file
-  const { publicUrl, name } = await uploadImage(myFile)
-  return res.status(200).json({
-    message: 'Upload was successful',
-    data: {
-      publicUrl,
-      name,
-    },
-  })
 })
 
 module.exports.deleteImage = catchAsync(async (req, res) => {

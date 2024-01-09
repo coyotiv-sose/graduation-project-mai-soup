@@ -44,7 +44,10 @@ const librarySchema = new mongoose.Schema({
       autopopulate: { maxDepth: 1 },
     },
   ],
-  imageName: String,
+  image: {
+    filetype: String,
+    data: String,
+  },
 })
 
 // eslint-disable-next-line func-names
