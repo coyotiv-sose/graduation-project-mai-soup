@@ -5,6 +5,7 @@ const mustLogin = require('../middleware/must-login')
 const libraryExists = require('../middleware/library-exists')
 const isOwner = require('../middleware/is-owner')
 const { validateLibrary } = require('../middleware/validators')
+const { singleFile } = require('../middleware/multer')
 
 const {
   getSingleLibrary,
@@ -22,7 +23,7 @@ const {
 router.get('/', getAllLibraries)
 router.get('/:id', libraryExists, getSingleLibrary)
 
-router.post('/', mustLogin, validateLibrary, createLibrary)
+router.post('/', mustLogin, singleFile, createLibrary)
 router.patch(
   '/:id',
   mustLogin,

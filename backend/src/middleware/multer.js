@@ -4,7 +4,7 @@ const createError = require('http-errors')
 const multerMiddleware = multer({
   storage: multer.memoryStorage(),
   limits: {
-    fileSize: 2 * 1024 * 1024, // 2MB
+    fileSize: 16 * 1024 * 1024, // 16MB
   },
 })
 
@@ -17,6 +17,7 @@ const singleFile = (req, res, next) => {
       return next(createError(413, 'File too large'))
     }
 
+    // throw 500 if any other error
     if (err) {
       return next(createError(500, err.message))
     }

@@ -7,6 +7,8 @@
     SingleLibraryMap(:coordinates="library.geometry.coordinates", :libraryName="library.name")
     p Owner:
       RouterLink(v-if="ownerUsername" :to="{ name: 'profile', params: { username: ownerUsername } }") {{ ownerUsername }}
+    //- TODO: add styling to the image
+    img(v-if="imgSrc" :src="imgSrc")
     // if logged in user is not the owner and is not a member, show the join button
     button(v-if="isLoggedIn && !isOwner && !isUserMember" @click="join") Join
     // if not the owner and is a member, show the leave button
@@ -55,7 +57,8 @@ export default {
   name: 'SingleLibraryView',
   data() {
     return {
-      library: null // init with null for clearer conditional checks
+      library: null, // init with null for clearer conditional checks
+      imgSrc: null
     }
   },
   components: {
@@ -80,6 +83,9 @@ export default {
   },
   async mounted() {
     this.library = await this.fetchLibrary(this.$route.params.id)
+    this.imgSrc = this.library.image
+      ? `data:${this.library.image.filetype};base64,${this.library.image.data}`
+      : null
   },
   methods: {
     ...mapActions(useAccountStore, ['fetchUser']),

@@ -8,6 +8,9 @@ div(v-if="this.action !== 'edit' || library")
     div.form-group
       label(for="location") Location
       input#location(type="text" v-model="location")
+    div.form-group
+      label(for="file") Image
+      input#file(type="file" @change="updateFile")
     button(type="submit" :disabled="shouldDisableSubmit") Submit
 div(v-else aria-busy="true") Loading...
 </template>
@@ -25,7 +28,8 @@ export default {
       name: '',
       location: '',
       nameError: null,
-      library: null
+      library: null,
+      file: null
     }
   },
   props: ['action', 'libraryId'],
@@ -36,15 +40,40 @@ export default {
   },
   methods: {
     ...mapActions(useAccountStore, ['fetchUser']),
-    ...mapActions(useLibrarianHandler, ['updateLibrary', 'createLibrary']),
+    ...mapActions(useLibrarianHandler, ['updateLibrary']),
+    // TODO: for some reason only worked outside of pinia,
+    // otherwise the file passsed was just an empty object??
+    // im sorry i know this should be in the handler
+    async createLibrary(name, location, file) {
+      const data = new FormData()
+      data.append('name', name)
+      data.append('location', location)
+      data.append('file', file)
+      try {
+        const response = await axios.post('/libraries', data, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        })
+        return response.data
+      } catch (error) {
+        // TODO: handle error
+        console.error(error)
+      }
+    },
     async doSubmit() {
       let id
+      console.log(this.file)
 
       if (this.action === 'edit') {
         id = this.$route.params.id
         await this.updateLibrary(id, this.name, this.location)
       } else {
-        const { _id } = await this.createLibrary(this.name, this.location)
+        const { _id } = await this.createLibrary(
+          this.name,
+          this.location,
+          this.file
+        )
         id = _id
       }
 
@@ -66,6 +95,9 @@ export default {
       }
 
       this.nameError = null
+    },
+    updateFile(evt) {
+      this.file = evt.target.files[0]
     }
   },
   async mounted() {
