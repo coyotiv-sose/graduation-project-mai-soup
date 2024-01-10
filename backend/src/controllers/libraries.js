@@ -1,7 +1,6 @@
 const createError = require('http-errors')
 const Library = require('../models/library')
 const Book = require('../models/book')
-const { uploadImage, deleteImage } = require('../lib/google-cloud-storage')
 const descriptionEnhancer = require('../lib/description-enhancer')
 const { getGeometryOfLocation } = require('../lib/geocoder')
 const catchAsync = require('../utils/catch-async')
@@ -138,15 +137,6 @@ module.exports.updateLibrary = catchAsync(async (req, res) => {
   const updatedLibrary = await library.save()
 
   return res.status(200).send(updatedLibrary)
-})
-
-module.exports.deleteImage = catchAsync(async (req, res) => {
-  const { filename } = req.params
-
-  await deleteImage(filename)
-  return res.status(200).json({
-    message: 'File deleted successfully',
-  })
 })
 
 module.exports.generateEnhancedDescription = catchAsync(
