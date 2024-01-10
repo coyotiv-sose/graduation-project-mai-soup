@@ -19,11 +19,12 @@ const {
   createBook,
   removeBook,
 } = require('../controllers/libraries')
+const fileIsImage = require('../middleware/fileIsImage')
 
 router.get('/', getAllLibraries)
 router.get('/:id', libraryExists, getSingleLibrary)
 
-router.post('/', mustLogin, singleFile, createLibrary)
+router.post('/', mustLogin, singleFile, fileIsImage, createLibrary)
 router.patch(
   '/:id',
   mustLogin,
