@@ -3,6 +3,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 ![Backend tests status](https://github.com/mai-soup/porch-reads-club/actions/workflows/pr-backend.yml/badge.svg?branch=)
 ![Frontend tests status](https://github.com/mai-soup/porch-reads-club/actions/workflows/pr-frontend.yml/badge.svg?branch=)
+
 <!-- TODO: add badges for test coverage -->
 
 A MEVN stack application to help anyone manage their own little library online - manage inventory, members, loans.
@@ -17,10 +18,9 @@ A hosted production version is available at https://porchreads.club/.
 > The guide assumes you have Docker and Docker Compose installed locally. If not, refer to the [Docker documentation](https://docs.docker.com/compose/install/) for installation instructions.
 
 You will need API keys for the following services:
+
 - [MapBox](https://www.mapbox.com/) for geocoding and map rendering
 - [OpenAI](https://openai.com/) for text generation
-  
-As well as, for image upload, a Google Cloud Storage bucket and service account credentials. For information on how to create a service account key, refer to the [GCS documentation](https://cloud.google.com/iam/docs/keys-create-delete#creating). The key is expected to be in a file `backend/src/config/keys.json`, and the container will not start without it. The project and bucket names are set in environment variables.
 
 Create `.env` files in the frontend and backend directories with contents similar to the `.env.example` files.
 

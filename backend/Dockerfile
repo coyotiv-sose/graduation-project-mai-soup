@@ -17,7 +17,6 @@ ADD bin ./bin
 
 # Add execute permissions for entrypoint
 RUN chmod +x ./bin/validate-env-vars.sh
-RUN chmod +x ./bin/check-google-storage-key.sh
 
 # Run the app
 ENTRYPOINT ["./bin/validate-env-vars.sh"]
