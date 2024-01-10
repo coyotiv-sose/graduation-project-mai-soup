@@ -8,9 +8,9 @@ div(v-if="this.action !== 'edit' || library")
     div.form-group
       label(for="location") Location
       input#location(type="text" v-model="location")
-    div.form-group
+    div.form-group(v-if="this.action !== 'edit'")
       label(for="file") Image
-      input#file(type="file" @change="updateFile")
+      input#file(type="file" @change="updateFile" accept="image/gif, image/jpeg, image/png")
     button(type="submit" :disabled="shouldDisableSubmit") Submit
 div(v-else aria-busy="true") Loading...
 </template>
