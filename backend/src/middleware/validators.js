@@ -6,6 +6,7 @@ const validateLibrary = celebrate({
   [Segments.BODY]: {
     name: Joi.string().min(5).max(40).required(),
     location: Joi.string().required(),
+    file: Joi.any(), // validation done in multer
   },
 })
 
