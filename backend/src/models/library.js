@@ -50,12 +50,6 @@ const librarySchema = new mongoose.Schema({
   },
 })
 
-// eslint-disable-next-line func-names
-librarySchema.pre('save', async function (next) {
-  await this.setOwner(this.owner)
-  next()
-})
-
 librarySchema.loadClass(LibraryService)
 librarySchema.plugin(autopopulate)
 

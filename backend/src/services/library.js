@@ -4,18 +4,6 @@ const Book = require('../models/book')
 
 // TODO: compare ids with .equals() instead of casting to string
 class LibraryService {
-  async setOwner(newOwner) {
-    // TODO: check that owner isn't suspended
-
-    // subscribe new owner if owner has changed or document is new
-    if (this.isModified('owner') || this.isNew) {
-      if (!newOwner.memberships?.includes(this)) {
-        // subscribe new owner
-        this.members.push(newOwner)
-      }
-    }
-  }
-
   async addMember(user) {
     const memberIds = this.members.map(member => member._id.toString())
 

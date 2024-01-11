@@ -1,6 +1,7 @@
 const createError = require('http-errors')
 const Library = require('../models/library')
 const Book = require('../models/book')
+const User = require('../models/user')
 const descriptionEnhancer = require('../lib/description-enhancer')
 const { getGeometryOfLocation } = require('../lib/geocoder')
 const catchAsync = require('../utils/catch-async')
@@ -18,31 +19,35 @@ module.exports.getAllLibraries = catchAsync(async (req, res) => {
 })
 
 module.exports.createLibrary = catchAsync(async (req, res) => {
-  const owner = req.user
+  const owner = await User.findById(req.user.id)
   const { name, location } = req.body
   const geometry = await getGeometryOfLocation(location)
-
   let filetype, encodedImage
   if (req.file) {
     filetype = req.file.mimetype
     encodedImage = req.file.buffer.toString('base64')
   }
 
-  const library = await Library.create({
+  const library = await owner.createLibrary({
     name,
-    geometry,
     location,
-    owner,
+    coordinates: geometry.coordinates,
     image: {
       filetype,
       data: encodedImage,
     },
   })
 
-  // TODO: refactor, shouldnt be in controller but in service
-  owner.ownedLibraries.push(library)
-  owner.memberships.push(library)
-  await owner.save()
+  // const library = await Library.create({
+  //   name,
+  //   geometry,
+  //   location,
+  //   owner,
+  //   image: {
+  //     filetype,
+  //     data: encodedImage,
+  //   },
+  // })
 
   return res.status(201).send(library)
 })

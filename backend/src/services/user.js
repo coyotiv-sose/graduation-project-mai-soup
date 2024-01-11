@@ -2,20 +2,22 @@ const Library = require('../models/library')
 const Book = require('../models/book')
 
 class UserService {
-  async createLibrary({ name, location, latitude, longitude }) {
+  async createLibrary({ name, location, coordinates, image }) {
     const newLibrary = await Library.create({
       name,
       owner: this,
       location,
       geometry: {
         type: 'Point',
-        coordinates: [longitude, latitude],
+        coordinates,
       },
+      image,
     })
 
-    this.memberships.push(newLibrary)
+    this.ownedLibraries.push(newLibrary)
     await this.save()
-    await newLibrary.save()
+    await this.joinLibrary(newLibrary)
+
     return newLibrary
   }
 
