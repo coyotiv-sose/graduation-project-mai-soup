@@ -512,8 +512,6 @@ it('successfully creates a new library with valid fields', async () => {
   const libraryInfo = {
     name: chance.word({ length: 10 }),
     location: chance.word(),
-    latitude: chance.latitude(),
-    longitude: chance.longitude(),
   }
 
   await user.createLibrary(libraryInfo)
@@ -525,8 +523,6 @@ it('successfully creates a new library with valid fields', async () => {
 
   expect(library).toBeDefined()
   expect(library.location).toBe(libraryInfo.location)
-  expect(library.geometry.coordinates[1]).toBe(libraryInfo.latitude)
-  expect(library.geometry.coordinates[0]).toBe(libraryInfo.longitude)
 })
 
 it('throws error when creating a new library with invalid fields', async () => {
@@ -536,8 +532,7 @@ it('throws error when creating a new library with invalid fields', async () => {
   const invalidLibraryInfo = {
     name: '',
     location: chance.word(),
-    latitude: '',
-    longitude: '',
+    coordinates: [],
   }
 
   let error
@@ -550,9 +545,6 @@ it('throws error when creating a new library with invalid fields', async () => {
   expect(error).toBeDefined()
   expect(error.name).toBe('ValidationError')
   expect(error.errors.name).toBeDefined()
-  // TODO: fix when latitude and longitude validation implemented
-  // expect(error.errors.latitude).toBeDefined()
-  // expect(error.errors.longitude).toBeDefined()
 })
 
 // TODO: implement in userservice
@@ -567,8 +559,7 @@ it('successful joining of an existing library', async () => {
   const library = await owner.createLibrary({
     name: chance.word({ length: 10 }),
     location: chance.word(),
-    latitude: chance.latitude(),
-    longitude: chance.longitude(),
+    coordinates: [chance.longitude(), chance.latitude()],
   })
 
   const {
@@ -618,8 +609,7 @@ it('throws error when trying to join a library the user is already a member of',
   const library = await owner.createLibrary({
     name: chance.word({ length: 10 }),
     location: chance.word(),
-    latitude: chance.latitude(),
-    longitude: chance.longitude(),
+    coordinates: [chance.longitude(), chance.latitude()],
   })
 
   const {
@@ -653,8 +643,7 @@ it('can leave a library the user is a member of', async () => {
   const library = await owner.createLibrary({
     name: chance.word({ length: 10 }),
     location: chance.word(),
-    latitude: chance.latitude(),
-    longitude: chance.longitude(),
+    coordinates: [chance.longitude(), chance.latitude()],
   })
 
   const {
@@ -699,8 +688,7 @@ it('throws error when trying to leave a library the user is not a member of', as
   const library = await owner.createLibrary({
     name: chance.word({ length: 10 }),
     location: chance.word(),
-    latitude: chance.latitude(),
-    longitude: chance.longitude(),
+    coordinates: [chance.longitude(), chance.latitude()],
   })
 
   const {
