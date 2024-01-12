@@ -1021,3 +1021,96 @@ it('should handle server errors when patching a book', async () => {
 
   expect(response.status).toBe(500)
 })
+
+it('should handle an owner deleting a library', async () => {
+  const library = await Library.create({
+    name: chance.word({ length: 5 }),
+    location: chance.word({ length: 5 }),
+    geometry: {
+      type: 'Point',
+      coordinates: [chance.longitude(), chance.latitude()],
+    },
+    owner: ownerId,
+  })
+
+  const response = await agentOwner.delete(`/libraries/${library._id}`)
+
+  expect(response.status).toBe(200)
+})
+
+it('should throw 403 when trying to delete a library that is not owned by the user', async () => {
+  const library = await Library.create({
+    name: chance.word({ length: 5 }),
+    location: chance.word({ length: 5 }),
+    geometry: {
+      type: 'Point',
+      coordinates: [chance.longitude(), chance.latitude()],
+    },
+    owner: ownerId,
+  })
+
+  const response = await agentOther.delete(`/libraries/${library._id}`)
+
+  expect(response.status).toBe(403)
+})
+
+it('should throw 403 when a regular member tries to delete a library', async () => {
+  const library = await Library.create({
+    name: chance.word({ length: 5 }),
+    location: chance.word({ length: 5 }),
+    geometry: {
+      type: 'Point',
+      coordinates: [chance.longitude(), chance.latitude()],
+    },
+    owner: ownerId,
+  })
+
+  await agentMember.post(`/libraries/${library._id}/members`)
+
+  const response = await agentMember.delete(`/libraries/${library._id}`)
+
+  expect(response.status).toBe(403)
+})
+
+it('should throw 404 when trying to delete a library that does not exist', async () => {
+  const fakeId = new mongoose.Types.ObjectId()
+  const response = await agentOwner.delete(`/libraries/${fakeId}`)
+
+  expect(response.status).toBe(404)
+})
+
+it('should throw 401 when trying to delete a library without being authenticated', async () => {
+  const library = await Library.create({
+    name: chance.word({ length: 5 }),
+    location: chance.word({ length: 5 }),
+    geometry: {
+      type: 'Point',
+      coordinates: [chance.longitude(), chance.latitude()],
+    },
+    owner: ownerId,
+  })
+
+  const response = await axios.delete(`/libraries/${library._id}`)
+
+  expect(response.status).toBe(401)
+})
+
+it('should handle server errors when deleting a library', async () => {
+  const library = await Library.create({
+    name: chance.word({ length: 5 }),
+    location: chance.word({ length: 5 }),
+    geometry: {
+      type: 'Point',
+      coordinates: [chance.longitude(), chance.latitude()],
+    },
+    owner: ownerId,
+  })
+
+  jest
+    .spyOn(Library, 'findByIdAndDelete')
+    .mockRejectedValueOnce(new Error('oops'))
+
+  const response = await agentOwner.delete(`/libraries/${library._id}`)
+
+  expect(response.status).toBe(500)
+})
