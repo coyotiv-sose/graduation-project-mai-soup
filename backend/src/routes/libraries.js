@@ -18,6 +18,7 @@ const {
   getAllMembers,
   createBook,
   removeBook,
+  deleteLibrary,
 } = require('../controllers/libraries')
 const fileIsImage = require('../middleware/fileIsImage')
 
@@ -40,6 +41,7 @@ router.patch(
   validateLibrary,
   updateLibrary
 )
+router.delete('/:id', mustLogin, libraryExists, isOwner, deleteLibrary)
 
 router.get('/:id/members', mustLogin, libraryExists, getAllMembers)
 router.post('/:id/members', mustLogin, libraryExists, joinLibrary)

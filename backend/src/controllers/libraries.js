@@ -161,3 +161,10 @@ module.exports.removeBook = async (req, res, next) => {
 
   return res.status(204).send()
 }
+
+module.exports.deleteLibrary = catchAsync(async (req, res) => {
+  const owner = await User.findById(req.user.id)
+  await owner.deleteLibrary(req.params.id)
+
+  return res.status(204).send()
+})
