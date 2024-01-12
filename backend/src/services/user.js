@@ -21,6 +21,20 @@ class UserService {
     return newLibrary
   }
 
+  async deleteLibrary(libraryId) {
+    const ownedLibraryIds = this.ownedLibraries.map(l => l._id.toString())
+
+    if (!ownedLibraryIds.includes(libraryId)) {
+      throw new Error('user is not owner of this library')
+    }
+
+    const libraryIndex = ownedLibraryIds.indexOf(libraryId)
+    this.ownedLibraries.splice(libraryIndex, 1)
+    await this.save()
+
+    await Library.findByIdAndDelete(libraryId)
+  }
+
   async joinLibrary(library) {
     if (
       this.memberships.find(m => m._id.toString() === library._id.toString())

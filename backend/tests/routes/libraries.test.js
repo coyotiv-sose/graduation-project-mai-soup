@@ -4,6 +4,7 @@ const chance = require('chance').Chance()
 const app = require('../../src/app')
 const Library = require('../../src/models/library')
 const Book = require('../../src/models/book')
+const User = require('../../src/models/user')
 const getValidPassword = require('../generateValidPassword')
 
 let ownerId = ''
@@ -1023,19 +1024,15 @@ it('should handle server errors when patching a book', async () => {
 })
 
 it('should handle an owner deleting a library', async () => {
-  const library = await Library.create({
+  const owner = await User.findById(ownerId)
+  const library = await owner.createLibrary({
     name: chance.word({ length: 5 }),
     location: chance.word({ length: 5 }),
-    geometry: {
-      type: 'Point',
-      coordinates: [chance.longitude(), chance.latitude()],
-    },
-    owner: ownerId,
   })
 
   const response = await agentOwner.delete(`/libraries/${library._id}`)
 
-  expect(response.status).toBe(200)
+  expect(response.status).toBe(204)
 })
 
 it('should throw 403 when trying to delete a library that is not owned by the user', async () => {
@@ -1049,7 +1046,7 @@ it('should throw 403 when trying to delete a library that is not owned by the us
     owner: ownerId,
   })
 
-  const response = await agentOther.delete(`/libraries/${library._id}`)
+  const response = await agentAnother.delete(`/libraries/${library._id}`)
 
   expect(response.status).toBe(403)
 })
@@ -1090,7 +1087,7 @@ it('should throw 401 when trying to delete a library without being authenticated
     owner: ownerId,
   })
 
-  const response = await axios.delete(`/libraries/${library._id}`)
+  const response = await request(app).delete(`/libraries/${library._id}`)
 
   expect(response.status).toBe(401)
 })
@@ -1106,9 +1103,7 @@ it('should handle server errors when deleting a library', async () => {
     owner: ownerId,
   })
 
-  jest
-    .spyOn(Library, 'findByIdAndDelete')
-    .mockRejectedValueOnce(new Error('oops'))
+  jest.spyOn(Library, 'findById').mockRejectedValueOnce(new Error('oops'))
 
   const response = await agentOwner.delete(`/libraries/${library._id}`)
 
