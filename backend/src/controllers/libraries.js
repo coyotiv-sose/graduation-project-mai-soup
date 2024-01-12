@@ -38,17 +38,6 @@ module.exports.createLibrary = catchAsync(async (req, res) => {
     },
   })
 
-  // const library = await Library.create({
-  //   name,
-  //   geometry,
-  //   location,
-  //   owner,
-  //   image: {
-  //     filetype,
-  //     data: encodedImage,
-  //   },
-  // })
-
   return res.status(201).send(library)
 })
 
