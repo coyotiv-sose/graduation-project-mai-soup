@@ -141,7 +141,7 @@ module.exports.generateEnhancedDescription = catchAsync(
   }
 )
 
-module.exports.createBook = async (req, res, next) => {
+module.exports.createBook = catchAsync(async (req, res, next) => {
   const { authors, title } = req.body
 
   if (!authors || !title) return next(createError(400, 'Missing parameters'))
@@ -150,9 +150,9 @@ module.exports.createBook = async (req, res, next) => {
   const book = await library.addBook({ title, authors })
 
   return res.status(201).send(book)
-}
+})
 
-module.exports.removeBook = async (req, res, next) => {
+module.exports.removeBook = catchAsync(async (req, res, next) => {
   const book = await Book.findById(req.params.bookId)
   if (!book) return next(createError(404, 'Book not found'))
 
@@ -160,7 +160,7 @@ module.exports.removeBook = async (req, res, next) => {
   await library.removeBook(book)
 
   return res.status(204).send()
-}
+})
 
 module.exports.deleteLibrary = catchAsync(async (req, res) => {
   const owner = await User.findById(req.user.id)
