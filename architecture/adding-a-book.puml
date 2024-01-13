@@ -1,13 +1,13 @@
 @startuml Adding a book
 start
-:User, who is a library owner, wants to add a new copy to their library;
-:They gather the book details;
-:They put the details info a form to look the book up;
-:Book details matching the query are fetched from the Open Library API;
-:User selects the book from the list of options returned;
-if (Book exists in DB?) then (yes)
+:User, who is a library owner, wants to add a new book to their library;
+if (The same book is on the site already?) then (yes)
+:They click the "Copy to Library" button on the book's page;
+:They verify the details, editing if necessary;
+:They choose a library to add the book to;
 else (no)
-  :Book info is inserted into the database to keep track across different libraries;
+:They click "Add New Book" on the library's page;
+:They input the details in a form and submit it;
 endif
 :Book is added to the library;
 stop
