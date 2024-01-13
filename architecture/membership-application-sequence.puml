@@ -1,0 +1,10 @@
+@startuml Joining a library
+actor User
+participant Library
+actor LibraryOwner
+
+User -> Library: Submit membership application
+Library -> LibraryOwner: Display current applications
+LibraryOwner -> Library: Approve or deny applications
+Library -> User: Inform of application outcome
+@enduml
