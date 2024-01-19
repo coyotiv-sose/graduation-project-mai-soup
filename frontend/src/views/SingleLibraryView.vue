@@ -18,6 +18,8 @@
       RouterLink(:to="{name: 'add-book', params: {id: this.$route.params.id}}") Add New Book
       br
       RouterLink(:to="{name: 'edit-library', params: {id: this.$route.params.id}}") Edit Library
+      br
+      a(@click="handleDeletion") Delete Library
     h2 Members
     ul
       li(v-for="member in library.members" :key="member._id")
@@ -52,6 +54,7 @@ import { useLoansHandler } from '../stores/loans-handler'
 import { useLibrarianHandler } from '../stores/librarian-handler'
 import { mapActions, mapState } from 'pinia'
 import SingleLibraryMap from '../components/SingleLibraryMap.vue'
+import axios from 'axios'
 
 export default {
   name: 'SingleLibraryView',
@@ -96,7 +99,7 @@ export default {
     ]),
     ...mapActions(useLoansHandler, ['borrowBook', 'returnBook']),
     ...mapActions(useAccountStore, ['isOwnerOfLibrary']),
-    ...mapActions(useLibrarianHandler, ['removeBook']),
+    ...mapActions(useLibrarianHandler, ['removeBook', 'deleteLibrary']),
     async join() {
       await this.joinLibrary(this.$route.params.id)
       this.library.members.push({ _id: this.username, username: this.username })
@@ -125,6 +128,16 @@ export default {
       })
 
       this.library.books = this.library.books.filter((b) => b._id !== book._id)
+    },
+    async handleDeletion() {
+      if (confirm('Are you sure you want to delete this library?')) {
+        try {
+          await axios.delete(`/libraries/${this.library._id}`)
+        } catch (err) {
+          // TODO: handle error
+        }
+        this.$router.push({ name: 'all-libraries' })
+      }
     }
   }
 }
