@@ -83,12 +83,95 @@ describe('book model migration test', () => {
     const documents = await User.find()
 
     expect(documents).toEqual([
+      // ALICE
       expect.objectContaining({
-        name: 'Alice',
+        username: 'Alice',
+        loans: null,
+        ownedLibraries: expect.arrayContaining([
+          expect.objectContaining({
+            name: 'Library One',
+            owner: expect.objectContaining({ username: 'Alice' }),
+            books: expect.arrayContaining([
+              expect.objectContaining({
+                title: moonBookParams.title,
+                authors: moonBookParams.authors.join(', '),
+                status: 'available',
+                borrower: null,
+                returnDate: null,
+              }),
+            ]),
+          }),
+        ]),
+        memberships: expect.arrayContaining([
+          expect.objectContaining({
+            name: 'Library One',
+          }),
+        ]),
+      }),
+      // BOB
+      expect.objectContaining({
+        username: 'Bob',
+        ownedLibraries: null,
+        memberships: expect.arrayContaining([
+          expect.objectContaining({
+            name: 'Library One',
+          }),
+          expect.objectContaining({
+            name: 'Library Two',
+          }),
+        ]),
+        loans: expect.arrayContaining([
+          expect.objectContaining({
+            title: moonBookParams.title,
+            authors: moonBookParams.authors.join(', '),
+            library: expect.objectContaining({
+              name: 'Library One',
+            }),
+            borrower: expect.objectContaining({ username: 'Bob' }),
+            returnDate: moonBookParams.returnDate,
+          }),
+          expect.objectContaining({
+            title: starBookParams.title,
+            authors: starBookParams.authors.join(', '),
+            library: expect.objectContaining({
+              name: 'Library Two',
+            }),
+            borrower: expect.objectContaining({ username: 'Bob' }),
+            returnDate: starBookParams.returnDate,
+          }),
+        ]),
       }),
       expect.objectContaining({
-        name: 'Bob',
+        username: 'Charlie',
+        loans: null,
+        ownedLibraries: expect.arrayContaining([
+          expect.objectContaining({
+            name: 'Library Two',
+            owner: expect.objectContaining({ username: 'Charlie' }),
+            books: expect.arrayContaining([
+              expect.objectContaining({
+                title: starBookParams.title,
+                authors: starBookParams.authors.join(', '),
+                status: 'borrowed',
+                borrower: expect.objectContaining({ username: 'Bob' }),
+                returnDate: starBookParams.returnDate,
+              }),
+            ]),
+          }),
+        ]),
       }),
     ])
+
+    // none of the Book documents should have an openlibraryid or bookinfo field
+    const bookDocuments = await Book.find()
+
+    bookDocuments.forEach(book => {
+      expect(book).toEqual(
+        expect.objectContaining({
+          openLibraryId: null,
+          bookInfo: null,
+        })
+      )
+    })
   })
 })
