@@ -12,7 +12,8 @@
     "eslint:fix": "npx eslint --fix .",
     "test": "jest --forceExit --silent --testTimeout 20000",
     "test:watch": "jest --watchAll --coverage --colors --testTimeout 20000",
-    "test:coverage": "jest --coverage --colors"
+    "test:coverage": "jest --coverage --colors",
+    "test:migrations": "jest --config jest.migration.config.js --colors"
   },
   "devDependencies": {
     "date-fns": "^2.30.0",

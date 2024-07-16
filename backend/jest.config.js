@@ -1,3 +1,4 @@
 module.exports = {
-  globalSetup: './tests/testSetup.js',
+  globalSetup: '<rootDir>/tests/testSetup.js',
+  testPathIgnorePatterns: ['/node_modules/', '<rootDir>/tests-migration/'],
 }
