@@ -10,7 +10,15 @@ services:
       - ./backend/.env
     environment:
       - PORT=3001
+      - MONGO_URI=mongodb://mongo:27018/migration-test
       - SESSION_SECRET=your_session_secret
     volumes:
       - ./backend/src:/app/src
       - ./backend/tests-migration:/app/tests-migration
+  mongo:
+    image: mongo
+    command: mongod --quiet --logpath /dev/null --port 27018
+    ports:
+      - "27018:27018"
+    volumes:
+      - ./data/db-migration-test:/data/db

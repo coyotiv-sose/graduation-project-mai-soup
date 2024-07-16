@@ -1,25 +1,15 @@
-const { MongoMemoryServer } = require('mongodb-memory-server')
 const mongoose = require('mongoose')
 
-let mongoMemServer
-
 beforeAll(async () => {
-  mongoMemServer = await MongoMemoryServer.create()
-  const uri = mongoMemServer.getUri()
+  const mongoUri = process.env.MONGO_URI
 
-  await mongoose.connect(uri, {
+  await mongoose.connect(mongoUri, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
 })
 
 afterAll(async () => {
-  const collections = mongoose.connection.collections
-  for (const key in collections) {
-    const collection = collections[key]
-    await collection.deleteMany({})
-  }
-
+  await mongoose.connection.dropDatabase()
   await mongoose.disconnect()
-  await mongoMemServer.stop()
 })
