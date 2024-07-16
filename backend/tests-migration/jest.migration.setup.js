@@ -1,11 +1,11 @@
 const { MongoMemoryServer } = require('mongodb-memory-server')
 const mongoose = require('mongoose')
 
-let mongod
+let mongoMemServer
 
 beforeAll(async () => {
-  mongod = await MongoMemoryServer.create()
-  const uri = mongod.getUri()
+  mongoMemServer = await MongoMemoryServer.create()
+  const uri = mongoMemServer.getUri()
 
   await mongoose.connect(uri, {
     useNewUrlParser: true,
@@ -15,7 +15,7 @@ beforeAll(async () => {
 
 afterAll(async () => {
   await mongoose.disconnect()
-  await mongod.stop()
+  await mongoMemServer.stop()
 })
 
 afterEach(async () => {
