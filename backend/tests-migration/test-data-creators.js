@@ -1,7 +1,7 @@
+const chance = require('chance').Chance()
 const User = require('../src/models/user')
 const BookInfo = require('../src/models/book-info')
 const BookCopy = require('../src/models/book-copy')
-const chance = require('chance').Chance()
 
 const createTestUser = async ({
   username,

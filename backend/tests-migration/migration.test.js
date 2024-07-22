@@ -1,5 +1,3 @@
-'use strict'
-
 const Book = require('../src/models/book')
 const User = require('../src/models/user')
 

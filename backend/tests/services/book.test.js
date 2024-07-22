@@ -6,13 +6,13 @@ const getValidPassword = require('../generateValidPassword')
 // when model operations are called
 require('../../src/app')
 
-const _getValidFields = () => ({
+const getValidFields = () => ({
   title: chance.sentence(),
   authors: chance.name(),
 })
 
 const getTestBook = async () => {
-  const fields = _getValidFields()
+  const fields = getValidFields()
 
   const book = await Book.create(fields)
 
