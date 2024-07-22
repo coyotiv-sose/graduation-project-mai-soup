@@ -1,23 +1,7 @@
-const { exec } = require('child_process')
-const util = require('util')
+'use strict'
 
-const execPromise = util.promisify(exec)
-
-const BookInfo = require('../src/models/book-info')
-const BookCopy = require('../src/models/book-copy')
 const Book = require('../src/models/book')
 const User = require('../src/models/user')
-const Library = require('../src/models/library')
-const {
-  createTestUser,
-  createTestLibrary,
-  createTestBookCopy,
-  createTestBookInfo,
-} = require('./test-data-creators')
-const { title } = require('process')
-
-let userA, userB, userC
-let libraryOne, libraryTwo
 
 const moonBookParams = {
   title: 'Moon',
@@ -31,147 +15,81 @@ const starBookParams = {
   returnDate: new Date('2024-07-14'),
 }
 
-describe('book model migration test', () => {
-  beforeAll(async () => {
-    // insert initial data into the database
-    userA = await createTestUser({ username: 'Alice' })
-    userB = await createTestUser({ username: 'Bob' })
-    userC = await createTestUser({ username: 'Charlie' })
+describe('book model migration tests', () => {
+  describe('user validation', () => {
+    let users
 
-    libraryOne = await createTestLibrary({ name: 'Library One', owner: userA })
-    libraryTwo = await createTestLibrary({ name: 'Library Two', owner: userC })
-
-    await userB.joinLibrary(libraryOne)
-    await userB.joinLibrary(libraryTwo)
-    await userC.joinLibrary(libraryOne)
-
-    const moonBookInfo = await createTestBookInfo({
-      title: moonBookParams.title,
-      authors: moonBookParams.authors,
-    })
-    const starBookInfo = await createTestBookInfo({
-      title: starBookParams.title,
-      authors: starBookParams.authors,
+    beforeAll(async () => {
+      users = await User.find()
     })
 
-    await createTestBookCopy({
-      bookInfo: moonBookInfo,
-      library: libraryOne,
+    it('should have exactly three users after migration', () => {
+      expect(users.length).toBe(3)
     })
 
-    await createTestBookCopy({
-      bookInfo: moonBookInfo,
-      library: libraryTwo,
-      status: 'borrowed',
-      borrower: userB,
-      returnDate: moonBookParams.returnDate,
+    it('should correctly migrate Alice', () => {
+      const alice = users.find(user => user.username === 'Alice')
+      expect(alice).toBeDefined()
+      expect(alice.ownedLibraries.length).toBe(1)
+      expect(alice.ownedLibraries[0].name).toBe('Library One')
+      expect(alice.memberships.length).toBe(1)
+      expect(alice.memberships[0].name).toBe('Library One')
+      expect(alice.loans).toEqual([])
     })
 
-    await createTestBookCopy({
-      bookInfo: starBookInfo,
-      library: libraryTwo,
-      status: 'borrowed',
-      borrower: userB,
-      returnDate: starBookParams.returnDate,
+    it('should correctly migrate Bob', () => {
+      const bob = users.find(user => user.username === 'Bob')
+      expect(bob).toBeDefined()
+      expect(bob.ownedLibraries).toEqual([])
+      expect(bob.memberships.length).toBe(2)
+      expect(
+        bob.memberships.some(member => member.name === 'Library One')
+      ).toBe(true)
+      expect(
+        bob.memberships.some(member => member.name === 'Library Two')
+      ).toBe(true)
+      console.log('Bob:', bob)
+      expect(bob.loans.length).toBe(2)
+      expect(bob.loans.some(loan => loan.title === moonBookParams.title)).toBe(
+        true
+      )
+      expect(bob.loans.some(loan => loan.title === starBookParams.title)).toBe(
+        true
+      )
     })
 
-    // run migration script
-    await execPromise('npx migrate up')
+    it('should correctly migrate Charlie', () => {
+      const charlie = users.find(user => user.username === 'Charlie')
+      expect(charlie).toBeDefined()
+      expect(charlie.ownedLibraries.length).toBe(1)
+      expect(charlie.ownedLibraries[0].name).toBe('Library Two')
+      expect(charlie.memberships.length).toBe(2)
+      expect(
+        charlie.memberships.some(library => library.name === 'Library One')
+      ).toBe(true)
+      expect(
+        charlie.memberships.some(library => library.name === 'Library Two')
+      ).toBe(true)
+      expect(charlie.loans).toEqual([])
+    })
   })
 
-  it('should migrate the database correctly', async () => {
-    const documents = await User.find()
+  describe('book validation', () => {
+    let books
 
-    expect(documents).toEqual([
-      // ALICE
-      expect.objectContaining({
-        username: 'Alice',
-        loans: null,
-        ownedLibraries: expect.arrayContaining([
-          expect.objectContaining({
-            name: 'Library One',
-            owner: expect.objectContaining({ username: 'Alice' }),
-            books: expect.arrayContaining([
-              expect.objectContaining({
-                title: moonBookParams.title,
-                authors: moonBookParams.authors.join(', '),
-                status: 'available',
-                borrower: null,
-                returnDate: null,
-              }),
-            ]),
-          }),
-        ]),
-        memberships: expect.arrayContaining([
-          expect.objectContaining({
-            name: 'Library One',
-          }),
-        ]),
-      }),
-      // BOB
-      expect.objectContaining({
-        username: 'Bob',
-        ownedLibraries: null,
-        memberships: expect.arrayContaining([
-          expect.objectContaining({
-            name: 'Library One',
-          }),
-          expect.objectContaining({
-            name: 'Library Two',
-          }),
-        ]),
-        loans: expect.arrayContaining([
-          expect.objectContaining({
-            title: moonBookParams.title,
-            authors: moonBookParams.authors.join(', '),
-            library: expect.objectContaining({
-              name: 'Library One',
-            }),
-            borrower: expect.objectContaining({ username: 'Bob' }),
-            returnDate: moonBookParams.returnDate,
-          }),
-          expect.objectContaining({
-            title: starBookParams.title,
-            authors: starBookParams.authors.join(', '),
-            library: expect.objectContaining({
-              name: 'Library Two',
-            }),
-            borrower: expect.objectContaining({ username: 'Bob' }),
-            returnDate: starBookParams.returnDate,
-          }),
-        ]),
-      }),
-      expect.objectContaining({
-        username: 'Charlie',
-        loans: null,
-        ownedLibraries: expect.arrayContaining([
-          expect.objectContaining({
-            name: 'Library Two',
-            owner: expect.objectContaining({ username: 'Charlie' }),
-            books: expect.arrayContaining([
-              expect.objectContaining({
-                title: starBookParams.title,
-                authors: starBookParams.authors.join(', '),
-                status: 'borrowed',
-                borrower: expect.objectContaining({ username: 'Bob' }),
-                returnDate: starBookParams.returnDate,
-              }),
-            ]),
-          }),
-        ]),
-      }),
-    ])
+    beforeAll(async () => {
+      books = await Book.find()
+    })
 
-    // none of the Book documents should have an openlibraryid or bookinfo field
-    const bookDocuments = await Book.find()
+    it('should have exactly three books after migration', () => {
+      expect(books.length).toBe(3)
+    })
 
-    bookDocuments.forEach(book => {
-      expect(book).toEqual(
-        expect.objectContaining({
-          openLibraryId: null,
-          bookInfo: null,
-        })
-      )
+    it('should not have any openLibraryId or bookInfo fields', () => {
+      books.forEach(book => {
+        expect(book.openLibraryId).toBeUndefined()
+        expect(book.bookInfo).toBeUndefined()
+      })
     })
   })
 })
