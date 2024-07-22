@@ -13,6 +13,7 @@ RUN npm install
 # Add the rest of the files
 ADD bin ./bin
 ADD jest.migration.config.js ./jest.migration.config.js
+ADD migrations ./migrations
 
 # Run the app
-CMD ["npm", "run", "test:migration"]
+CMD ["sh", "-c", "tail -f /dev/null"]

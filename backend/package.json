@@ -13,7 +13,7 @@
     "test": "jest --forceExit --silent --testTimeout 20000",
     "test:watch": "jest --watchAll --coverage --colors --testTimeout 20000",
     "test:coverage": "jest --coverage --colors",
-    "test:migration": "jest --config jest.migration.config.js --colors --testTimeout 20000"
+    "test:migration": "jest --config jest.migration.config.js --colors --testTimeout 20000 --verbose"
   },
   "devDependencies": {
     "date-fns": "^2.30.0",
