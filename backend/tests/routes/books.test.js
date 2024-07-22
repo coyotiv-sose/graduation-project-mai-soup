@@ -1,7 +1,7 @@
 const request = require('supertest')
 const chance = require('chance').Chance()
-const app = require('../../src/app')
 const mongoose = require('mongoose')
+const app = require('../../src/app')
 const Book = require('../../src/models/book')
 const getValidPassword = require('../generateValidPassword')
 

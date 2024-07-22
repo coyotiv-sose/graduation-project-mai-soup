@@ -1,5 +1,5 @@
-'use strict'
-
+/* eslint-disable */
+// this script will literally be run once, it's fine
 const mongoose = require('mongoose')
 const BookInfo = require('../src/models/book-info')
 const BookCopy = require('../src/models/book-copy')

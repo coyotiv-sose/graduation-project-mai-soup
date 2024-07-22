@@ -22,7 +22,8 @@ module.exports.createLibrary = catchAsync(async (req, res) => {
   const owner = await User.findById(req.user.id)
   const { name, location } = req.body
   const geometry = await getGeometryOfLocation(location)
-  let filetype, encodedImage
+  let filetype
+  let encodedImage
   if (req.file) {
     filetype = req.file.mimetype
     encodedImage = req.file.buffer.toString('base64')

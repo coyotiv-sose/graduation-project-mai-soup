@@ -1,7 +1,6 @@
 const chance = require('chance').Chance()
 const User = require('../../src/models/user')
 const Library = require('../../src/models/library')
-const Book = require('../../src/models/book')
 const getValidPassword = require('../generateValidPassword')
 // the require fixes mongo connection not yet being established
 // when model operations are called

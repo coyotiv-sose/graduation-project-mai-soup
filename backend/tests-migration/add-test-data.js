@@ -1,5 +1,3 @@
-'use strict'
-
 const mongoose = require('mongoose')
 const BookInfo = require('../src/models/book-info')
 const BookCopy = require('../src/models/book-copy')
