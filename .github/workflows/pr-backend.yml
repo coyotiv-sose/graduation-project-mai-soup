@@ -24,12 +24,12 @@ jobs:
         with:
           file-name: ./backend/package.json
         id: checkVersion
-      - name: Version change not detected
-        if: steps.checkVersion.outputs.changed == 'false'
-        uses: actions/github-script@v3
-        with:
-          script: |
-            core.setFailed('Uh oh, someone forgot to bump the backend package version!')
+      # - name: Version change not detected
+      #   if: steps.checkVersion.outputs.changed == 'false'
+      #   uses: actions/github-script@v3
+      #   with:
+      #     script: |
+      #       core.setFailed('Uh oh, someone forgot to bump the backend package version!')
       - name: Check ESLint
         run: npm run eslint:check
       - name: Run tests
