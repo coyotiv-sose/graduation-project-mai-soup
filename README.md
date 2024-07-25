@@ -20,7 +20,7 @@ A hosted production version is available at https://porchreads.club/.
 You will need API keys for the following services:
 
 - [MapBox](https://www.mapbox.com/) for geocoding and map rendering
-- [OpenAI](https://openai.com/) for text generation
+- ~~[OpenAI](https://openai.com/) for text generation~~ (might be re-added in the future)
 
 Create `.env` files in the frontend and backend directories with contents similar to the `.env.example` files.
 
@@ -57,9 +57,9 @@ docker compose up api frontend
 
 ## MIT License
 
-Project: Copyright (c) 2023 Maijs Garais
+Project: Copyright (c) 2024 Maijs Garais
 
-Node template: Copyright (c) 2023 Coyotiv
+Node template: Copyright (c) 2024 Coyotiv
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
