@@ -2,7 +2,6 @@ const createError = require('http-errors')
 const Library = require('../models/library')
 const Book = require('../models/book')
 const User = require('../models/user')
-const descriptionEnhancer = require('../lib/description-enhancer')
 const { getGeometryOfLocation } = require('../lib/geocoder')
 const catchAsync = require('../utils/catch-async')
 
@@ -130,17 +129,6 @@ module.exports.updateLibrary = catchAsync(async (req, res) => {
 
   return res.status(200).send(updatedLibrary)
 })
-
-module.exports.generateEnhancedDescription = catchAsync(
-  async (req, res, next) => {
-    const { description } = req.body
-    if (!description) {
-      return next(createError(400, 'Missing description'))
-    }
-    const enhancedDescription = await descriptionEnhancer(description)
-    return res.send(enhancedDescription)
-  }
-)
 
 module.exports.createBook = catchAsync(async (req, res, next) => {
   const { authors, title } = req.body
