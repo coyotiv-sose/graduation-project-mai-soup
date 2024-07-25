@@ -4,10 +4,11 @@
 COMPOSE_FILE="docker-compose.test.yml"
 PROJECT_NAME="test"
 
-if [ "$1" = "migration" ]; then
-  COMPOSE_FILE="docker-compose.migration-test.yml"
-  PROJECT_NAME="test-migration"
-fi
+# example on how to add arguments
+# if [ "$1" = "migration" ]; then
+#   COMPOSE_FILE="docker-compose.migration-test.yml"
+#   PROJECT_NAME="test-migration"
+# fi
 
 echo "Using compose file: $COMPOSE_FILE"
 
