@@ -12,8 +12,7 @@
     "eslint:fix": "npx eslint --fix .",
     "test": "jest --forceExit --silent --testTimeout 20000",
     "test:watch": "jest --watchAll --coverage --colors --testTimeout 20000",
-    "test:coverage": "jest --coverage --colors",
-    "test:migration": "jest --config jest.migration.config.js --colors --testTimeout 20000 --verbose"
+    "test:coverage": "jest --coverage --colors"
   },
   "devDependencies": {
     "date-fns": "^2.30.0",
@@ -44,7 +43,6 @@
     "file-type": "^16.5.4",
     "helmet": "^7.0.0",
     "http-errors": "^2.0.0",
-    "migrate": "^2.1.0",
     "mongoose": "^7.4.1",
     "mongoose-autopopulate": "^1.0.1",
     "morgan": "^1.10.0",
