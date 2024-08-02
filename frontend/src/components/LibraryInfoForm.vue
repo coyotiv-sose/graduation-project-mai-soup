@@ -8,6 +8,9 @@ div(v-if="this.action !== 'edit' || library")
     div.form-group
       label(for="location") Location
       input#location(type="text" v-model="location")
+      //- TODO: style errors and warnings 
+      small(v-if="locationError") {{ locationError }}
+      small(v-if="locationWarning") {{ locationWarning }}
     div.form-group(v-if="this.action !== 'edit'")
       label(for="file") Image
       input#file(type="file" @change="updateFile" accept="image/gif, image/jpeg, image/png")
@@ -35,7 +38,14 @@ export default {
   props: ['action', 'libraryId'],
   computed: {
     shouldDisableSubmit() {
-      return !this.name || this.nameError || !this.location
+      console.log('shouldDisableSubmit')
+      console.log('name', this.name)
+      console.log('location', this.location)
+      console.log('nameError', this.nameError)
+      console.log('locationError', this.locationError)
+      return (
+        !this.name || this.nameError || !this.location || this.locationError
+      )
     }
   },
   methods: {
@@ -96,6 +106,28 @@ export default {
 
       this.nameError = null
     },
+    validateLocation(location) {
+      this.locationWarning = null
+      this.locationError = null
+
+      if (!location) {
+        this.locationError = 'Location is required'
+        return
+      }
+
+      if (location.split(/[^\w]/).length > 20) {
+        this.locationWarning =
+          'Locations longer than 20 words will be truncated when looking up coordinates'
+
+        return
+      }
+
+      if (location.length > 256) {
+        this.locationWarning =
+          'Locations longer than 256 characters will be truncated when looking up coordinates'
+        return
+      }
+    },
     updateFile(evt) {
       this.file = evt.target.files[0]
     }
@@ -111,6 +143,10 @@ export default {
     name(value) {
       this.name = value
       this.validateName(value)
+    },
+    location(value) {
+      this.location = value
+      this.validateLocation(value)
     }
   }
 }
