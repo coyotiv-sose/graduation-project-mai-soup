@@ -6,7 +6,9 @@ module.exports.registerUser = async (req, res, next) => {
     const { username, email, password } = req.body
     const user = await User.register({ username, email }, password)
 
-    return res.send(user)
+    // strip hash and salt from user object before sending it to the client
+    const safeUser = await User.findById(user._id).select('-hash -salt').lean()
+    return res.send(safeUser)
   } catch (err) {
     if (
       err.name === 'ValidationError' ||
