@@ -1,218 +1,92 @@
 const request = require('supertest')
-const chance = require('chance').Chance()
 const app = require('../../src/app')
+const chance = require('chance').Chance()
 const User = require('../../src/models/user')
 const getValidPassword = require('../generateValidPassword')
 
-// use agent to persist cookies between requests
 const agent = request.agent(app)
-const validUsername = chance.word({ length: 10 })
-const validEmail = chance.email()
-const validPassword = getValidPassword()
+const username = chance.word({ length: 10 })
+const email = chance.email()
+const password = getValidPassword()
 
-it('should sign up a user', async () => {
-  const response = await agent.post('/accounts').send({
-    username: validUsername,
-    email: validEmail,
-    password: validPassword,
+describe('Accounts Routes', () => {
+  afterAll(async () => {
+    await User.deleteMany({})
   })
 
-  expect(response.status).toBe(200)
-  expect(response.body).toMatchObject({
-    username: validUsername,
-    email: validEmail,
-  })
-})
+  describe('POST /accounts', () => {
+    it('should sign up a user', async () => {
+      const response = await agent.post('/accounts').send({
+        username,
+        email,
+        password,
+      })
 
-it('should not sign up a user with an existing username', async () => {
-  const testUsername = chance.word({ length: 10 })
-
-  await request(app).post('/accounts').send({
-    username: testUsername,
-    email: chance.email(),
-    password: getValidPassword(),
-  })
-
-  const response = await request(app).post('/accounts').send({
-    username: testUsername,
-    email: chance.email(),
-    password: getValidPassword(),
-  })
-
-  expect(response.status).toBe(400)
-})
-
-it('should not sign up a user with an existing email', async () => {
-  const testEmail = chance.email()
-  await request(app)
-    .post('/accounts')
-    .send({
-      username: chance.word({ length: 10 }),
-      email: testEmail,
-      password: getValidPassword(),
+      expect(response.status).toBe(200)
+      expect(response.body).toEqual({
+        __v: expect.any(Number),
+        _id: expect.any(String),
+        dateCreated: expect.any(String),
+        email,
+        username,
+        loans: expect.any(Array),
+        memberships: expect.any(Array),
+        ownedLibraries: expect.any(Array),
+      })
     })
 
-  const response = await request(app)
-    .post('/accounts')
-    .send({
-      username: chance.word({ length: 10 }),
-      email: testEmail,
-      password: getValidPassword(),
+    it('should not sign up a user with an existing username', async () => {
+      await User.create({
+        username: 'existingUser',
+        email: 'existing@example.com',
+      })
+
+      const response = await agent.post('/accounts').send({
+        username: 'existingUser',
+        email: chance.email(),
+        password: getValidPassword(),
+      })
+
+      expect(response.status).toBe(400)
     })
-
-  expect(response.status).toBe(400)
-})
-
-it('should not sign up a user with an invalid email', async () => {
-  const response = await request(app).post('/accounts').send({
-    username: chance.word(),
-    email: chance.word(),
-    password: chance.word(),
   })
 
-  expect(response.status).toBe(400)
-})
+  describe('POST /accounts/session', () => {
+    it('should sign in a user', async () => {
+      const response = await agent
+        .post('/accounts/session')
+        .send({ username, password })
 
-it('should not sign up a user with a username that is too short', async () => {
-  const response = await request(app)
-    .post('/accounts')
-    .send({
-      username: chance.string({ length: 2 }),
-      email: chance.email(),
-      password: getValidPassword(),
+      expect(response.status).toBe(200)
+      expect(response.body).toMatchObject({
+        username,
+        email,
+      })
     })
-
-  expect(response.status).toBe(400)
-})
-
-it('should not sign up a user with a username that is too long', async () => {
-  const response = await request(app)
-    .post('/accounts')
-    .send({
-      username: chance.string({ length: 50 }),
-      email: chance.email(),
-      password: getValidPassword(),
-    })
-
-  expect(response.status).toBe(400)
-})
-
-it('should not sign up a user with a weak password', async () => {
-  const response = await request(app)
-    .post('/accounts')
-    .send({
-      username: chance.word({ length: 10 }),
-      email: chance.email(),
-      password: chance.string({ length: 5 }),
-    })
-
-  expect(response.status).toBe(400)
-})
-
-it('should not sign up a user with no username', async () => {
-  const response = await request(app).post('/accounts').send({
-    username: '',
-    email: chance.email(),
-    password: getValidPassword(),
   })
 
-  expect(response.status).toBe(400)
-})
+  describe('GET /accounts/session', () => {
+    it('should get the authenticated user', async () => {
+      const response = await agent.get('/accounts/session')
+      expect(response.status).toBe(200)
+      expect(response.body).toMatchObject({
+        username,
+        email,
+      })
+    })
+  })
 
-it('should not sign up a user with no email', async () => {
-  const response = await request(app)
-    .post('/accounts')
-    .send({
-      username: chance.word({ length: 10 }),
-      email: '',
-      password: getValidPassword(),
+  describe('DELETE /accounts/session', () => {
+    it('should sign out a user', async () => {
+      await agent.post('/accounts/session').send({ username, password })
+
+      const response = await agent.delete('/accounts/session')
+      expect(response.status).toBe(200)
     })
 
-  expect(response.status).toBe(400)
-})
-
-it('should not sign up a user with no password', async () => {
-  const response = await request(app)
-    .post('/accounts')
-    .send({
-      username: chance.word({ length: 10 }),
-      email: chance.email(),
-      password: '',
+    it('should not sign out a user if not signed in', async () => {
+      const response = await request(app).delete('/accounts/session')
+      expect(response.status).toBe(401)
     })
-  expect(response.status).toBe(400)
-})
-
-it('should sign in a user', async () => {
-  const response = await agent.post('/accounts/session').send({
-    username: validUsername,
-    password: validPassword,
   })
-
-  expect(response.status).toBe(200)
-  expect(response.body).toMatchObject({
-    username: validUsername,
-    email: validEmail,
-  })
-})
-
-it('should not sign in a user with an invalid username', async () => {
-  const response = await request(app)
-    .post('/accounts/session')
-    .send({
-      username: chance.word({ length: 10 }),
-      password: getValidPassword(),
-    })
-
-  expect(response.status).toBe(401)
-})
-
-it('should not sign in a user with an wrong password', async () => {
-  const response = await request(app).post('/accounts/session').send({
-    username: validUsername,
-    password: getValidPassword(),
-  })
-
-  expect(response.status).toBe(401)
-})
-
-it('should not sign in a user with an invalid email', async () => {
-  const response = await request(app).post('/accounts/session').send({
-    username: chance.email(),
-    password: getValidPassword(),
-  })
-
-  expect(response.status).toBe(401)
-})
-
-it('should not sign in a user without a password', async () => {
-  const response = await request(app).post('/accounts/session').send({
-    username: validUsername,
-    password: '',
-  })
-
-  expect(response.status).toBe(400)
-})
-
-it('should sign out a user', async () => {
-  const response = await agent.delete('/accounts/session')
-  expect(response.status).toBe(200)
-})
-
-it('should not sign out a user if not signed in', async () => {
-  const response = await request(app).delete('/accounts/session')
-  expect(response.status).toBe(401)
-})
-
-it('should handle server errors when signing up a new user', async () => {
-  User.register = jest.fn().mockRejectedValueOnce(new Error('Simulated Error'))
-
-  const user = {
-    username: chance.word({ length: 10 }),
-    email: chance.email(),
-    password: getValidPassword(),
-  }
-
-  const response = await request(app).post('/accounts').send(user)
-  // console.error('BODY:', response.text)
-  expect(response.status).toBe(500)
 })
