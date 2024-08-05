@@ -10,10 +10,6 @@ const email = chance.email()
 const password = getValidPassword()
 
 describe('Accounts Routes', () => {
-  afterAll(async () => {
-    await User.deleteMany({})
-  })
-
   describe('POST /accounts', () => {
     it('should sign up a user', async () => {
       const response = await agent.post('/accounts').send({
