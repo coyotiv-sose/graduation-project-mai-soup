@@ -1,6 +1,6 @@
 const request = require('supertest')
-const app = require('../../src/app')
 const chance = require('chance').Chance()
+const app = require('../../src/app')
 const User = require('../../src/models/user')
 const getValidPassword = require('../generateValidPassword')
 
