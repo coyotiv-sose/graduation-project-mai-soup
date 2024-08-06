@@ -1,16 +1,17 @@
 import { defineStore } from 'pinia'
 import axios from 'axios'
+import useApiRequests from '../composables/useApiRequests'
 
 export const useProfileHandler = defineStore('profile-handler', {
   actions: {
-    async fetchProfile(username) {
-      try {
-        const response = await axios.get(`/users/${username}`)
-        return response.data
-      } catch (error) {
-        // TODO: handle error
-        console.error(error)
+    ...(() => {
+      const { get } = useApiRequests()
+      return {
+        async fetchProfile(username) {
+          const profile = await get(`/users/${username}`)
+          return profile
+        }
       }
-    }
+    })()
   }
 })
