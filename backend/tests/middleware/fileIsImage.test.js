@@ -5,7 +5,9 @@ const fileIsImage = require('../../src/middleware/fileIsImage')
 jest.mock('file-type')
 
 describe('fileIsImage middleware', () => {
-  let req, res, next
+  let req
+  let res
+  let next
   const TEST_BUFFER = Buffer.from('actual image data')
 
   beforeEach(() => {
