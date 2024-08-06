@@ -8,7 +8,7 @@ export const useLibraryHandler = defineStore('library-handler', {
     // the IIFE allows to initialize the `get` method from the `useApiRequests` composable only once
     // and then use them in the store actions without repeating the initialization code
     ...(() => {
-      const { get } = useApiRequests()
+      const { get, post, patch } = useApiRequests()
       return {
         async fetchAllLibraries() {
           const libraries = await get('/libraries')
@@ -19,22 +19,12 @@ export const useLibraryHandler = defineStore('library-handler', {
           return libraries
         },
         async joinLibrary(libraryId) {
-          try {
-            await axios.post(`/libraries/${libraryId}/members`)
-          } catch (error) {
-            // TODO: handle error
-            console.error(error)
-          }
+          await post(`/libraries/${libraryId}/members`)
         },
         async leaveLibrary(libraryId) {
-          try {
-            await axios.patch(`/libraries/${libraryId}/members`, {
-              remove: true
-            })
-          } catch (error) {
-            // TODO: handle error
-            console.error(error)
-          }
+          await patch(`/libraries/${libraryId}/members`, {
+            remove: true
+          })
         }
       }
     })()
