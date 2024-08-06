@@ -44,6 +44,94 @@ describe('Accounts Routes', () => {
       })
 
       expect(response.status).toBe(400)
+      expect(response.body.message).toBe('Registration failed')
+    })
+
+    it('should not sign up a user with an existing email', async () => {
+      await User.create({
+        username: 'existingEmailUser',
+        email: 'existingemail@example.com',
+      })
+
+      const response = await agent.post('/accounts').send({
+        username: chance.word({ length: 10 }),
+        email: 'existingemail@example.com',
+        password: getValidPassword(),
+      })
+      expect(response.status).toBe(400)
+      expect(response.body.message).toBe('Registration failed')
+    })
+
+    it('should not sign up a user with an invalid email', async () => {
+      const response = await agent.post('/accounts').send({
+        username: chance.word({ length: 10 }),
+        email: 'invalid-email',
+        password: getValidPassword(),
+      })
+      expect(response.status).toBe(400)
+      expect(response.body.validation.body.keys).toEqual(
+        expect.arrayContaining(['email'])
+      )
+    })
+
+    it('should not sign up a user with a too short password', async () => {
+      const response = await agent.post('/accounts').send({
+        username: chance.word({ length: 10 }),
+        email: chance.email(),
+        password: 'short',
+      })
+      expect(response.status).toBe(400)
+      expect(response.body.validation.body.keys).toEqual(
+        expect.arrayContaining(['password'])
+      )
+    })
+
+    it('should not sign up a user with a password without numbers', async () => {
+      const response = await agent.post('/accounts').send({
+        username: chance.word({ length: 10 }),
+        email: chance.email(),
+        password: 'password',
+      })
+      expect(response.status).toBe(400)
+      expect(response.body.validation.body.keys).toEqual(
+        expect.arrayContaining(['password'])
+      )
+    })
+
+    it('should not sign up a user with a password without uppercase letters', async () => {
+      const response = await agent.post('/accounts').send({
+        username: chance.word({ length: 10 }),
+        email: chance.email(),
+        password: 'password123',
+      })
+      expect(response.status).toBe(400)
+      expect(response.body.validation.body.keys).toEqual(
+        expect.arrayContaining(['password'])
+      )
+    })
+
+    it('should not sign up a user with a password without lowercase letters', async () => {
+      const response = await agent.post('/accounts').send({
+        username: chance.word({ length: 10 }),
+        email: chance.email(),
+        password: 'PASSWORD123',
+      })
+      expect(response.status).toBe(400)
+      expect(response.body.validation.body.keys).toEqual(
+        expect.arrayContaining(['password'])
+      )
+    })
+
+    it('should not sign up a user with a password without special characters', async () => {
+      const response = await agent.post('/accounts').send({
+        username: chance.word({ length: 10 }),
+        email: chance.email(),
+        password: 'Password123',
+      })
+      expect(response.status).toBe(400)
+      expect(response.body.validation.body.keys).toEqual(
+        expect.arrayContaining(['password'])
+      )
     })
   })
 
