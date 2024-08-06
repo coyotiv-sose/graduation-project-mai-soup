@@ -19,13 +19,17 @@ div(v-else aria-busy="true") Loading...
 </template>
 
 <script>
-import axios from 'axios'
 import { useAccountStore } from '../stores/account'
 import { useLibrarianHandler } from '../stores/librarian-handler'
 import { mapActions } from 'pinia'
+import useApiRequests from '../composables/useApiRequests'
 
 export default {
   name: 'LibraryInfoForm',
+  setup() {
+    const { get, post } = useApiRequests()
+    return { get, post }
+  },
   data() {
     return {
       name: '',
@@ -38,11 +42,6 @@ export default {
   props: ['action', 'libraryId'],
   computed: {
     shouldDisableSubmit() {
-      console.log('shouldDisableSubmit')
-      console.log('name', this.name)
-      console.log('location', this.location)
-      console.log('nameError', this.nameError)
-      console.log('locationError', this.locationError)
       return (
         !this.name || this.nameError || !this.location || this.locationError
       )
@@ -59,17 +58,12 @@ export default {
       data.append('name', name)
       data.append('location', location)
       data.append('file', file)
-      try {
-        const response = await axios.post('/libraries', data, {
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          }
-        })
-        return response.data
-      } catch (error) {
-        // TODO: handle error
-        console.error(error)
-      }
+      const response = await this.post('/libraries', data, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      })
+      return response
     },
     async doSubmit() {
       let id
@@ -134,7 +128,7 @@ export default {
   },
   async mounted() {
     if (this.action === 'edit') {
-      this.library = (await axios.get(`/libraries/${this.libraryId}`)).data
+      this.library = await this.get(`/libraries/${this.libraryId}`)
       this.name = this.library.name
       this.location = this.library.location
     }
