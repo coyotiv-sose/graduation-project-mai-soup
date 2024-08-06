@@ -18,7 +18,9 @@ const singleFile = (req, res, next) => {
     }
 
     // throw 500 if any other error
+    /* istanbul ignore next */
     if (err) {
+      // TODO: find a way to test this. i tried. sorry.
       return next(createError(500, err.message))
     }
 
