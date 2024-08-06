@@ -1,5 +1,4 @@
 import { defineStore } from 'pinia'
-import axios from 'axios'
 import useApiRequests from '../composables/useApiRequests'
 
 export const useLibraryHandler = defineStore('library-handler', {
