@@ -6,9 +6,9 @@ const useApiRequests = () => {
   const toast = useToast()
   const router = useRouter()
 
-  const get = async (url) => {
+  const makeRequest = async (url, options = {}) => {
     try {
-      const response = await axios.get(url)
+      const response = await axios(url, options)
       return response.data
     } catch (error) {
       let message = ''
@@ -38,8 +38,20 @@ const useApiRequests = () => {
     }
   }
 
+  const get = (url, options = {}) =>
+    makeRequest(url, { method: 'GET', ...options })
+  const post = (url, data, options = {}) =>
+    makeRequest(url, { method: 'POST', data, ...options })
+  const del = (url, options = {}) =>
+    makeRequest(url, { method: 'DELETE', ...options })
+  const patch = (url, data, options = {}) =>
+    makeRequest(url, { method: 'PATCH', data, ...options })
+
   return {
-    get
+    get,
+    post,
+    del,
+    patch
   }
 }
 
