@@ -3,13 +3,12 @@ const createError = require('http-errors')
 const fileIsImage = require('../../src/middleware/fileIsImage')
 
 jest.mock('file-type')
-jest.mock('http-errors')
 
 describe('fileIsImage middleware', () => {
   let req, res, next
   const TEST_BUFFER = Buffer.from('actual image data')
 
-  beforeAll(() => {
+  beforeEach(() => {
     req = {
       file: {
         buffer: TEST_BUFFER,
@@ -33,13 +32,11 @@ describe('fileIsImage middleware', () => {
 
   it('should call next with error if file type is not in whitelist', async () => {
     FileType.fromBuffer.mockResolvedValue({ mime: 'application/pdf' })
-    const error = new Error('File type not accepted')
-    createError.mockReturnValue(error)
 
     await fileIsImage(req, res, next)
 
-    expect(createError).toHaveBeenCalledWith(400, 'File type not accepted')
-    expect(next).toHaveBeenCalledWith(error)
+    expect(next).toHaveBeenCalledWith(expect.any(createError.BadRequest))
+    expect(next.mock.calls[0][0].message).toBe('File type not accepted')
   })
 
   it('should handle png file type', async () => {
@@ -50,18 +47,22 @@ describe('fileIsImage middleware', () => {
 
   it('should handle gif file type', async () => {
     FileType.fromBuffer.mockResolvedValue({ mime: 'image/gif' })
+
     await fileIsImage(req, res, next)
     expect(next).toHaveBeenCalledWith()
   })
 
   it('should reject svg file type', async () => {
     FileType.fromBuffer.mockResolvedValue({ mime: 'image/svg+xml' })
-    const error = new Error('File type not accepted')
-    createError.mockReturnValue(error)
 
     await fileIsImage(req, res, next)
 
-    expect(createError).toHaveBeenCalledWith(400, 'File type not accepted')
-    expect(next).toHaveBeenCalledWith(error)
+    expect(next).toHaveBeenCalledWith(expect.any(createError.BadRequest))
+    expect(next).toHaveBeenCalledWith(
+      expect.objectContaining({
+        status: 400,
+        message: 'File type not accepted',
+      })
+    )
   })
 })
