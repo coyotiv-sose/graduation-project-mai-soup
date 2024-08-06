@@ -1,37 +1,28 @@
 import { defineStore } from 'pinia'
 import axios from 'axios'
+import useApiRequests from '../composables/useApiRequests'
 
 export const useLoansHandler = defineStore('loans-handler', {
   actions: {
-    async borrowBook(libraryId, bookId) {
-      try {
-        await axios.patch(`/libraries/${libraryId}/books/${bookId}`, {
-          action: 'borrow'
-        })
-      } catch (error) {
-        // TODO: handle error
-        console.error(error)
+    ...(() => {
+      const { patch } = useApiRequests()
+      return {
+        async borrowBook(libraryId, bookId) {
+          await patch(`/libraries/${libraryId}/books/${bookId}`, {
+            action: 'borrow'
+          })
+        },
+        async returnBook(libraryId, bookId) {
+          await patch(`/libraries/${libraryId}/books/${bookId}`, {
+            action: 'return'
+          })
+        },
+        async extendLoan(libraryId, bookId) {
+          await patch(`/libraries/${libraryId}/books/${bookId}`, {
+            action: 'extend'
+          })
+        }
       }
-    },
-    async returnBook(libraryId, bookId) {
-      try {
-        await axios.patch(`/libraries/${libraryId}/books/${bookId}`, {
-          action: 'return'
-        })
-      } catch (error) {
-        // TODO: handle error
-        console.error(error)
-      }
-    },
-    async extendLoan(libraryId, bookId) {
-      try {
-        await axios.patch(`/libraries/${libraryId}/books/${bookId}`, {
-          action: 'extend'
-        })
-      } catch (error) {
-        // TODO: handle error
-        console.error(error)
-      }
-    }
+    })()
   }
 })
