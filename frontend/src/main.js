@@ -26,7 +26,8 @@ const accountStore = useAccountStore()
 
 const toastOptions = {
   position: 'bottom-center',
-  maxToasts: 5
+  maxToasts: 5,
+  closeButton: false
 }
 
 // has to be a promise to avoid top-level async/await, which is not
