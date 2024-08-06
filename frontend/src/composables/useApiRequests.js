@@ -2,6 +2,9 @@ import axios from 'axios'
 import { useToast } from 'vue-toastification'
 import { useRouter } from 'vue-router'
 
+axios.defaults.baseURL = import.meta.env.VITE_API_URL
+axios.defaults.withCredentials = true
+
 const useApiRequests = () => {
   const toast = useToast()
   const router = useRouter()

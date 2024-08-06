@@ -54,10 +54,14 @@ import { useLoansHandler } from '../stores/loans-handler'
 import { useLibrarianHandler } from '../stores/librarian-handler'
 import { mapActions, mapState } from 'pinia'
 import SingleLibraryMap from '../components/SingleLibraryMap.vue'
-import axios from 'axios'
+import useApiRequests from '../composables/useApiRequests'
 
 export default {
   name: 'SingleLibraryView',
+  setup() {
+    const { del } = useApiRequests()
+    return { del }
+  },
   data() {
     return {
       library: null, // init with null for clearer conditional checks
@@ -131,11 +135,7 @@ export default {
     },
     async handleDeletion() {
       if (confirm('Are you sure you want to delete this library?')) {
-        try {
-          await axios.delete(`/libraries/${this.library._id}`)
-        } catch (err) {
-          // TODO: handle error
-        }
+        await this.del(`/libraries/${this.$route.params.id}`)
         this.$router.push({ name: 'all-libraries' })
       }
     }
