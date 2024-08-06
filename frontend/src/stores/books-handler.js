@@ -1,25 +1,20 @@
 import { defineStore } from 'pinia'
-import axios from 'axios'
+import useApiRequests from '../composables/useApiRequests'
 
 export const useBooksHandler = defineStore('books-handler', {
   actions: {
-    async fetchAllBooks() {
-      try {
-        const response = await axios.get('/books')
-        return response.data
-      } catch (error) {
-        // TODO: handle error
-        console.error(error)
+    ...(() => {
+      const { get } = useApiRequests()
+      return {
+        async fetchAllBooks() {
+          const response = await get('/books')
+          return response
+        },
+        async fetchBook(bookId) {
+          const response = await get(`/books/${bookId}`)
+          return response
+        }
       }
-    },
-    async fetchBook(bookId) {
-      try {
-        const response = await axios.get(`/books/${bookId}`)
-        return response.data
-      } catch (error) {
-        // TODO: handle error
-        console.error(error)
-      }
-    }
+    })()
   }
 })
