@@ -28,8 +28,8 @@ router.get('/:id', libraryExists, getSingleLibrary)
 router.post(
   '/',
   mustLogin,
-  validateLibrary,
   singleFile,
+  validateLibrary,
   fileIsImage,
   createLibrary
 )
