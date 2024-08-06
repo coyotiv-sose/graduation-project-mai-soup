@@ -2,6 +2,7 @@ const createError = require('http-errors')
 const FileType = require('file-type')
 const catchAsync = require('../utils/catch-async')
 
+// TODO: file should probably be named in kebab case instead of camel case
 module.exports = catchAsync(async (req, res, next) => {
   if (!req.file) return next()
 
