@@ -10,6 +10,13 @@ const validateLibrary = celebrate({
   },
 })
 
+const validateBook = celebrate({
+  [Segments.BODY]: {
+    title: Joi.string().required(),
+    authors: Joi.string().required(),
+  },
+})
+
 const validateCopyUpdate = celebrate({
   [Segments.BODY]: {
     action: Joi.string().valid('borrow', 'return', 'extend', 'lose').required(),
@@ -57,4 +64,9 @@ const validateNewAccount = celebrate({
   },
 })
 
-module.exports = { validateLibrary, validateCopyUpdate, validateNewAccount }
+module.exports = {
+  validateLibrary,
+  validateCopyUpdate,
+  validateNewAccount,
+  validateBook,
+}
