@@ -4,7 +4,7 @@ const router = express.Router()
 const mustLogin = require('../middleware/must-login')
 const libraryExists = require('../middleware/library-exists')
 const isOwner = require('../middleware/is-owner')
-const { validateLibrary } = require('../middleware/validators')
+const { validateLibrary, validateBook } = require('../middleware/validators')
 const { singleFile } = require('../middleware/multer')
 
 const {
@@ -47,7 +47,14 @@ router.get('/:id/members', mustLogin, libraryExists, getAllMembers)
 router.post('/:id/members', mustLogin, libraryExists, joinLibrary)
 router.patch('/:id/members', mustLogin, libraryExists, leaveLibrary)
 
-router.post('/:id/books', mustLogin, libraryExists, isOwner, createBook)
+router.post(
+  '/:id/books',
+  mustLogin,
+  libraryExists,
+  isOwner,
+  validateBook,
+  createBook
+)
 router.patch('/:id/books/:bookId', mustLogin, libraryExists, updateBook)
 router.delete(
   '/:id/books/:bookId',

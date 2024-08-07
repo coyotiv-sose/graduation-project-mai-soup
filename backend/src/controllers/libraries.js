@@ -133,8 +133,6 @@ module.exports.updateLibrary = catchAsync(async (req, res) => {
 module.exports.createBook = catchAsync(async (req, res, next) => {
   const { authors, title } = req.body
 
-  if (!authors || !title) return next(createError(400, 'Missing parameters'))
-
   const library = await Library.findById(req.params.id)
   const book = await library.addBook({ title, authors })
 
