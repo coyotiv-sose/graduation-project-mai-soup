@@ -130,7 +130,7 @@ module.exports.updateLibrary = catchAsync(async (req, res) => {
   return res.status(200).send(updatedLibrary)
 })
 
-module.exports.createBook = catchAsync(async (req, res, next) => {
+module.exports.createBook = catchAsync(async (req, res) => {
   const { authors, title } = req.body
 
   const library = await Library.findById(req.params.id)

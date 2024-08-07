@@ -1,7 +1,7 @@
 const catchAsync = require('../utils/catch-async')
 const Book = require('../models/book')
 
-module.exports.getSingleBook = catchAsync(async (req, res, next) => {
+module.exports.getSingleBook = catchAsync(async (req, res) => {
   const { id } = req.params
   const book = await Book.findById(id)
 
