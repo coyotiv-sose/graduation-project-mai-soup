@@ -23,7 +23,11 @@ module.exports.registerUser = async (req, res, next) => {
 }
 
 module.exports.getAuthenticatedUser = (req, res) => {
-  return res.send(req.user)
+  // strip salt and hash from user object before sending it to the client
+  const safeUser = { ...req.user.toObject() }
+  delete safeUser.hash
+  delete safeUser.salt
+  return res.send(safeUser)
 }
 
 module.exports.logoutAndDestroySession = (req, res, next) => {
