@@ -1,6 +1,6 @@
 const catchAsync = require('../utils/catch-async')
 const Comment = require('../models/comment')
-const createError = require('../utils/create-error')
+const createError = require('http-errors')
 
 module.exports.getLibraryComments = catchAsync(async (req, res, next) => {
   const { libraryId } = req.params
@@ -18,7 +18,7 @@ module.exports.getSingleComment = catchAsync(async (req, res, next) => {
   return res.send(comment)
 })
 
-module.exports.postComment = catchAsync(async (req, res, next) => {
+module.exports.createComment = catchAsync(async (req, res, next) => {
   const { libraryId } = req.params
   const { content } = req.body
 
