@@ -23,6 +23,8 @@ const {
 } = require('../controllers/libraries')
 const fileIsImage = require('../middleware/fileIsImage')
 
+router.use('/:id/comments', libraryExists, commentsRouter)
+
 router.get('/', getAllLibraries)
 router.get('/:id', libraryExists, getSingleLibrary)
 
@@ -64,7 +66,5 @@ router.delete(
   isOwner,
   removeBook
 )
-
-router.use('/:id/comments', libraryExists, commentsRouter)
 
 module.exports = router
