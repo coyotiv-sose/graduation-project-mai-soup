@@ -1,5 +1,6 @@
 const Library = require('../models/library')
 const Book = require('../models/book')
+const Comment = require('../models/comment')
 
 class UserService {
   async createLibrary({ name, location, coordinates, image }) {
@@ -87,6 +88,34 @@ class UserService {
     // filter out book from loans
     this.loans = this.loans.filter(loan => loan._id.toString() !== bookId)
     await this.save()
+  }
+
+  async createComment(libraryId, content) {
+    const library = await Library.findById(libraryId)
+    if (!library) {
+      throw new Error('library does not exist')
+    }
+
+    const newComment = await Comment.create({
+      content,
+      library,
+      author: this,
+    })
+
+    return newComment
+  }
+
+  async deleteComment(commentId) {
+    const comment = await Comment.findById(commentId)
+    if (!comment) {
+      throw new Error('comment does not exist')
+    }
+
+    if (!comment.author._id.equals(this._id)) {
+      throw new Error('user is not the author of this comment')
+    }
+
+    await Comment.findByIdAndDelete(commentId)
   }
 }
 
