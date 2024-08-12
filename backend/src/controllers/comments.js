@@ -11,7 +11,8 @@ module.exports.getLibraryComments = catchAsync(async (req, res) => {
 })
 
 module.exports.getSingleComment = catchAsync(async (req, res, next) => {
-  const comment = await Comment.findById(id)
+  const { commentId } = req.params
+  const comment = await Comment.findById(commentId)
   if (!comment) {
     return next(createError(404, 'Comment not found'))
   }
@@ -21,7 +22,6 @@ module.exports.getSingleComment = catchAsync(async (req, res, next) => {
 module.exports.createComment = catchAsync(async (req, res) => {
   const { id: libraryId } = req.params
   const { content } = req.body
-  console.log('creating comment in library', libraryId)
 
   const author = await User.findById(req.user._id)
   const comment = await author.createComment(libraryId, content)
@@ -30,8 +30,9 @@ module.exports.createComment = catchAsync(async (req, res) => {
 })
 
 module.exports.deleteComment = catchAsync(async (req, res) => {
+  const { commentId } = req.params
   const author = await User.findById(req.user._id)
-  await author.deleteComment(id)
+  await author.deleteComment(commentId)
 
   return res.status(204).send()
 })

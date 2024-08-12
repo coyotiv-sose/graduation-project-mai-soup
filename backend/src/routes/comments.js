@@ -11,10 +11,10 @@ const {
 } = require('../controllers/comments')
 
 router.get('/', getLibraryComments)
-router.get('/:id', getSingleComment)
+router.get('/:commentId', getSingleComment)
 
 router.post('/', mustLogin, createComment)
 
-router.delete('/:id', mustLogin, isOwner, deleteComment)
+router.delete('/:commentId', mustLogin, isOwner, deleteComment)
 
 module.exports = router
