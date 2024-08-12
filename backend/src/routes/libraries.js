@@ -6,6 +6,7 @@ const libraryExists = require('../middleware/library-exists')
 const isOwner = require('../middleware/is-owner')
 const { validateLibrary, validateBook } = require('../middleware/validators')
 const { singleFile } = require('../middleware/multer')
+const commentsRouter = require('./comments')
 
 const {
   getSingleLibrary,
@@ -63,5 +64,7 @@ router.delete(
   isOwner,
   removeBook
 )
+
+router.use('/:id/comments', libraryExists, commentsRouter)
 
 module.exports = router
