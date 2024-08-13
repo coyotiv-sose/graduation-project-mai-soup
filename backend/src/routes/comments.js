@@ -1,6 +1,7 @@
 const express = require('express')
-const router = express.Router({ mergeParams: true })
 const mustLogin = require('../middleware/must-login')
+
+const router = express.Router({ mergeParams: true })
 
 const {
   getLibraryComments,
