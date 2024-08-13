@@ -7,7 +7,7 @@ export const useLibraryHandler = defineStore('library-handler', {
     // the IIFE allows to initialize the `get` method from the `useApiRequests` composable only once
     // and then use them in the store actions without repeating the initialization code
     ...(() => {
-      const { get, post, patch } = useApiRequests()
+      const { get, post, patch, del } = useApiRequests()
       return {
         async fetchAllLibraries() {
           const libraries = await get('/libraries')
@@ -28,6 +28,9 @@ export const useLibraryHandler = defineStore('library-handler', {
         },
         async addComment(libraryId, content) {
           await post(`/libraries/${libraryId}/comments`, { content })
+        },
+        async deleteComment(libraryId, commentId) {
+          await del(`/libraries/${libraryId}/comments/${commentId}`)
         }
       }
     })()
