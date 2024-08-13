@@ -14,8 +14,9 @@ export const useLibraryHandler = defineStore('library-handler', {
           return libraries
         },
         async fetchLibrary(libraryId) {
-          const libraries = await get(`/libraries/${libraryId}`)
-          return libraries
+          const library = await get(`/libraries/${libraryId}`)
+          const comments = await get(`/libraries/${libraryId}/comments`)
+          return { library, comments }
         },
         async joinLibrary(libraryId) {
           await post(`/libraries/${libraryId}/members`)
@@ -24,6 +25,9 @@ export const useLibraryHandler = defineStore('library-handler', {
           await patch(`/libraries/${libraryId}/members`, {
             remove: true
           })
+        },
+        async addComment(libraryId, content) {
+          await post(`/libraries/${libraryId}/comments`, { content })
         }
       }
     })()
