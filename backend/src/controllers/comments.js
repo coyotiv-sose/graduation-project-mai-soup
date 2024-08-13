@@ -1,6 +1,6 @@
+const createError = require('http-errors')
 const catchAsync = require('../utils/catch-async')
 const Comment = require('../models/comment')
-const createError = require('http-errors')
 const User = require('../models/user')
 
 module.exports.getLibraryComments = catchAsync(async (req, res) => {
