@@ -28,11 +28,15 @@
     form(@submit.prevent="doAddComment" v-if="isUserMember")
       textarea(v-model="commentText" placeholder="Write a comment...")
       button(type="submit") Submit
-    p(v-if="!comments") No comments yet.
+    p(v-if="!comments || comments === []") No comments yet.
     ul
       li(v-for="comment in comments" :key="comment._id")
         p {{ comment.content }}
-        em by {{  comment.author.username }}
+        div.grid
+          em by {{  comment.author.username }}
+          button(v-if="isLoggedIn && comment.author.username === this.username" @click="doDeleteComment(comment._id)") Delete
+          //- empty div to make the grid 3 columns in pico's system
+          div 
 
     h2 Books
     table
@@ -101,7 +105,6 @@ export default {
     }
   },
   async mounted() {
-    // returns object with library and comments
     const { library, comments } = await this.fetchLibrary(this.$route.params.id)
     this.library = library
     this.comments = comments
@@ -115,7 +118,8 @@ export default {
       'fetchLibrary',
       'joinLibrary',
       'leaveLibrary',
-      'addComment'
+      'addComment',
+      'deleteComment'
     ]),
     ...mapActions(useLoansHandler, ['borrowBook', 'returnBook']),
     ...mapActions(useAccountStore, ['isOwnerOfLibrary']),
@@ -152,6 +156,14 @@ export default {
     async doAddComment() {
       await this.addComment(this.$route.params.id, this.commentText)
       this.commentText = ''
+      const { library, comments } = await this.fetchLibrary(
+        this.$route.params.id
+      )
+      this.library = library
+      this.comments = comments
+    },
+    async doDeleteComment(commentId) {
+      await this.deleteComment(this.$route.params.id, commentId)
       const { library, comments } = await this.fetchLibrary(
         this.$route.params.id
       )
