@@ -24,6 +24,16 @@
     ul
       li(v-for="member in library.members" :key="member._id")
         RouterLink(:to="{ name: 'profile', params: { username: member.username } }") {{ member.username }}
+    h2 Comments 
+    form(@submit.prevent="doAddComment" v-if="isUserMember")
+      textarea(v-model="commentText" placeholder="Write a comment...")
+      button(type="submit") Submit
+    p(v-if="!comments") No comments yet.
+    ul
+      li(v-for="comment in comments" :key="comment._id")
+        p {{ comment.content }}
+        em by {{  comment.author.username }}
+
     h2 Books
     table
       thead
@@ -65,7 +75,9 @@ export default {
   data() {
     return {
       library: null, // init with null for clearer conditional checks
-      imgSrc: null
+      comments: null,
+      imgSrc: null,
+      commentText: ''
     }
   },
   components: {
@@ -89,7 +101,10 @@ export default {
     }
   },
   async mounted() {
-    this.library = await this.fetchLibrary(this.$route.params.id)
+    // returns object with library and comments
+    const { library, comments } = await this.fetchLibrary(this.$route.params.id)
+    this.library = library
+    this.comments = comments
     this.imgSrc = this.library.image
       ? `data:${this.library.image.filetype};base64,${this.library.image.data}`
       : null
@@ -99,7 +114,8 @@ export default {
     ...mapActions(useLibraryHandler, [
       'fetchLibrary',
       'joinLibrary',
-      'leaveLibrary'
+      'leaveLibrary',
+      'addComment'
     ]),
     ...mapActions(useLoansHandler, ['borrowBook', 'returnBook']),
     ...mapActions(useAccountStore, ['isOwnerOfLibrary']),
@@ -132,6 +148,15 @@ export default {
       })
 
       this.library.books = this.library.books.filter((b) => b._id !== book._id)
+    },
+    async doAddComment() {
+      await this.addComment(this.$route.params.id, this.commentText)
+      this.commentText = ''
+      const { library, comments } = await this.fetchLibrary(
+        this.$route.params.id
+      )
+      this.library = library
+      this.comments = comments
     },
     async handleDeletion() {
       if (confirm('Are you sure you want to delete this library?')) {
