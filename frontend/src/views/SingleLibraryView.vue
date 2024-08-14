@@ -33,8 +33,9 @@
       li(v-for="comment in comments" :key="comment._id")
         p {{ comment.content }}
         div.grid
-          em by {{  comment.author.username }}
-          button(v-if="isLoggedIn && comment.author.username === this.username" @click="doDeleteComment(comment._id)") Delete
+          em by {{ comment.author.username }}
+          //- members can delete their own comments, library owners can delete any comment
+          button(v-if="isOwner || (isLoggedIn && comment.author.username === this.username)" @click="doDeleteComment(comment._id)") Delete
           //- empty div to make the grid 3 columns in pico's system
           div 
 

@@ -39,8 +39,8 @@ module.exports.deleteComment = catchAsync(async (req, res, next) => {
     return next(createError(404, 'Comment not found'))
   }
 
-  const author = await User.findById(req.user._id)
-  await author.deleteComment(commentId)
+  const deleter = await User.findById(req.user._id)
+  await deleter.deleteComment(commentId)
 
   return res.status(204).send()
 })
