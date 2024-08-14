@@ -111,8 +111,13 @@ class UserService {
       throw new Error('comment does not exist')
     }
 
-    if (!comment.author._id.equals(this._id)) {
-      throw new Error('user is not the author of this comment')
+    if (
+      !comment.author._id.equals(this._id) &&
+      !comment.library.owner._id.equals(this._id)
+    ) {
+      throw new Error(
+        'user is neither the author of this comment nor the owner of the library'
+      )
     }
 
     await Comment.findByIdAndDelete(commentId)
