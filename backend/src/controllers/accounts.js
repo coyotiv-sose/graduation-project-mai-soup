@@ -23,14 +23,14 @@ module.exports.registerUser = catchAsync(async (req, res, next) => {
   }
 })
 
-module.exports.getAuthenticatedUser = catchAsync((req, res) => {
+module.exports.getAuthenticatedUser = (req, res) => {
   // strip salt and hash from user object before sending it to the client
   delete req.user.hash
   delete req.user.salt
   return res.send(req.user)
-})
+}
 
-module.exports.logoutAndDestroySession = catchAsync((req, res, next) => {
+module.exports.logoutAndDestroySession = (req, res, next) => {
   // return to appease the eslint overlords
   return req.logout(err => {
     if (err) return next(createError(500, 'Logout failed'))
@@ -38,4 +38,4 @@ module.exports.logoutAndDestroySession = catchAsync((req, res, next) => {
     // return to appease the eslint overlords
     return res.sendStatus(200)
   })
-})
+}
