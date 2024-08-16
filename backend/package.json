@@ -10,7 +10,7 @@
     "index": "node src/index.js",
     "eslint:check": "npx eslint .",
     "eslint:fix": "npx eslint --fix .",
-    "test": "jest --forceExit --silent --testTimeout 20000",
+    "test": "jest --forceExit --silent --testTimeout 20000 --coverage",
     "test:watch": "jest --watchAll --coverage --colors --testTimeout 20000",
     "test:coverage": "jest --coverage --colors"
   },
