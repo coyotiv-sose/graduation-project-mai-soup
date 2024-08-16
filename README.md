@@ -1,8 +1,10 @@
 # Porch Reads Club
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-![Backend tests status](https://github.com/mai-soup/porch-reads-club/actions/workflows/pr-backend.yml/badge.svg?branch=)
-![Frontend tests status](https://github.com/mai-soup/porch-reads-club/actions/workflows/pr-frontend.yml/badge.svg?branch=)
+
+Backend:
+[![Backend Maintainability](https://api.codeclimate.com/v1/badges/b7da9a73306252b9828a/maintainability)](https://codeclimate.com/github/mai-soup/porch-reads-club/maintainability)
+[![Backend Test Coverage](https://api.codeclimate.com/v1/badges/b7da9a73306252b9828a/test_coverage)](https://codeclimate.com/github/mai-soup/porch-reads-club/test_coverage)
 
 <!-- TODO: add badges for test coverage -->
 
