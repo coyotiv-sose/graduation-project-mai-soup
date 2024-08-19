@@ -13,6 +13,7 @@
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.6.0",
     "@fortawesome/free-solid-svg-icons": "^6.6.0",
+    "@fortawesome/vue-fontawesome": "^3.0.8",
     "@picocss/pico": "^1.5.10",
     "@vitejs/plugin-vue": "^4.2.3",
     "axios": "^1.4.0",
