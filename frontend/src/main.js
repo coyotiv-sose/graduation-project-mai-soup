@@ -1,3 +1,4 @@
+import './assets/bulma.min.css'
 import './assets/main.css'
 // TODO: make own css for toasts
 import 'vue-toastification/dist/index.css'
@@ -29,16 +30,10 @@ const toastOptions = {
   closeButton: false
 }
 
-import Buefy from 'buefy'
-import 'buefy/dist/buefy.css'
-
 // has to be a promise to avoid top-level async/await, which is not
 // supported by older browsers
 accountStore.fetchUser().then(() => {
   app.use(router)
   app.use(Toast, toastOptions)
-  app.use(Buefy, {
-    defaultIconPack: 'fas'
-  })
   app.mount('#app')
 })
