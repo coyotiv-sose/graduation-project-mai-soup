@@ -59,7 +59,6 @@ export default {
     },
     toggleBurger() {
       this.isBurgerExpanded = !this.isBurgerExpanded
-      console.log(this.isBurgerExpanded)
     }
   }
 }
