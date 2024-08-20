@@ -1,16 +1,24 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="src/assets/bulma.min.css" />
+    <link rel="stylesheet" href="src/assets/main.css" />
+    <title>Porch Reads Club</title>
+  </head>
 
-<head>
-  <meta charset="UTF-8">
-  <link rel="icon" href="/favicon.ico">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Porch Reads Club</title>
-</head>
-
-<body>
-  <div id="app"></div>
-  <script type="module" src="/src/main.js"></script>
-</body>
-
+  <body>
+    <div id="app">
+      <progress
+        class="progress is-primary my-auto mx-6"
+        max="100"
+        style="width: auto"
+      >
+        Loading...
+      </progress>
+    </div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
 </html>
