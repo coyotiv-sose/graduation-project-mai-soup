@@ -3,13 +3,12 @@ header
   nav.navbar(role='navigation' aria-label='main navigation')
     .navbar-brand
       RouterLink.navbar-item.has-text-weight-bold.is-size-5(to='/') Porch Reads Club
-      //- TODO: toggle burger and menu on mobile
-      a.navbar-burger(role='button' aria-label='menu' aria-expanded='false' data-target='nav')
+      a.navbar-burger(role='button' aria-label='menu' :aria-expanded="isBurgerExpanded" :class='{"is-active": isBurgerExpanded}' @click='toggleBurger')
         span(aria-hidden='true')
         span(aria-hidden='true')
         span(aria-hidden='true')
         span(aria-hidden='true')
-    .navbar-menu#nav
+    .navbar-menu(:class='{"is-active": isBurgerExpanded}')
       .navbar-start
         RouterLink.navbar-item.active(to='/') Home
         RouterLink.navbar-item(to='/libraries') Libraries
@@ -43,6 +42,11 @@ export default {
   components: {
     RouterLink
   },
+  data() {
+    return {
+      isBurgerExpanded: false
+    }
+  },
   computed: {
     ...mapState(useAccountStore, ['isLoggedIn'])
   },
@@ -52,6 +56,10 @@ export default {
       console.log('doLogout')
       e.preventDefault()
       await this.logout()
+    },
+    toggleBurger() {
+      this.isBurgerExpanded = !this.isBurgerExpanded
+      console.log(this.isBurgerExpanded)
     }
   }
 }
