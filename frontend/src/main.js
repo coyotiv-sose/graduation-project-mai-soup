@@ -1,5 +1,3 @@
-import './assets/bulma.min.css'
-import './assets/main.css'
 // TODO: make own css for toasts
 import 'vue-toastification/dist/index.css'
 
