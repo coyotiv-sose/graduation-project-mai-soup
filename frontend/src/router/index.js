@@ -76,7 +76,8 @@ const router = createRouter({
       component: () => import('../views/EditLibraryView.vue'),
       meta: { requiresAuth: true }
     }
-  ]
+  ],
+  linkActiveClass: 'is-active'
 })
 
 router.beforeEach(async (to) => {

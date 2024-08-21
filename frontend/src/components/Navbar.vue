@@ -2,7 +2,7 @@
 header
   nav.navbar(role='navigation' aria-label='main navigation')
     .navbar-brand
-      RouterLink.navbar-item.has-text-weight-bold.is-size-5(to='/') Porch Reads Club
+      RouterLink.navbar-item.has-text-weight-bold.is-size-5(to='/' active-class="") Porch Reads Club
       a.navbar-burger(role='button' aria-label='menu' :aria-expanded="isBurgerExpanded" :class='{"is-active": isBurgerExpanded}' @click='toggleBurger')
         span(aria-hidden='true')
         span(aria-hidden='true')
