@@ -1,3 +1,4 @@
+import './assets/main.scss'
 // TODO: make own css for toasts
 import 'vue-toastification/dist/index.css'
 
