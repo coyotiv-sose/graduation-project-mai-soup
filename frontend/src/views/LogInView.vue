@@ -1,10 +1,18 @@
 <template lang="pug">
 .container
-  h1 Log In
+  h1.title Log In
   form(@submit.prevent="performLogin")
-    input(type="text" placeholder="Username or email" v-model="identifier")
-    input(type="password" placeholder="Password" v-model="password")
-    button(type="submit") Log In
+    .field
+      .control.has-icons-left
+        input.input(type="text" placeholder="Username or email" v-model="identifier")
+        span.icon.is-small.is-left
+          font-awesome-icon(icon="user")
+    .field
+      .control.has-icons-left
+      input.input(type="password" placeholder="Password" v-model="password")
+    .field 
+      .control
+      button.button.is-success(type="submit") Log In
 </template>
 
 <script>
@@ -24,7 +32,7 @@ export default {
     async performLogin() {
       try {
         await this.login({ username: this.identifier, password: this.password })
-        this.$router.push({ name: 'home'})
+        this.$router.push({ name: 'home' })
       } catch (err) {
         console.error(err)
       }
