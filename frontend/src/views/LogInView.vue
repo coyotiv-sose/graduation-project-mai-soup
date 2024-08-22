@@ -14,7 +14,7 @@
           font-awesome-icon(icon="lock")
     .field 
       .control
-      button.button.is-success(type="submit") Log In
+        button.button.is-success(type="submit") Log In
 </template>
 
 <script>
