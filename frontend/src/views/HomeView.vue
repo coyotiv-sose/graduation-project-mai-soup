@@ -1,5 +1,4 @@
 <template lang="pug">
-Navbar
 .bg
   div
   .hero
@@ -19,10 +18,7 @@ Navbar
 import Navbar from '@/components/Navbar.vue'
 
 export default {
-  name: 'HomeView',
-  components: {
-    Navbar
-  }
+  name: 'HomeView'
 }
 </script>
 
