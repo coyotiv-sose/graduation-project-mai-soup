@@ -8,16 +8,19 @@
         input.input(type="text" id="username" v-model="username" minlength="3" maxlength="24" pattern="^[a-zA-Z0-9_-]+$" placeholder="Username" required)
         span.icon.is-small.is-left
           font-awesome-icon(icon="user")
+      p.help.is-danger(v-if="usernameError") {{ usernameError }}
     .field
       .control.has-icons-left 
         input.input(type="email" id="email" v-model="email" placeholder="Email" required)
         span.icon.is-small.is-left
           font-awesome-icon(icon="envelope")
+      p.help.is-danger(v-if="emailError") {{ emailError }}
     .field
       .control.has-icons-left 
         input.input(type="password" id="password" v-model="password" placeholder="Password" required)
         span.icon.is-small.is-left
           font-awesome-icon(icon="lock")
+      p.help.is-danger(v-if="passwordError") {{ passwordError }}
     .field
       .control
         button.button.is-success(type="submit" :disabled="shouldDisableSubmit") Sign Up
