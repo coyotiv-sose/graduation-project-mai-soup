@@ -36,10 +36,10 @@ import { library } from '@fortawesome/fontawesome-svg-core'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 /* import specific icons */
-import { faUser } from '@fortawesome/free-solid-svg-icons'
+import { faUser, faLock } from '@fortawesome/free-solid-svg-icons'
 
 /* add icons to the library */
-library.add(faUser)
+library.add(faUser, faLock)
 
 // has to be a promise to avoid top-level async/await, which is not
 // supported by older browsers

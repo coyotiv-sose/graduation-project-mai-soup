@@ -9,7 +9,9 @@
           font-awesome-icon(icon="user")
     .field
       .control.has-icons-left
-      input.input(type="password" placeholder="Password" v-model="password")
+        input.input(type="password" placeholder="Password" v-model="password")
+        span.icon.is-small.is-left
+          font-awesome-icon(icon="lock")
     .field 
       .control
       button.button.is-success(type="submit") Log In
