@@ -14,6 +14,7 @@ header
         RouterLink.navbar-item.is-tab(to='/libraries') Libraries
         RouterLink.navbar-item.is-tab(v-if='isLoggedIn' to='/books') Books
       .navbar-end
+      //- TODO: add greeting if user logged in
         RouterLink.navbar-item.is-tab(v-if='!isLoggedIn' to='/login') Login
         RouterLink.navbar-item.is-tab(v-if='!isLoggedIn' to='/signup') Sign Up
         a.navbar-item.is-tab(v-if='isLoggedIn' @click='doLogout') Logout
