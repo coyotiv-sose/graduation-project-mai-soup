@@ -29,10 +29,23 @@ const toastOptions = {
   closeButton: false
 }
 
+/* import the fontawesome core */
+import { library } from '@fortawesome/fontawesome-svg-core'
+
+/* import font awesome icon component */
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+
+/* import specific icons */
+import { faUser } from '@fortawesome/free-solid-svg-icons'
+
+/* add icons to the library */
+library.add(faUser)
+
 // has to be a promise to avoid top-level async/await, which is not
 // supported by older browsers
 accountStore.fetchUser().then(() => {
   app.use(router)
   app.use(Toast, toastOptions)
+  app.component('font-awesome-icon', FontAwesomeIcon)
   app.mount('#app')
 })
