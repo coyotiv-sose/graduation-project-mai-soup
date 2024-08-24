@@ -27,10 +27,29 @@
               //- else, show the join button
               button.card-footer-item(v-else @click="join") Join
       .cell
-        SingleLibraryMap(:coordinates="library.geometry.coordinates", :libraryName="library.name")
-      //- TODO: books section
+        SingleLibraryMap(v-if="library.geometry" :coordinates="library.geometry.coordinates", :libraryName="library.name")
       .cell
-      //- TODO: comments section
+        h2.title.is-4 Books
+        //- table to show the books in the library
+        table.table
+          thead
+            tr 
+              th Title
+              th Author(s)
+              th Status
+              th(v-if="isLoggedIn && isUserMember") Actions
+          tbody
+            tr(v-for="book in library.books" :key="book._id")
+              td 
+                RouterLink(:to="{name: 'single-book', params: {id: book._id}}") {{ book.title }}
+              td {{ book.authors }}
+              td
+                span(v-if="book.status === 'borrowed'") Borrowed by {{ book.borrower.username }} until {{ book.returnDate }}
+                span(v-else) {{ book.status }}
+              td.buttons(v-if="isLoggedIn && isUserMember")
+                button.button.is-primary(v-if="book.status === 'available'" @click="doBorrowOrReturn(book)") Borrow
+                button.button(v-if="book.status === 'borrowed' && book.borrower.username === this.username" @click="doBorrowOrReturn(book)") Return
+                button.button.is-danger(v-if="isOwner" @click="doRemoveBook(book)") Remove from library
       .cell
         h2.title.is-4 Comments
         //- form for adding comments
@@ -56,27 +75,6 @@
                 br
                 //- only members can delete their own comments, library owners can delete any comment
                 button.button.is-danger.is-small.mt-2(v-if="isOwner || (isLoggedIn && comment.author.username === this.username)" @click="doDeleteComment(comment._id)") Delete
-
-  //-   h2 Books
-  //-   table
-  //-     thead
-  //-       tr
-  //-         th Title
-  //-         th Status
-  //-         th(v-if="isLoggedIn && isUserMember") Action
-  //-     tbody
-  //-       tr(v-for="book in library.books" :key="book._id")
-  //-         td
-  //-           RouterLink(:to="{ name: 'single-book', params: { id: book._id } }") {{ book.title }}
-  //-           p by {{ book.authors }}
-  //-         td
-  //-           span(v-if="book.status === 'borrowed'") Borrowed by {{ book.borrower.username }} until {{ book.returnDate }}
-  //-           span(v-else) {{ book.status }}
-  //-         td(v-if="isLoggedIn && isUserMember")
-  //-           div
-  //-             button(v-if="book.status === 'available'" @click="doBorrowOrReturn(book)") Borrow
-  //-             button(v-if="book.status === 'borrowed' && book.borrower.username === this.username" @click="doBorrowOrReturn(book)") Return
-  //-             button(v-if="isOwner" @click="doRemoveBook(book)") Remove from library
 </template>
 
 <script>
@@ -161,8 +159,11 @@ export default {
       } else {
         await this.borrowBook(this.library._id, book._id)
       }
-      this.library = await this.fetchLibrary(this.$route.params.id)
-      this.fetchUser()
+      const { library, comments } = await this.fetchLibrary(
+        this.$route.params.id
+      )
+      this.library = library
+      this.comments = comments
     },
     async doRemoveBook(book) {
       await this.removeBook({
