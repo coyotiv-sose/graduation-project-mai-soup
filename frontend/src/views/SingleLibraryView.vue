@@ -9,7 +9,7 @@
             figure.image.is-5by3
               img(:src="imgSrc")
           .card-content
-            p.title {{ library.name }}
+            h1.title {{ library.name }}
             p.subtitle.is-6 by 
               RouterLink(:to="{ name: 'profile', params: { username: ownerUsername } }") {{ ownerUsername }} 
               |  at {{ library.location }}
@@ -32,21 +32,30 @@
       .cell
       //- TODO: comments section
       .cell
-
-  //-   h2 Comments 
-  //-   form(@submit.prevent="doAddComment" v-if="isUserMember")
-  //-     textarea(v-model="commentText" placeholder="Write a comment...")
-  //-     button(type="submit") Submit
-  //-   p(v-if="!comments || comments === []") No comments yet.
-  //-   ul
-  //-     li(v-for="comment in comments" :key="comment._id")
-  //-       p {{ comment.content }}
-  //-       div.grid
-  //-         em by {{ comment.author.username }}
-  //-         //- members can delete their own comments, library owners can delete any comment
-  //-         button(v-if="isOwner || (isLoggedIn && comment.author.username === this.username)" @click="doDeleteComment(comment._id)") Delete
-  //-         //- empty div to make the grid 3 columns in pico's system
-  //-         div 
+        h2.title.is-4 Comments
+        //- form for adding comments
+        article.media(v-if="isUserMember")
+          .media-content
+            form(@submit.prevent="doAddComment")
+              .field
+                .control
+                  textarea.textarea(v-model="commentText" placeholder="Write a comment...")
+              .field
+                .control 
+                  button.button(type="submit") Submit
+        //- if there are no comments, show a message
+        small(v-if="!comments || comments.length === 0") No comments yet.
+        //- otherwise, show the comments
+        article.media(v-for="comment in comments" :key="comment._id")
+          .media-content
+            .content
+              p
+                strong {{ comment.author.username }}
+                br
+                | {{ comment.content }}
+                br
+                //- only members can delete their own comments, library owners can delete any comment
+                button.button.is-danger.is-small.mt-2(v-if="isOwner || (isLoggedIn && comment.author.username === this.username)" @click="doDeleteComment(comment._id)") Delete
 
   //-   h2 Books
   //-   table
