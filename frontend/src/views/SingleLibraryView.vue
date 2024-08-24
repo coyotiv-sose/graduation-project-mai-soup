@@ -1,64 +1,73 @@
 <template lang="pug">
-.container
-  div(v-if="!library") Loading...
-  div(v-else)
-    h1 {{ library.name }}
-    p Location: {{ library.location }}
-    SingleLibraryMap(:coordinates="library.geometry.coordinates", :libraryName="library.name")
-    p Owner:
-      RouterLink(v-if="ownerUsername" :to="{ name: 'profile', params: { username: ownerUsername } }") {{ ownerUsername }}
-    //- TODO: add styling to the image
-    img(v-if="imgSrc" :src="imgSrc")
-    // if logged in user is not the owner and is not a member, show the join button
-    button(v-if="isLoggedIn && !isOwner && !isUserMember" @click="join") Join
-    // if not the owner and is a member, show the leave button
-    button(v-if="isLoggedIn && !isOwner && isUserMember" @click="leave") Leave
-    // if is the owner, show management buttons
-    div(v-if="isLoggedIn && isOwner")
-      RouterLink(:to="{name: 'add-book', params: {id: this.$route.params.id}}") Add New Book
-      br
-      RouterLink(:to="{name: 'edit-library', params: {id: this.$route.params.id}}") Edit Library
-      br
-      a(@click="handleDeletion") Delete Library
-    h2 Members
-    ul
-      li(v-for="member in library.members" :key="member._id")
-        RouterLink(:to="{ name: 'profile', params: { username: member.username } }") {{ member.username }}
-    h2 Comments 
-    form(@submit.prevent="doAddComment" v-if="isUserMember")
-      textarea(v-model="commentText" placeholder="Write a comment...")
-      button(type="submit") Submit
-    p(v-if="!comments || comments === []") No comments yet.
-    ul
-      li(v-for="comment in comments" :key="comment._id")
-        p {{ comment.content }}
-        div.grid
-          em by {{ comment.author.username }}
-          //- members can delete their own comments, library owners can delete any comment
-          button(v-if="isOwner || (isLoggedIn && comment.author.username === this.username)" @click="doDeleteComment(comment._id)") Delete
-          //- empty div to make the grid 3 columns in pico's system
-          div 
+.container 
+  // TODO: loading indicator
+  .fixed-grid.has-1-cols-mobile.has-2-cols(v-if="library")
+    .grid
+      .cell
+        .card
+          .card-image(v-if="imgSrc")
+            figure.image.is-5by3
+              img(:src="imgSrc")
+          .card-content
+            p.title {{ library.name }}
+            p.subtitle.is-6 by 
+              RouterLink(:to="{ name: 'profile', params: { username: ownerUsername } }") {{ ownerUsername }} 
+              |  at {{ library.location }}
+            p {{ library.description }}
+          .card-footer(v-if="isLoggedIn") 
+            //- if logged in user is the owner, show management buttons
+            template(v-if="isOwner")
+              RouterLink.card-footer-item(:to="{name: 'add-book', params: {id: this.$route.params.id}}") Add New Book
+              RouterLink.card-footer-item(:to="{name: 'edit-library', params: {id: this.$route.params.id}}") Edit Library
+              a.card-footer-item.button.is-danger.is-inverted.is-radiusless(@click="handleDeletion") Delete Library
+            //- otherwise, if is not the owner
+            template(v-else)
+              //- if user is a member, show the leave button
+              button.card-footer-item(v-if="isUserMember" @click="leave") Leave
+              //- else, show the join button
+              button.card-footer-item(v-else @click="join") Join
+      .cell
+        SingleLibraryMap(:coordinates="library.geometry.coordinates", :libraryName="library.name")
+      //- TODO: books section
+      .cell
+      //- TODO: comments section
+      .cell
 
-    h2 Books
-    table
-      thead
-        tr
-          th Title
-          th Status
-          th(v-if="isLoggedIn && isUserMember") Action
-      tbody
-        tr(v-for="book in library.books" :key="book._id")
-          td
-            RouterLink(:to="{ name: 'single-book', params: { id: book._id } }") {{ book.title }}
-            p by {{ book.authors }}
-          td
-            span(v-if="book.status === 'borrowed'") Borrowed by {{ book.borrower.username }} until {{ book.returnDate }}
-            span(v-else) {{ book.status }}
-          td(v-if="isLoggedIn && isUserMember")
-            div
-              button(v-if="book.status === 'available'" @click="doBorrowOrReturn(book)") Borrow
-              button(v-if="book.status === 'borrowed' && book.borrower.username === this.username" @click="doBorrowOrReturn(book)") Return
-              button(v-if="isOwner" @click="doRemoveBook(book)") Remove from library
+  //-   h2 Comments 
+  //-   form(@submit.prevent="doAddComment" v-if="isUserMember")
+  //-     textarea(v-model="commentText" placeholder="Write a comment...")
+  //-     button(type="submit") Submit
+  //-   p(v-if="!comments || comments === []") No comments yet.
+  //-   ul
+  //-     li(v-for="comment in comments" :key="comment._id")
+  //-       p {{ comment.content }}
+  //-       div.grid
+  //-         em by {{ comment.author.username }}
+  //-         //- members can delete their own comments, library owners can delete any comment
+  //-         button(v-if="isOwner || (isLoggedIn && comment.author.username === this.username)" @click="doDeleteComment(comment._id)") Delete
+  //-         //- empty div to make the grid 3 columns in pico's system
+  //-         div 
+
+  //-   h2 Books
+  //-   table
+  //-     thead
+  //-       tr
+  //-         th Title
+  //-         th Status
+  //-         th(v-if="isLoggedIn && isUserMember") Action
+  //-     tbody
+  //-       tr(v-for="book in library.books" :key="book._id")
+  //-         td
+  //-           RouterLink(:to="{ name: 'single-book', params: { id: book._id } }") {{ book.title }}
+  //-           p by {{ book.authors }}
+  //-         td
+  //-           span(v-if="book.status === 'borrowed'") Borrowed by {{ book.borrower.username }} until {{ book.returnDate }}
+  //-           span(v-else) {{ book.status }}
+  //-         td(v-if="isLoggedIn && isUserMember")
+  //-           div
+  //-             button(v-if="book.status === 'available'" @click="doBorrowOrReturn(book)") Borrow
+  //-             button(v-if="book.status === 'borrowed' && book.borrower.username === this.username" @click="doBorrowOrReturn(book)") Return
+  //-             button(v-if="isOwner" @click="doRemoveBook(book)") Remove from library
 </template>
 
 <script>
