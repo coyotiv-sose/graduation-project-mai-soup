@@ -47,9 +47,9 @@
                 span(v-if="book.status === 'borrowed'") Borrowed by {{ book.borrower.username }} until {{ book.returnDate }}
                 span(v-else) {{ book.status }}
               td.buttons(v-if="isLoggedIn && isUserMember")
-                button.button.is-primary(v-if="book.status === 'available'" @click="doBorrowOrReturn(book)") Borrow
-                button.button(v-if="book.status === 'borrowed' && book.borrower.username === this.username" @click="doBorrowOrReturn(book)") Return
-                button.button.is-danger(v-if="isOwner" @click="doRemoveBook(book)") Remove from library
+                button.button.is-primary.is-small(v-if="book.status === 'available'" @click="doBorrowOrReturn(book)") Borrow
+                button.button.is-small(v-if="book.status === 'borrowed' && book.borrower.username === this.username" @click="doBorrowOrReturn(book)") Return
+                button.button.is-danger.is-small(v-if="isOwner" @click="doRemoveBook(book)") Remove from library
       .cell
         h2.title.is-4 Comments
         //- form for adding comments
