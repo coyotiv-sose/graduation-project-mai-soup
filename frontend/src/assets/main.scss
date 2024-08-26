@@ -6,8 +6,8 @@ $dark-brown: #bc6c25;
 
 @use 'bulma/sass' with (
   $primary: $light-green,
-  $background: $off-white,
-  $link: $light-green
+  $link: $light-brown,
+  $info: $dark-brown
 );
 
 #app {
