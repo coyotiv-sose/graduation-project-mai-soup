@@ -40,8 +40,7 @@
               th(v-if="isLoggedIn && isUserMember") Actions
           tbody
             tr(v-for="book in library.books" :key="book._id")
-              td 
-                RouterLink(:to="{name: 'single-book', params: {id: book._id}}") {{ book.title }}
+              td {{ book.title }}
               td {{ book.authors }}
               td
                 span(v-if="book.status === 'borrowed'") Borrowed by {{ book.borrower.username }} until {{ book.returnDate }}
