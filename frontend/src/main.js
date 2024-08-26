@@ -41,11 +41,12 @@ import {
   faLock,
   faEnvelope,
   faBook,
-  faUserPen
+  faUserPen,
+  faBuildingColumns
 } from '@fortawesome/free-solid-svg-icons'
 
 /* add icons to the library */
-library.add(faUser, faLock, faEnvelope, faBook, faUserPen)
+library.add(faUser, faLock, faEnvelope, faBook, faUserPen, faBuildingColumns)
 
 // has to be a promise to avoid top-level async/await, which is not
 // supported by older browsers
