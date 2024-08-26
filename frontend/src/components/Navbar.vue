@@ -12,7 +12,6 @@ header
       .navbar-start
         RouterLink.navbar-item.is-tab(to='/') Home
         RouterLink.navbar-item.is-tab(to='/libraries') Libraries
-        RouterLink.navbar-item.is-tab(v-if='isLoggedIn' to='/books') Books
       .navbar-end
         //- TODO: add greeting if user logged in
         RouterLink.navbar-item.is-tab(v-if='!isLoggedIn' to='/login') Login

@@ -47,18 +47,6 @@ const router = createRouter({
       meta: { requiresAuth: false }
     },
     {
-      path: '/books',
-      name: 'all-books',
-      component: () => import('../views/AllBooksView.vue'),
-      meta: { requiresAuth: true }
-    },
-    {
-      path: '/books/:id',
-      name: 'single-book',
-      component: () => import('../views/SingleBookView.vue'),
-      meta: { requiresAuth: true }
-    },
-    {
       path: '/loans',
       name: 'loans',
       component: () => import('../views/LoansView.vue'),

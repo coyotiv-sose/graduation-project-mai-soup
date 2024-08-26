@@ -7,7 +7,7 @@
       // if the loan is about to expire, add the .expiring class.
       li(v-for="loan in loans" :key="loan._id" :class="{ expiring: loan.isExpiringSoon }")
         div
-          RouterLink(:to="{ name: 'single-book', params: { id: loan._id } }") {{ loan.title }}
+          | {{ loan.title }} 
           span Borrowed until {{ loan.returnDate }}
           button(@click="doReturn(loan)") Return
           // if the loan is due in 7 days or less, show a button to extend the loan
@@ -18,16 +18,12 @@
 </template>
 
 <script>
-import { RouterLink } from 'vue-router'
 import { useAccountStore } from '../stores/account'
 import { useLoansHandler } from '../stores/loans-handler'
 import { mapActions, mapState } from 'pinia'
 
 export default {
   name: 'LoansView',
-  components: {
-    RouterLink
-  },
   mounted() {
     this.fetchUser()
   },
