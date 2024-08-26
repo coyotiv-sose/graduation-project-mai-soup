@@ -31,24 +31,7 @@
       .cell
         h2.title.is-4 Books
         //- table to show the books in the library
-        table.table
-          thead
-            tr 
-              th Title
-              th Author(s)
-              th Status
-              th(v-if="isLoggedIn && isUserMember") Actions
-          tbody
-            tr(v-for="book in library.books" :key="book._id")
-              td {{ book.title }}
-              td {{ book.authors }}
-              td
-                span(v-if="book.status === 'borrowed'") {{ this.toReturnDateFormat(book.returnDate) }}
-                span(v-else) {{ book.status }}
-              td.buttons(v-if="isLoggedIn && isUserMember")
-                button.button.is-primary.is-small(v-if="book.status === 'available'" @click="doBorrowOrReturn(book)") Borrow
-                button.button.is-small(v-if="book.status === 'borrowed' && book.borrower.username === this.username" @click="doBorrowOrReturn(book)") Return
-                button.button.is-danger.is-small(v-if="isOwner" @click="doRemoveBook(book)") Remove from library
+        BookTable(:bookData="library.books", :isOwner="isOwner" :isMember="isUserMember") 
       .cell
         h2.title.is-4 Comments
         //- form for adding comments
@@ -84,6 +67,7 @@ import { useLoansHandler } from '../stores/loans-handler'
 import { useLibrarianHandler } from '../stores/librarian-handler'
 import { mapActions, mapState } from 'pinia'
 import SingleLibraryMap from '../components/SingleLibraryMap.vue'
+import BookTable from '../components/BookTable.vue'
 import useApiRequests from '../composables/useApiRequests'
 import useDateFormatter from '../composables/useDateFormatter'
 
@@ -104,7 +88,8 @@ export default {
   },
   components: {
     RouterLink,
-    SingleLibraryMap
+    SingleLibraryMap,
+    BookTable
   },
   computed: {
     ...mapState(useAccountStore, ['isLoggedIn', 'username']),
