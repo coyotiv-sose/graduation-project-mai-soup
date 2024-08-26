@@ -1,33 +1,22 @@
 <template lang="pug">
 .container
-  h1 Loans
+  h1.title Loans
+  div(v-if="!loans") Loading...
   // if logged in user has any loans, show them
-  div(v-if="loans?.length > 0")
-    ul
-      // if the loan is about to expire, add the .expiring class.
-      li(v-for="loan in loans" :key="loan._id" :class="{ expiring: loan.isExpiringSoon }")
-        div
-          | {{ loan.title }} 
-          span {{ this.toReturnDateFormat(loan.returnDate) }}
-          button(@click="doReturn(loan)") Return
-          // if the loan is due in 7 days or less, show a button to extend the loan
-          button(v-if="loan.isExpiringInAWeek" @click="doExtend(loan)") Extend
-  // else, if length 0, show a message. if null, show loading
-  div(v-else-if="loans?.length === 0") You have no loans.
-  div(v-else) Loading...
+  BookTable(v-if="loans && loans.length > 0" :bookData="loans" :isOwner="false" :isMember="true")
+  // if logged in user has no loans, show a message
+  p(v-else) You have no loans.
 </template>
 
 <script>
+import BookTable from '../components/BookTable.vue'
 import { useAccountStore } from '../stores/account'
-import { useLoansHandler } from '../stores/loans-handler'
 import { mapActions, mapState } from 'pinia'
-import useDateFormatter from '../composables/useDateFormatter'
 
 export default {
   name: 'LoansView',
-  setup() {
-    const { toReturnDateFormat } = useDateFormatter()
-    return { toReturnDateFormat }
+  components: {
+    BookTable
   },
   mounted() {
     this.fetchUser()
@@ -36,16 +25,7 @@ export default {
     ...mapState(useAccountStore, ['loans'])
   },
   methods: {
-    ...mapActions(useAccountStore, ['fetchUser']),
-    ...mapActions(useLoansHandler, ['returnBook', 'extendLoan']),
-    async doReturn(loan) {
-      await this.returnBook(loan.library._id, loan._id)
-      this.fetchUser()
-    },
-    async doExtend(loan) {
-      await this.extendLoan(loan.library._id, loan._id)
-      this.fetchUser()
-    }
+    ...mapActions(useAccountStore, ['fetchUser'])
   }
 }
 </script>
