@@ -12,6 +12,7 @@ header
       .navbar-start
         RouterLink.navbar-item(to='/') Home
         RouterLink.navbar-item(to='/libraries') Libraries
+        RouterLink.navbar-item(v-if="isLoggedIn" to="/loans") Loans
       .navbar-end
         //- TODO: add greeting if user logged in
         RouterLink.navbar-item(v-if='!isLoggedIn' to='/login') Login

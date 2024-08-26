@@ -51,11 +51,12 @@ export default {
     ...mapActions(useAccountStore, ['isOwnerOfLibrary']),
     ...mapActions(useLibrarianHandler, ['removeBook']),
     async doBorrowOrReturn(book) {
-      const libraryId = this.$route.params.id
+      const libraryId = book.library._id
       if (book.status === 'borrowed') {
         await this.returnBook(libraryId, book._id)
       } else {
         await this.borrowBook(libraryId, book._id)
+        book.borrower = { _id: this.username, username: this.username }
       }
 
       // TODO: should fetch updated book data instead
