@@ -1,14 +1,24 @@
 <template lang="pug">
 .container
-  h1 Add Book to Library
+  h1.title Add Book to Library
   // TODO: refactor to be same as other forms
   form(v-on:submit.prevent="onSubmit")
     // books have a title, author(s), and optional image to upload
-    input(type="text" v-model="title" placeholder="Title")
-    input(type="text" v-model="authors" placeholder="Authors")
+    .field
+      .control.has-icons-left
+        input.input(type="text" v-model="title" placeholder="Title")
+        span.icon.is-small.is-left
+          font-awesome-icon(icon="book")
+    .field
+      .control.has-icons-left
+        input.input(type="text" v-model="authors" placeholder="Author(s)")
+        span.icon.is-small.is-left
+          font-awesome-icon(icon="user-pen")
     //- TODO: add image upload
-    //- small(v-if="queryError") {{ queryError }}
-    button(type="submit" :disabled="shouldPreventSubmission") Submit
+    //- TODO: add error messages
+    .field 
+      .control 
+        button.button.is-success(type="submit" :disabled="shouldPreventSubmission") Submit
 </template>
 
 <script>
