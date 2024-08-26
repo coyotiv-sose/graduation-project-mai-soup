@@ -107,11 +107,10 @@ export default {
     SingleLibraryMap
   },
   computed: {
-    ...mapState(useAccountStore, ['isLoggedIn']),
+    ...mapState(useAccountStore, ['isLoggedIn', 'username']),
     ownerUsername() {
       return this.library.owner ? this.library.owner.username : null
     },
-    ...mapState(useAccountStore, ['isLoggedIn', 'username']),
     isUserMember() {
       return (
         this.library &&
