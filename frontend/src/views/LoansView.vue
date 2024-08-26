@@ -8,7 +8,7 @@
       li(v-for="loan in loans" :key="loan._id" :class="{ expiring: loan.isExpiringSoon }")
         div
           | {{ loan.title }} 
-          span Borrowed until {{ loan.returnDate }}
+          span {{ this.toReturnDateFormat(loan.returnDate) }}
           button(@click="doReturn(loan)") Return
           // if the loan is due in 7 days or less, show a button to extend the loan
           button(v-if="loan.isExpiringInAWeek" @click="doExtend(loan)") Extend
@@ -21,9 +21,14 @@
 import { useAccountStore } from '../stores/account'
 import { useLoansHandler } from '../stores/loans-handler'
 import { mapActions, mapState } from 'pinia'
+import useDateFormatter from '../composables/useDateFormatter'
 
 export default {
   name: 'LoansView',
+  setup() {
+    const { toReturnDateFormat } = useDateFormatter()
+    return { toReturnDateFormat }
+  },
   mounted() {
     this.fetchUser()
   },

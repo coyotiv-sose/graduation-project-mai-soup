@@ -43,7 +43,7 @@
               td {{ book.title }}
               td {{ book.authors }}
               td
-                span(v-if="book.status === 'borrowed'") Borrowed by {{ book.borrower.username }} until {{ book.returnDate }}
+                span(v-if="book.status === 'borrowed'") {{ this.toReturnDateFormat(book.returnDate) }}
                 span(v-else) {{ book.status }}
               td.buttons(v-if="isLoggedIn && isUserMember")
                 button.button.is-primary.is-small(v-if="book.status === 'available'" @click="doBorrowOrReturn(book)") Borrow
@@ -85,12 +85,14 @@ import { useLibrarianHandler } from '../stores/librarian-handler'
 import { mapActions, mapState } from 'pinia'
 import SingleLibraryMap from '../components/SingleLibraryMap.vue'
 import useApiRequests from '../composables/useApiRequests'
+import useDateFormatter from '../composables/useDateFormatter'
 
 export default {
   name: 'SingleLibraryView',
   setup() {
     const { del } = useApiRequests()
-    return { del }
+    const { toReturnDateFormat } = useDateFormatter()
+    return { del, toReturnDateFormat }
   },
   data() {
     return {
