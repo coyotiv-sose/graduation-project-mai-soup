@@ -7,7 +7,7 @@
         .card
           .card-image(v-if="imgSrc")
             figure.image.is-5by3
-              img(:src="imgSrc")
+              img.library-card-image(:src="imgSrc")
           .card-content
             h1.title {{ library.name }}
             p.subtitle.is-6 by 
