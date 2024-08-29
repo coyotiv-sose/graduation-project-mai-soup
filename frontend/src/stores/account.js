@@ -12,7 +12,7 @@ export const useAccountStore = defineStore('account', {
   },
   actions: {
     ...(() => {
-      const { get, post, del, patch } = useApiRequests()
+      const { get, post, del } = useApiRequests()
       return {
         async fetchUser() {
           this.user = await get('/accounts/session')

@@ -23,11 +23,11 @@ export default {
   components: {
     BookTable
   },
-  mounted() {
-    this.fetchUser()
-  },
   computed: {
     ...mapState(useAccountStore, ['loans'])
+  },
+  mounted() {
+    this.fetchUser()
   },
   methods: {
     ...mapActions(useAccountStore, ['fetchUser'])

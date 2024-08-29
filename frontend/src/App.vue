@@ -1,16 +1,16 @@
 <template lang="pug">
-Navbar
+MainNavbar
 RouterView
 </template>
 
 <script>
 import { RouterView } from 'vue-router'
-import Navbar from '@/components/Navbar.vue'
+import MainNavbar from '@/components/MainNavbar.vue'
 
 export default {
   components: {
     RouterView,
-    Navbar
+    MainNavbar
   }
 }
 </script>

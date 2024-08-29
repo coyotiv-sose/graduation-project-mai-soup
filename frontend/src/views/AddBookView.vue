@@ -42,6 +42,12 @@ export default {
       return !this.title || !this.authors
     }
   },
+  watch: {
+    query(value) {
+      this.query = value
+      this.validateQuery(value)
+    }
+  },
   methods: {
     ...mapActions(useLibrarianHandler, ['createBook']),
     async onSubmit() {
@@ -57,12 +63,6 @@ export default {
         name: 'single-library',
         params: { id: this.$route.params.id }
       })
-    }
-  },
-  watch: {
-    query(value) {
-      this.query = value
-      this.validateQuery(value)
     }
   }
 }

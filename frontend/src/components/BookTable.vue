@@ -43,14 +43,14 @@ export default {
     isOwner: { type: Boolean, default: false },
     isMember: { type: Boolean, default: false }
   },
+  setup() {
+    const { toReturnDateFormat } = useDateFormatter()
+    return { toReturnDateFormat }
+  },
   data() {
     return {
       books: this.bookData
     }
-  },
-  setup() {
-    const { toReturnDateFormat } = useDateFormatter()
-    return { toReturnDateFormat }
   },
   computed: {
     ...mapState(useAccountStore, ['isLoggedIn', 'username'])

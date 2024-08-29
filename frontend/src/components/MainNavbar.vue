@@ -35,7 +35,7 @@ import { useAccountStore } from '../stores/account'
 import { mapActions, mapState } from 'pinia'
 
 export default {
-  name: 'Navbar',
+  name: 'MainNavbar',
   components: {
     RouterLink
   },

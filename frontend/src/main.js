@@ -64,6 +64,6 @@ library.add(
 accountStore.fetchUser().then(() => {
   app.use(router)
   app.use(Toast, toastOptions)
-  app.component('font-awesome-icon', FontAwesomeIcon)
+  app.component('FontAwesomeIcon', FontAwesomeIcon)
   app.mount('#app')
 })

@@ -69,6 +69,11 @@ import { useLibraryHandler } from '../stores/library-handler'
 
 export default {
   name: 'AllLibrariesView',
+  components: {
+    RouterLink,
+    AllLibrariesMap,
+    MembershipsPanel
+  },
   data() {
     return {
       libraries: [],
@@ -78,11 +83,6 @@ export default {
   },
   computed: {
     ...mapState(useAccountStore, ['user'])
-  },
-  components: {
-    RouterLink,
-    AllLibrariesMap,
-    MembershipsPanel
   },
   async mounted() {
     this.libraries = await this.fetchAllLibraries()

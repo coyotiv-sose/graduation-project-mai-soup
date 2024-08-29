@@ -37,6 +37,7 @@ import useApiRequests from '../composables/useApiRequests'
 
 export default {
   name: 'LibraryInfoForm',
+  props: ['action', 'libraryId'],
   setup() {
     const { get, post } = useApiRequests()
     return { get, post }
@@ -50,12 +51,28 @@ export default {
       file: null
     }
   },
-  props: ['action', 'libraryId'],
   computed: {
     shouldDisableSubmit() {
       return (
         !this.name || this.nameError || !this.location || this.locationError
       )
+    }
+  },
+  watch: {
+    name(value) {
+      this.name = value
+      this.validateName(value)
+    },
+    location(value) {
+      this.location = value
+      this.validateLocation(value)
+    }
+  },
+  async mounted() {
+    if (this.action === 'edit') {
+      this.library = await this.get(`/libraries/${this.libraryId}`)
+      this.name = this.library.name
+      this.location = this.library.location
     }
   },
   methods: {
@@ -135,23 +152,6 @@ export default {
     },
     updateFile(evt) {
       this.file = evt.target.files[0]
-    }
-  },
-  async mounted() {
-    if (this.action === 'edit') {
-      this.library = await this.get(`/libraries/${this.libraryId}`)
-      this.name = this.library.name
-      this.location = this.library.location
-    }
-  },
-  watch: {
-    name(value) {
-      this.name = value
-      this.validateName(value)
-    },
-    location(value) {
-      this.location = value
-      this.validateLocation(value)
     }
   }
 }

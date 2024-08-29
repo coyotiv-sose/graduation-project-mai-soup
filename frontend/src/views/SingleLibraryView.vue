@@ -97,6 +97,11 @@ import useDateFormatter from '../composables/useDateFormatter'
 
 export default {
   name: 'SingleLibraryView',
+  components: {
+    RouterLink,
+    SingleLibraryMap,
+    BookTable
+  },
   setup() {
     const { del } = useApiRequests()
     const { toReturnDateFormat } = useDateFormatter()
@@ -109,11 +114,6 @@ export default {
       imgSrc: null,
       commentText: ''
     }
-  },
-  components: {
-    RouterLink,
-    SingleLibraryMap,
-    BookTable
   },
   computed: {
     ...mapState(useAccountStore, ['isLoggedIn', 'username']),
