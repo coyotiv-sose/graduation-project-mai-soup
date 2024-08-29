@@ -2,22 +2,31 @@
 //- table to show the books in the library
 table.table
   thead
-    tr 
+    tr
       th Title
       th Author(s)
       th Status
-      th(v-if="isLoggedIn && isMember") Actions
+      th(v-if='isLoggedIn && isMember') Actions
   tbody
-    tr(v-for="book in this.books" :key="book._id")
+    tr(v-for='book in this.books', :key='book._id')
       td {{ book.title }}
       td {{ book.authors }}
       td
-        span(v-if="book.status === 'borrowed'") {{ this.toReturnDateFormat(book.returnDate) }}
+        span(v-if='book.status === "borrowed"') {{ this.toReturnDateFormat(book.returnDate) }}
         span(v-else) {{ book.status }}
-      td.buttons(v-if="isLoggedIn && isMember")
-        button.button.is-primary.is-small(v-if="book.status === 'available'" @click="doBorrowOrReturn(book)") Borrow
-        button.button.is-small(v-if="book.status === 'borrowed' && book.borrower.username === this.username" @click="doBorrowOrReturn(book)") Return
-        button.button.is-danger.is-small(v-if="isOwner" @click="doRemoveBook(book)") Remove from library
+      td.buttons(v-if='isLoggedIn && isMember')
+        button.button.is-primary.is-small(
+          v-if='book.status === "available"',
+          @click='doBorrowOrReturn(book)'
+        ) Borrow
+        button.button.is-small(
+          v-if='book.status === "borrowed" && book.borrower.username === this.username',
+          @click='doBorrowOrReturn(book)'
+        ) Return
+        button.button.is-danger.is-small(
+          v-if='isOwner',
+          @click='doRemoveBook(book)'
+        ) Remove from library
 </template>
 
 <script>

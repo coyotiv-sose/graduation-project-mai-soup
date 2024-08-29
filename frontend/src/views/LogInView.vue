@@ -1,20 +1,28 @@
 <template lang="pug">
 .container
   h1.title Log In
-  form(@submit.prevent="performLogin")
+  form(@submit.prevent='performLogin')
     .field
       .control.has-icons-left
-        input.input(type="text" placeholder="Username or email" v-model="identifier")
+        input.input(
+          type='text',
+          placeholder='Username or email',
+          v-model='identifier'
+        )
         span.icon.is-small.is-left
-          font-awesome-icon(icon="user")
+          font-awesome-icon(icon='user')
     .field
       .control.has-icons-left
-        input.input(type="password" placeholder="Password" v-model="password")
+        input.input(
+          type='password',
+          placeholder='Password',
+          v-model='password'
+        )
         span.icon.is-small.is-left
-          font-awesome-icon(icon="lock")
-    .field 
+          font-awesome-icon(icon='lock')
+    .field
       .control
-        button.button.is-success(type="submit") Log In
+        button.button.is-success(type='submit') Log In
 </template>
 
 <script>

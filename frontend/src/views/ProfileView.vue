@@ -1,9 +1,12 @@
 <template lang="pug">
 .container
-  div(v-if="!user") Loading...
+  div(v-if='!user') Loading...
   div(v-else)
     h1.title {{ user.username }}
-    MembershipsPanel(:memberships='user.memberships' :ownedLibraries='user.ownedLibraries')
+    MembershipsPanel(
+      :memberships='user.memberships',
+      :ownedLibraries='user.ownedLibraries'
+    )
 </template>
 
 <script>

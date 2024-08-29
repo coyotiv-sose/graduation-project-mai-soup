@@ -1,10 +1,20 @@
 <template lang="pug">
 .panel.is-info
   p.panel-heading Memberships
-  a.panel-block(v-if="memberships.length === 0") {{ emptyMessage }}
-  RouterLink.panel-block(v-else v-for='library in memberships' :to="'/libraries/' + library._id" :key='library._id' :class="{ 'is-active': this.isOwnerOfLibrary(library._id) }")
+  a.panel-block(v-if='memberships.length === 0') {{ emptyMessage }}
+  RouterLink.panel-block(
+    v-else,
+    v-for='library in memberships',
+    :to='"/libraries/" + library._id',
+    :key='library._id',
+    :class='{ "is-active": this.isOwnerOfLibrary(library._id) }'
+  )
     span.panel-icon
-      font-awesome-icon(icon="building-columns" aria-hidden="true" :title="this.isOwnerOfLibrary(library._id) ? 'Owner' : 'Member'")
+      font-awesome-icon(
+        icon='building-columns',
+        aria-hidden='true',
+        :title='this.isOwnerOfLibrary(library._id) ? "Owner" : "Member"'
+      )
     | {{ library.name }}
 </template>
 
