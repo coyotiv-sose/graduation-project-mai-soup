@@ -26,11 +26,11 @@ export default {
       user: null
     }
   },
-  methods: {
-    ...mapActions(useProfileHandler, ['fetchProfile'])
-  },
   async mounted() {
     this.user = await this.fetchProfile(this.$route.params.username)
+  },
+  methods: {
+    ...mapActions(useProfileHandler, ['fetchProfile'])
   }
 }
 </script>

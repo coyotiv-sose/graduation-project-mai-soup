@@ -76,6 +76,16 @@ export default {
       )
     }
   },
+  watch: {
+    username(value) {
+      this.username = value
+      this.validateUsername(value)
+    },
+    email(value) {
+      this.email = value
+      this.validateEmail(value)
+    }
+  },
   methods: {
     ...mapActions(useAccountStore, ['signUp']),
     async performSignUp() {
@@ -112,16 +122,6 @@ export default {
       }
 
       this.emailError = null
-    }
-  },
-  watch: {
-    username(value) {
-      this.username = value
-      this.validateUsername(value)
-    },
-    email(value) {
-      this.email = value
-      this.validateEmail(value)
     }
   }
 }

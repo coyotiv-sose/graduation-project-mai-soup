@@ -15,6 +15,9 @@ export default {
       popupComponents: []
     }
   },
+  mounted() {
+    this.setupMap()
+  },
   methods: {
     setupMap() {
       mapboxgl.accessToken = this.mbxToken
@@ -41,9 +44,6 @@ export default {
 
       map.addControl(new mapboxgl.NavigationControl())
     }
-  },
-  mounted() {
-    this.setupMap()
   }
 }
 </script>
