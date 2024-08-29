@@ -3,9 +3,10 @@
   div
   .hero
     .hero-body
-      p.title.mb-5  Porch Reads Club
+      p.title.mb-5 Porch Reads Club
       p.subtitle Welcome to your online library hub!
-      p.subtitle Simplify book management, connect with members, 
+      p.subtitle Simplify book management, connect with members,
+        |
         br 
         | and enhance your book lending experience.
       p.subtitle Dive in and explore libraries now!

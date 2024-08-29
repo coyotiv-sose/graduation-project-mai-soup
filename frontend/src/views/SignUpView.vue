@@ -2,28 +2,49 @@
 .container
   h1.title Sign Up
   // TODO: prevent form submission altogether if validation fails, not just through button
-  form(@submit.prevent="performSignUp")
+  form(@submit.prevent='performSignUp')
     .field
-      .control.has-icons-left 
-        input.input(type="text" id="username" v-model="username" minlength="3" maxlength="24" pattern="^[a-zA-Z0-9_-]+$" placeholder="Username" required)
+      .control.has-icons-left
+        input#username.input(
+          type='text',
+          v-model='username',
+          minlength='3',
+          maxlength='24',
+          pattern='^[a-zA-Z0-9_-]+$',
+          placeholder='Username',
+          required
+        )
         span.icon.is-small.is-left
-          font-awesome-icon(icon="user")
-      p.help.is-danger(v-if="usernameError") {{ usernameError }}
+          font-awesome-icon(icon='user')
+      p.help.is-danger(v-if='usernameError') {{ usernameError }}
     .field
-      .control.has-icons-left 
-        input.input(type="email" id="email" v-model="email" placeholder="Email" required)
+      .control.has-icons-left
+        input#email.input(
+          type='email',
+          v-model='email',
+          placeholder='Email',
+          required
+        )
         span.icon.is-small.is-left
-          font-awesome-icon(icon="envelope")
-      p.help.is-danger(v-if="emailError") {{ emailError }}
+          font-awesome-icon(icon='envelope')
+      p.help.is-danger(v-if='emailError') {{ emailError }}
     .field
-      .control.has-icons-left 
-        input.input(type="password" id="password" v-model="password" placeholder="Password" required)
+      .control.has-icons-left
+        input#password.input(
+          type='password',
+          v-model='password',
+          placeholder='Password',
+          required
+        )
         span.icon.is-small.is-left
-          font-awesome-icon(icon="lock")
-      p.help.is-danger(v-if="passwordError") {{ passwordError }}
+          font-awesome-icon(icon='lock')
+      p.help.is-danger(v-if='passwordError') {{ passwordError }}
     .field
       .control
-        button.button.is-success(type="submit" :disabled="shouldDisableSubmit") Sign Up
+        button.button.is-success(
+          type='submit',
+          :disabled='shouldDisableSubmit'
+        ) Sign Up
 </template>
 
 <script>

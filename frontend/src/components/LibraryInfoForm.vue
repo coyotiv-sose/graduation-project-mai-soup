@@ -1,28 +1,32 @@
 <template lang="pug">
-form(v-if="this.action !== 'edit' || library" @submit.prevent="doSubmit")
+form(v-if='this.action !== "edit" || library', @submit.prevent='doSubmit')
   .field
     .control.has-icons-left
-      input.input(type="text" v-model="name" placeholder="Name")
+      input.input(type='text', v-model='name', placeholder='Name')
       span.icon.is-small.is-left
-        font-awesome-icon(icon="book")
-    p.help.is-danger(v-if="nameError") {{ nameError }}
-  .field 
-    .control.has-icons-left 
-      input.input(type="text" v-model="location" placeholder="Location")
-      span.icon.is-small.is-left 
-        font-awesome-icon(icon="location-dot")
-    p.help.is-danger(v-if="locationError") {{ locationError }}
-    p.help.is-warning(v-if="locationWarning") {{ locationWarning }}
+        font-awesome-icon(icon='book')
+    p.help.is-danger(v-if='nameError') {{ nameError }}
   .field
-    .control.has-icons-left 
+    .control.has-icons-left
+      input.input(type='text', v-model='location', placeholder='Location')
+      span.icon.is-small.is-left
+        font-awesome-icon(icon='location-dot')
+    p.help.is-danger(v-if='locationError') {{ locationError }}
+    p.help.is-warning(v-if='locationWarning') {{ locationWarning }}
+  .field
+    .control.has-icons-left
       //- TODO: add bulma's custom styling as per https://bulma.io/documentation/form/file/
-      input.input(type="file" @change="updateFile" accept="image/gif, image/jpeg, image/png")
-      span.icon.is-small.is-left 
-        font-awesome-icon(icon="image")
-  .field 
-    .control 
-      button.button.is-success(type="submit" :disabled="shouldDisableSubmit") Submit
-p(v-else aria-busy="true") Loading...
+      input.input(
+        type='file',
+        @change='updateFile',
+        accept='image/gif, image/jpeg, image/png'
+      )
+      span.icon.is-small.is-left
+        font-awesome-icon(icon='image')
+  .field
+    .control
+      button.button.is-success(type='submit', :disabled='shouldDisableSubmit') Submit
+p(v-else, aria-busy='true') Loading...
 </template>
 
 <script>

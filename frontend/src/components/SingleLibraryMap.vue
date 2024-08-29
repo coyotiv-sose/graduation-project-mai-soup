@@ -1,5 +1,5 @@
 <template lang="pug">
-div#map
+#map
 </template>
 
 <script>
@@ -11,28 +11,29 @@ export default {
   props: ['coordinates', 'libraryName'],
   data() {
     return {
-      mbxToken: import.meta.env.VITE_MAPBOX_TOKEN,
+      mbxToken: import.meta.env.VITE_MAPBOX_TOKEN
     }
   },
   methods: {
     setupMap() {
       mapboxgl.accessToken = this.mbxToken
       const map = new mapboxgl.Map({
-        container: "map",
-        style: "mapbox://styles/mapbox/dark-v11",
+        container: 'map',
+        style: 'mapbox://styles/mapbox/dark-v11',
         center: this.coordinates,
         zoom: 14
       })
 
       // library marker
-      new mapboxgl.Marker({ color: "red" })
+      new mapboxgl.Marker({ color: 'red' })
         .setLngLat(this.coordinates)
         // TODO: some pico styles are interfering with the popup. fix.
         .setPopup(
-          new mapboxgl.Popup({ offset: 24 })
-            .setHTML(`<strong>${this.libraryName}</strong>`)
+          new mapboxgl.Popup({ offset: 24 }).setHTML(
+            `<strong>${this.libraryName}</strong>`
+          )
         )
-        .addTo(map);
+        .addTo(map)
 
       map.addControl(new mapboxgl.NavigationControl())
     }

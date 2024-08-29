@@ -5,24 +5,40 @@
 .container
   h1.title Libraries
   // TODO: loading indicator
-  .fixed-grid.has-1-cols-mobile.has-2-cols(v-if="libraries")
+  .fixed-grid.has-1-cols-mobile.has-2-cols(v-if='libraries')
     .grid
       .cell
-        AllLibrariesMap(v-if="this.longitude && this.latitude" :libraries="this.libraries" :longitude="this.longitude" :latitude="this.latitude")
-      .cell 
-        MembershipsPanel(:memberships="this.user.memberships" :ownedLibraries="this.user.ownedLibraries" emptyMessage="You are not yet a member of any libraries.")
+        AllLibrariesMap(
+          v-if='this.longitude && this.latitude',
+          :libraries='this.libraries',
+          :longitude='this.longitude',
+          :latitude='this.latitude'
+        )
+      .cell
+        MembershipsPanel(
+          :memberships='this.user.memberships',
+          :ownedLibraries='this.user.ownedLibraries',
+          emptyMessage='You are not yet a member of any libraries.'
+        )
   .grid.is-col-min-12
-    .cell(v-for="library in this.libraries" :key="library.id")
+    .cell(v-for='library in this.libraries', :key='library.id')
       .card
-        .card-image(v-if="library.image")
-          .figure.image.is-5by3 
-            img.library-card-image(:src="base64ToImage(library.image)" :alt="library.name")
+        .card-image(v-if='library.image')
+          .figure.image.is-5by3
+            img.library-card-image(
+              :src='base64ToImage(library.image)',
+              :alt='library.name'
+            )
         .card-content
-          RouterLink.title(:to="{ name: 'single-library', params: { id: library._id } }") {{ library.name }}
+          RouterLink.title(
+            :to='{ name: "single-library", params: { id: library._id } }'
+          ) {{ library.name }}
           p.subtitle {{ library.location }}
           p {{ library.description }}
-        .card-footer 
-          RouterLink.card-footer-item(:to="{ name: 'single-library', params: { id: library._id } }") View {{ library.name }}
+        .card-footer
+          RouterLink.card-footer-item(
+            :to='{ name: "single-library", params: { id: library._id } }'
+          ) View {{ library.name }}
 //- .container
 //-   h1 Libraries
 //-     // link to create a new library

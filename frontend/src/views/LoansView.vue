@@ -1,9 +1,14 @@
 <template lang="pug">
 .container
   h1.title Loans
-  div(v-if="!loans") Loading...
+  div(v-if='!loans') Loading...
   // if logged in user has any loans, show them
-  BookTable(v-if="loans && loans.length > 0" :bookData="loans" :isOwner="false" :isMember="true")
+  BookTable(
+    v-if='loans && loans.length > 0',
+    :bookData='loans',
+    :isOwner='false',
+    :isMember='true'
+  )
   // if logged in user has no loans, show a message
   p(v-else) You have no loans.
 </template>
