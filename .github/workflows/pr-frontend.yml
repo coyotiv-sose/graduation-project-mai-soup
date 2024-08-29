@@ -30,5 +30,7 @@ jobs:
         with:
           script: |
             core.setFailed('Uh oh, someone forgot to bump the frontend package version!')
+      - name: Check linting
+        run: npm run lint
       - name: Try to build app
         run: npm run build
