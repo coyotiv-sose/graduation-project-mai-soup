@@ -1,5 +1,5 @@
 <template lang="pug">
-.panel.is-info
+article.panel.is-info
   p.panel-heading Memberships
   a.panel-block(v-if='memberships.length === 0') {{ emptyMessage }}
   RouterLink.panel-block(
