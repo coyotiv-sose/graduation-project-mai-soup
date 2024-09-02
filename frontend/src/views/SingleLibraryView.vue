@@ -1,86 +1,85 @@
 <template lang="pug">
-.container
-  // TODO: loading indicator
-  .fixed-grid.has-1-cols-mobile.has-2-cols(v-if='library')
-    .grid
-      .cell
-        .card
-          .card-image(v-if='imgSrc')
-            figure.image.is-5by3
-              img.library-card-image(:src='imgSrc')
-          .card-content
-            h1.title {{ library.name }}
-            p.subtitle.is-6 by
-              |
-              RouterLink(
-                :to='{ name: "profile", params: { username: ownerUsername } }'
-              ) {{ ownerUsername }}
-              |
-              | at {{ library.location }}
-            p {{ library.description }}
-          .card-footer(v-if='isLoggedIn') 
-            //- if logged in user is the owner, show management buttons
-            template(v-if='isOwner')
-              RouterLink.card-footer-item(
-                :to='{ name: "add-book", params: { id: this.$route.params.id } }'
-              ) Add New Book
-              RouterLink.card-footer-item(
-                :to='{ name: "edit-library", params: { id: this.$route.params.id } }'
-              ) Edit Library
-              a.card-footer-item.button.is-danger.is-inverted.is-radiusless(
-                @click='handleDeletion'
-              ) Delete Library
-            //- otherwise, if is not the owner
-            template(v-else)
-              //- if user is a member, show the leave button
-              button.card-footer-item(v-if='isUserMember', @click='leave') Leave
-              //- else, show the join button
-              button.card-footer-item(v-else, @click='join') Join
-      .cell
-        SingleLibraryMap(
-          v-if='library.geometry',
-          :coordinates='library.geometry.coordinates',
-          :libraryName='library.name'
-        )
-      .cell
-        h2.title.is-4 Books
-        //- table to show the books in the library
-        BookTable(
-          :bookData='library.books',
-          :isOwner='isOwner',
-          :isMember='isUserMember'
-        ) 
-      .cell
-        h2.title.is-4 Comments
-        //- form for adding comments
-        article.media(v-if='isUserMember')
-          .media-content
-            form(@submit.prevent='doAddComment')
-              .field
-                .control
-                  textarea.textarea(
-                    v-model='commentText',
-                    placeholder='Write a comment...'
-                  )
-              .field
-                .control
-                  button.button(type='submit') Submit
-        //- if there are no comments, show a message
-        small(v-if='!comments || comments.length === 0') No comments yet.
-        //- otherwise, show the comments
-        article.media(v-for='comment in comments', :key='comment._id')
-          .media-content
-            .content
-              p
-                strong {{ comment.author.username }}
-                br
-                | {{ comment.content }}
-                br
-                //- only members can delete their own comments, library owners can delete any comment
-                button.button.is-danger.is-small.mt-2(
-                  v-if='isOwner || (isLoggedIn && comment.author.username === this.username)',
-                  @click='doDeleteComment(comment._id)'
-                ) Delete
+// TODO: loading indicator
+.fixed-grid.has-1-cols-mobile.has-2-cols(v-if='library')
+  .grid
+    .cell
+      .card
+        .card-image(v-if='imgSrc')
+          figure.image.is-5by3
+            img.library-card-image(:src='imgSrc')
+        .card-content
+          h1.title {{ library.name }}
+          p.subtitle.is-6 by
+            |
+            RouterLink(
+              :to='{ name: "profile", params: { username: ownerUsername } }'
+            ) {{ ownerUsername }}
+            |
+            | at {{ library.location }}
+          p {{ library.description }}
+        .card-footer(v-if='isLoggedIn') 
+          //- if logged in user is the owner, show management buttons
+          template(v-if='isOwner')
+            RouterLink.card-footer-item(
+              :to='{ name: "add-book", params: { id: this.$route.params.id } }'
+            ) Add New Book
+            RouterLink.card-footer-item(
+              :to='{ name: "edit-library", params: { id: this.$route.params.id } }'
+            ) Edit Library
+            a.card-footer-item.button.is-danger.is-inverted.is-radiusless(
+              @click='handleDeletion'
+            ) Delete Library
+          //- otherwise, if is not the owner
+          template(v-else)
+            //- if user is a member, show the leave button
+            button.card-footer-item(v-if='isUserMember', @click='leave') Leave
+            //- else, show the join button
+            button.card-footer-item(v-else, @click='join') Join
+    .cell
+      SingleLibraryMap(
+        v-if='library.geometry',
+        :coordinates='library.geometry.coordinates',
+        :libraryName='library.name'
+      )
+    .cell
+      h2.title.is-4 Books
+      //- table to show the books in the library
+      BookTable(
+        :bookData='library.books',
+        :isOwner='isOwner',
+        :isMember='isUserMember'
+      ) 
+    .cell
+      h2.title.is-4 Comments
+      //- form for adding comments
+      article.media(v-if='isUserMember')
+        .media-content
+          form(@submit.prevent='doAddComment')
+            .field
+              .control
+                textarea.textarea(
+                  v-model='commentText',
+                  placeholder='Write a comment...'
+                )
+            .field
+              .control
+                button.button(type='submit') Submit
+      //- if there are no comments, show a message
+      small(v-if='!comments || comments.length === 0') No comments yet.
+      //- otherwise, show the comments
+      article.media(v-for='comment in comments', :key='comment._id')
+        .media-content
+          .content
+            p
+              strong {{ comment.author.username }}
+              br
+              | {{ comment.content }}
+              br
+              //- only members can delete their own comments, library owners can delete any comment
+              button.button.is-danger.is-small.mt-2(
+                v-if='isOwner || (isLoggedIn && comment.author.username === this.username)',
+                @click='doDeleteComment(comment._id)'
+              ) Delete
 </template>
 
 <script>

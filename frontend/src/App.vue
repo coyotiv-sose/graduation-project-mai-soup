@@ -1,6 +1,9 @@
 <template lang="pug">
 MainNavbar
-RouterView
+//- if current view is home, don't wrap in main container
+main.container(v-if='$route.name !== "home"')
+  RouterView
+RouterView(v-else)
 </template>
 
 <script>

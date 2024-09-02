@@ -2,7 +2,7 @@
 .bg
   div
   .hero
-    .hero-body
+    main.hero-body
       p.title.mb-5 Porch Reads Club
       p.subtitle Welcome to your online library hub!
       p.subtitle Simplify book management, connect with members,
