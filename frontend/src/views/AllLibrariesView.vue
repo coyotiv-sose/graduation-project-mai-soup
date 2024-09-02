@@ -16,11 +16,11 @@ h1.title Libraries
         :ownedLibraries='this.user.ownedLibraries',
         emptyMessage='You are not yet a member of any libraries.'
       )
-.grid.is-col-min-12
+section.grid.is-col-min-12
   .cell(v-for='library in this.libraries', :key='library.id')
-    .card
+    article.card
       .card-image(v-if='library.image')
-        .figure.image.is-5by3
+        figure.figure.image.is-5by3
           img.library-card-image(
             :src='base64ToImage(library.image)',
             :alt='library.name'

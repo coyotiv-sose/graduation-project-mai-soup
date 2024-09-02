@@ -1,5 +1,5 @@
 <template lang="pug">
-#map
+article#map
 </template>
 
 <script>

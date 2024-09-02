@@ -1,6 +1,6 @@
 <template lang="pug">
-div(v-if='!user') Loading...
-div(v-else)
+p(v-if='!user') Loading...
+template(v-else)
   h1.title {{ user.username }}
   MembershipsPanel(
     :memberships='user.memberships',

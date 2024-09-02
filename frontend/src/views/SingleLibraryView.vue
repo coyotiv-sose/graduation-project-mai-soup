@@ -2,8 +2,8 @@
 // TODO: loading indicator
 .fixed-grid.has-1-cols-mobile.has-2-cols(v-if='library')
   .grid
-    .cell
-      .card
+    section.cell
+      article.card
         .card-image(v-if='imgSrc')
           figure.image.is-5by3
             img.library-card-image(:src='imgSrc')
@@ -35,13 +35,13 @@
             button.card-footer-item(v-if='isUserMember', @click='leave') Leave
             //- else, show the join button
             button.card-footer-item(v-else, @click='join') Join
-    .cell
+    section.cell
       SingleLibraryMap(
         v-if='library.geometry',
         :coordinates='library.geometry.coordinates',
         :libraryName='library.name'
       )
-    .cell
+    section.cell
       h2.title.is-4 Books
       //- table to show the books in the library
       BookTable(
@@ -49,7 +49,7 @@
         :isOwner='isOwner',
         :isMember='isUserMember'
       ) 
-    .cell
+    section.cell
       h2.title.is-4 Comments
       //- form for adding comments
       article.media(v-if='isUserMember')
