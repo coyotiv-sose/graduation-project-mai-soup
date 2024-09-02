@@ -1,8 +1,7 @@
 <template lang="pug">
-.container
-  h1.title Edit Library
-  // TODO: prevent form submission altogether if validation fails, not just through button
-  LibraryInfoForm(action='edit', :libraryId='this.$route.params.id')
+h1.title Edit Library
+// TODO: prevent form submission altogether if validation fails, not just through button
+LibraryInfoForm(action='edit', :libraryId='this.$route.params.id')
 </template>
 
 <script>
