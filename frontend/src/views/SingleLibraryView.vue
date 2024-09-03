@@ -36,10 +36,13 @@
             //- else, show the join button
             button.card-footer-item(v-else, @click='join') Join
     section.cell
+      //- screen readers and tab navigation should skip it
       SingleLibraryMap(
         v-if='library.geometry',
         :coordinates='library.geometry.coordinates',
-        :libraryName='library.name'
+        :libraryName='library.name',
+        aria-hidden='true',
+        tabindex='-1'
       )
     section.cell
       h2.title.is-4 Books

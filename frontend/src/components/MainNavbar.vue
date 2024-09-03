@@ -26,7 +26,8 @@ header
         //- TODO: add greeting if user logged in
         RouterLink.navbar-item(v-if='!isLoggedIn', to='/login') Login
         RouterLink.navbar-item(v-if='!isLoggedIn', to='/signup') Sign Up
-        a.navbar-item(v-if='isLoggedIn', @click='doLogout') Logout
+        //- has to have tabindex 0 for focus to work for some reason??
+        a.navbar-item(v-if='isLoggedIn', @click='doLogout', tabindex='0') Logout
 </template>
 
 <script>
