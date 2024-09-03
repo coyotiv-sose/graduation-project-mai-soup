@@ -5,8 +5,8 @@
     section.cell
       article.card
         .card-image(v-if='imgSrc')
-          figure.image.is-5by3
-            img.library-card-image(:src='imgSrc')
+          figure.image.is-5by3(aria-label='library image')
+            img.library-card-image(:src='imgSrc', :alt='library.name')
         .card-content
           h1.title {{ library.name }}
           p.subtitle.is-6 by
@@ -27,7 +27,8 @@
               :to='{ name: "edit-library", params: { id: this.$route.params.id } }'
             ) Edit Library
             a.card-footer-item.button.is-danger.is-inverted.is-radiusless(
-              @click='handleDeletion'
+              @click='handleDeletion',
+              tabindex='0'
             ) Delete Library
           //- otherwise, if is not the owner
           template(v-else)
@@ -59,10 +60,11 @@
         .media-content
           form(@submit.prevent='doAddComment')
             .field
+              label.label(for='commentText') Write a comment
               .control
-                textarea.textarea(
+                textarea#commentText.textarea(
                   v-model='commentText',
-                  placeholder='Write a comment...'
+                  placeholder='Write your comment here'
                 )
             .field
               .control
