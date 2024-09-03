@@ -12,8 +12,8 @@ h1.title Libraries
       )
     .cell
       MembershipsPanel(
-        :memberships='this.user.memberships',
-        :ownedLibraries='this.user.ownedLibraries',
+        :memberships='this.user?.memberships',
+        :ownedLibraries='this.user?.ownedLibraries',
         emptyMessage='You are not yet a member of any libraries.'
       )
 section.grid.is-col-min-12
