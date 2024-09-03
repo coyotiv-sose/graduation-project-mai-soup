@@ -10,7 +10,10 @@
         br 
         | and enhance your book lending experience.
       p.subtitle Dive in and explore libraries now!
-      RouterLink.button.is-primary(to='/libraries') View Libraries
+      RouterLink.button.is-primary(
+        to='/libraries',
+        aria-label='View Libraries'
+      ) View Libraries
   footer
     p.mb-5.is-size-5 Maijs Garais, 2024
 </template>
