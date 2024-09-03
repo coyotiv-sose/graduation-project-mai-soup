@@ -20,14 +20,15 @@ section.grid.is-col-min-12
   .cell(v-for='library in this.libraries', :key='library.id')
     article.card
       .card-image(v-if='library.image')
-        figure.figure.image.is-5by3
+        figure.figure.image.is-5by3(:aria-labelledby='library._id')
           img.library-card-image(
             :src='base64ToImage(library.image)',
             :alt='library.name'
           )
       .card-content
         RouterLink.title(
-          :to='{ name: "single-library", params: { id: library._id } }'
+          :to='{ name: "single-library", params: { id: library._id } }',
+          :id='library._id'
         ) {{ library.name }}
         p.subtitle {{ library.location }}
         p {{ library.description }}
