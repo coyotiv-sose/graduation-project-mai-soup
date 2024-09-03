@@ -4,18 +4,18 @@
   .hero
     main.hero-body
       h1.title.mb-5 Porch Reads Club
-      p.subtitle Welcome to your online library hub!
-      p.subtitle Simplify book management, connect with members,
+      p.subtitle.has-text-grey-lighter Welcome to your online library hub!
+      p.subtitle.has-text-grey-lighter Simplify book management, connect with members,
         |
         br 
         | and enhance your book lending experience.
-      p.subtitle Dive in and explore libraries now!
+      p.subtitle.has-text-grey-lighter Dive in and explore libraries now!
       RouterLink.button.is-primary(
         to='/libraries',
         aria-label='View Libraries'
       ) View Libraries
   footer
-    p.mb-5.is-size-5 Maijs Garais, 2024
+    p.mb-5.is-size-5.has-text-grey-lighter Maijs Garais, 2024
 </template>
 
 <script>
