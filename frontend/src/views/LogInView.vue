@@ -1,18 +1,25 @@
 <template lang="pug">
 h1.title Log In
-form(@submit.prevent='performLogin')
+form(@submit.prevent='performLogin', aria-label='Login form')
   .field
+    label.label(for='identifier') Username or email
     .control.has-icons-left
-      input.input(
+      input#identifier.input(
         type='text',
-        placeholder='Username or email',
-        v-model='identifier'
+        placeholder='bookworm@example.com',
+        v-model='identifier',
+        required
       )
       span.icon.is-small.is-left
         font-awesome-icon(icon='user')
   .field
+    label.label(for='password') Password
     .control.has-icons-left
-      input.input(type='password', placeholder='Password', v-model='password')
+      input#password.input(
+        type='password',
+        placeholder='Password',
+        v-model='password'
+      )
       span.icon.is-small.is-left
         font-awesome-icon(icon='lock')
   .field
