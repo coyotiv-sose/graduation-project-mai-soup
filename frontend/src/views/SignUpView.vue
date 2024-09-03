@@ -1,8 +1,9 @@
 <template lang="pug">
 h1.title Sign Up
 // TODO: prevent form submission altogether if validation fails, not just through button
-form(@submit.prevent='performSignUp')
+form(@submit.prevent='performSignUp', aria-label='Sign up form')
   .field
+    label.label(for='username') Username
     .control.has-icons-left
       input#username.input(
         type='text',
@@ -17,6 +18,7 @@ form(@submit.prevent='performSignUp')
         font-awesome-icon(icon='user')
     p.help.is-danger(v-if='usernameError') {{ usernameError }}
   .field
+    label.label(for='email') Email
     .control.has-icons-left
       input#email.input(
         type='email',
@@ -28,6 +30,7 @@ form(@submit.prevent='performSignUp')
         font-awesome-icon(icon='envelope')
     p.help.is-danger(v-if='emailError') {{ emailError }}
   .field
+    label.label(for='password') Password
     .control.has-icons-left
       input#password.input(
         type='password',
