@@ -1,5 +1,6 @@
 <template lang="pug">
-article#map
+//- screen readers and tab navigation should skip it
+article#map(aria-hidden='true', tabindex='-1')
 </template>
 
 <script>
