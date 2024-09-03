@@ -1,6 +1,6 @@
 <template lang="pug">
 //- table to show the books in the library
-table.table
+table.table(aria-label='book table')
   thead
     tr
       th Title
