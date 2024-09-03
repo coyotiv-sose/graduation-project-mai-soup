@@ -1,6 +1,6 @@
 <template lang="pug">
 article.panel.is-info
-  p.panel-heading Memberships
+  h2.panel-heading Memberships
   a.panel-block(v-if='!memberships || memberships.length === 0') {{ emptyMessage }}
   RouterLink.panel-block(
     v-else,
