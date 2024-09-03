@@ -1,6 +1,6 @@
 <template lang="pug">
 header
-  nav.navbar.is-primary(role='navigation', aria-label='main navigation')
+  nav.navbar.is-primary(aria-label='main navigation')
     .navbar-brand
       RouterLink.navbar-item.has-text-weight-bold.is-size-5(
         to='/',
