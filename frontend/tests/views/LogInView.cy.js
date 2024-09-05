@@ -1,4 +1,4 @@
-import LogInView from './LogInView.vue'
+import LogInView from '@/views/LogInView.vue'
 
 describe('<LogInView />', () => {
   it('renders', () => {
