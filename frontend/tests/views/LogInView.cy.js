@@ -1,12 +1,23 @@
 import LogInView from '@/views/LogInView.vue'
 import { createPinia } from 'pinia'
 
+const SELECTORS = {
+  form: 'form[aria-label="Login form"]',
+  identifier: '#identifier',
+  password: '#password',
+  submitButton: 'button[type="submit"]',
+  title: 'h1.title'
+}
+
 describe('LogInView', () => {
   beforeEach(() => {
     cy.mount(LogInView, {
       global: {
         plugins: [createPinia()]
       }
+    }).then(({ component }) => {
+      // attach the component instance to the Cypress context for reuse in tests
+      cy.wrap(component).as('component')
     })
   })
 
@@ -33,33 +44,27 @@ describe('LogInView', () => {
   })
 
   it('calls performLogin method on form submission', () => {
-    cy.mount(LogInView).then(({ component }) => {
-      // Access the component instance and stub the performLogin method
+    cy.get('@component').then((component) => {
       cy.stub(component, 'performLogin').as('performLoginStub')
     })
 
-    // Interact with the form
     cy.get('#identifier').type('testuser@example.com')
     cy.get('#password').type('Password123#')
     cy.get('form').submit()
 
-    // Assert the stub was called
     cy.get('@performLoginStub').should('have.been.calledOnce')
   })
 
   it('redirects to home page on successful login', () => {
-    cy.stub(LogInView.methods, 'login').resolves()
-    cy.stub(LogInView.methods, 'performLogin').callThrough()
+    cy.get('@component').then((component) => {
+      // stub login method and callThrough performLogin
+      cy.stub(component, 'login').resolves()
+      cy.stub(component, 'performLogin').callThrough()
 
-    const routerPushStub = cy.stub().as('routerPushStub')
-    cy.mount(LogInView, {
-      global: {
-        plugins: [createPinia()],
-        mocks: {
-          $router: {
-            push: routerPushStub
-          }
-        }
+      // mock the router's push method
+      const routerPushStub = cy.stub().as('routerPushStub')
+      component.$router = {
+        push: routerPushStub
       }
     })
 
