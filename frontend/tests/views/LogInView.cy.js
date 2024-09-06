@@ -1,5 +1,4 @@
 import LogInView from '@/views/LogInView.vue'
-import { createPinia } from 'pinia'
 
 const SELECTORS = {
   form: 'form[aria-label="Login form"]',
@@ -16,11 +15,7 @@ Cypress.Commands.add('fillLoginForm', (identifier, password) => {
 
 describe('LogInView', () => {
   beforeEach(() => {
-    cy.mount(LogInView, {
-      global: {
-        plugins: [createPinia()]
-      }
-    }).then(({ component }) => {
+    cy.mount(LogInView).then(({ component }) => {
       // attach the component instance to the Cypress context for reuse in tests
       cy.wrap(component).as('component')
     })
