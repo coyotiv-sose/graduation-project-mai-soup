@@ -22,25 +22,25 @@ describe('LogInView', () => {
   })
 
   it('renders the login form', () => {
-    cy.get('form[aria-label="Login form"]').should('exist')
-    cy.get('h1.title').should('contain', 'Log In')
+    cy.get(SELECTORS.form).should('exist')
+    cy.get(SELECTORS.title).should('contain', 'Log In')
   })
 
   it('has input fields for identifier and password', () => {
-    cy.get('#identifier').should('exist')
-    cy.get('#password').should('exist')
+    cy.get(SELECTORS.identifier).should('exist')
+    cy.get(SELECTORS.password).should('exist')
   })
 
   it('allows entering identifier and password', () => {
-    cy.get('#identifier').type('testuser@example.com')
-    cy.get('#password').type('password123')
+    cy.get(SELECTORS.identifier).type('testuser@example.com')
+    cy.get(SELECTORS.password).type('password123')
 
-    cy.get('#identifier').should('have.value', 'testuser@example.com')
-    cy.get('#password').should('have.value', 'password123')
+    cy.get(SELECTORS.identifier).should('have.value', 'testuser@example.com')
+    cy.get(SELECTORS.password).should('have.value', 'password123')
   })
 
   it('has a submit button', () => {
-    cy.get('button[type="submit"]').should('exist').and('contain', 'Log In')
+    cy.get(SELECTORS.submitButton).should('exist').and('contain', 'Log In')
   })
 
   it('calls performLogin method on form submission', () => {
@@ -48,9 +48,9 @@ describe('LogInView', () => {
       cy.stub(component, 'performLogin').as('performLoginStub')
     })
 
-    cy.get('#identifier').type('testuser@example.com')
-    cy.get('#password').type('Password123#')
-    cy.get('form').submit()
+    cy.get(SELECTORS.identifier).type('testuser@example.com')
+    cy.get(SELECTORS.password).type('password123')
+    cy.get(SELECTORS.form).submit()
 
     cy.get('@performLoginStub').should('have.been.calledOnce')
   })
@@ -68,9 +68,9 @@ describe('LogInView', () => {
       }
     })
 
-    cy.get('#identifier').type('testuser@example.com')
-    cy.get('#password').type('password123')
-    cy.get('form').submit()
+    cy.get(SELECTORS.identifier).type('testuser@example.com')
+    cy.get(SELECTORS.password).type('password123')
+    cy.get(SELECTORS.form).submit()
 
     cy.get('@routerPushStub').should('have.been.calledWith', { name: 'home' })
   })
