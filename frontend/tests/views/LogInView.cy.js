@@ -9,6 +9,11 @@ const SELECTORS = {
   title: 'h1.title'
 }
 
+Cypress.Commands.add('fillLoginForm', (identifier, password) => {
+  cy.get(SELECTORS.identifier).type(identifier)
+  cy.get(SELECTORS.password).type(password)
+})
+
 describe('LogInView', () => {
   beforeEach(() => {
     cy.mount(LogInView, {
@@ -32,8 +37,7 @@ describe('LogInView', () => {
   })
 
   it('allows entering identifier and password', () => {
-    cy.get(SELECTORS.identifier).type('testuser@example.com')
-    cy.get(SELECTORS.password).type('password123')
+    cy.fillLoginForm('testuser@example.com', 'password123')
 
     cy.get(SELECTORS.identifier).should('have.value', 'testuser@example.com')
     cy.get(SELECTORS.password).should('have.value', 'password123')
@@ -48,8 +52,7 @@ describe('LogInView', () => {
       cy.stub(component, 'performLogin').as('performLoginStub')
     })
 
-    cy.get(SELECTORS.identifier).type('testuser@example.com')
-    cy.get(SELECTORS.password).type('password123')
+    cy.fillLoginForm('testuser@example.com', 'password123')
     cy.get(SELECTORS.form).submit()
 
     cy.get('@performLoginStub').should('have.been.calledOnce')
@@ -68,8 +71,7 @@ describe('LogInView', () => {
       }
     })
 
-    cy.get(SELECTORS.identifier).type('testuser@example.com')
-    cy.get(SELECTORS.password).type('password123')
+    cy.fillLoginForm('testuser@example.com', 'password123')
     cy.get(SELECTORS.form).submit()
 
     cy.get('@routerPushStub').should('have.been.calledWith', { name: 'home' })
