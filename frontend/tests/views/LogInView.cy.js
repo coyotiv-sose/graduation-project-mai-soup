@@ -76,4 +76,19 @@ describe('LogInView', () => {
 
     cy.get('@routerPushStub').should('have.been.calledWith', { name: 'home' })
   })
+
+  // TODO: implement this test and the logic in component
+  it(
+    'displays an error when login fails'
+    //   , () => {
+    //   cy.stub(LogInView.methods, 'login').rejects(
+    //     new Error('Invalid credentials')
+    //   )
+
+    //   cy.fillLoginForm('testuser@example.com', 'wrongpassword')
+    //   cy.get(SELECTORS.form).submit()
+
+    //   cy.get('.error-message').should('contain', 'Invalid credentials')
+    // }
+  )
 })
