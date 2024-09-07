@@ -2,5 +2,6 @@
   "all": true,
   "include": ["src"],
   "extension": [".vue"],
-  "exclude": ["cypress", "tests"]
+  "exclude": ["cypress", "tests"],
+  "reporter": ["lcov", "text", "html"]
 }
