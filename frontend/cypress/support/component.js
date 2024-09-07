@@ -19,6 +19,8 @@ import './commands'
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
 
+import '@cypress/code-coverage/support'
+
 // Import global styles for all component tests
 import '../../src/assets/main.scss'
 
